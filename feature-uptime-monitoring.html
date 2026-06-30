@@ -77,6 +77,7 @@
       gap: 8px;
       padding: 16px 16px 14px;
       flex-shrink: 0;
+      position: relative;
     }
 
     .sidebar-brand-icon {
@@ -102,6 +103,90 @@
       white-space: nowrap;
     }
     .sidebar-brand-text span { color: var(--accent); }
+
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-toggle-btn:hover { background: var(--surface-alt); color: var(--fg); border-color: var(--accent); }
+    .sidebar.collapsed .sidebar-toggle-btn { right: 8px; }
+    .sidebar.collapsed .sidebar-toggle-btn svg { transform: rotate(180deg); }
+
+    /* Quick Search */
+    .sidebar-search {
+      padding: 4px 12px;
+      flex-shrink: 0;
+    }
+    .sidebar-search-input {
+      width: 100%;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+    .sidebar-search-input:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .sidebar-search-input::placeholder { color: var(--muted); }
+    .sidebar-search-wrap {
+      position: relative;
+    }
+    .sidebar-search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .sidebar.collapsed .sidebar-search {
+      padding: 0;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-icon {
+      margin: 0;
+    }
+    .sidebar.collapsed .sidebar-search-text,
+    .sidebar.collapsed .sidebar-search-input {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-search-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-wrap svg {
+      position: static;
+      transform: none;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+    }
+    .sidebar.collapsed .sidebar-search { cursor: pointer; }
+
 
     .sidebar-nav {
       display: flex;
@@ -164,11 +249,102 @@
 
     .sidebar-divider {
       height: 1px;
-      background: var(--border-subtle);
-      margin: 6px 12px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .sidebar-nav > .sidebar-divider {
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .sidebar-divider--full {
+      margin: 4px 0;
     }
 
+    .nav-section-label {
+      padding: 12px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    .sidebar.collapsed .nav-section-label { display: none; }
+
     .sidebar-spacer { flex: 1; }
+    .sidebar-upgrade {
+      margin: 8px 12px 4px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .sidebar-upgrade-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-icon svg { width: 16px; height: 16px; color: #fff; }
+    .sidebar-upgrade-label {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .sidebar-upgrade-label strong {
+      display: block;
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .sidebar-upgrade-desc {
+      font-size: 11px;
+      color: var(--fg-secondary);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .sidebar-upgrade-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .sidebar-upgrade-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .sidebar-upgrade-btn svg { width: 14px; height: 14px; }
+    .sidebar.collapsed .sidebar-upgrade { padding: 8px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .sidebar.collapsed .sidebar-upgrade-header { justify-content: center; }
+    .sidebar.collapsed .sidebar-upgrade-icon { margin: 0; width: 40px; height: 40px; background: var(--accent); border: 2.5px solid #dbeafe; border-radius: 50%; }
+    .sidebar.collapsed .sidebar-upgrade-icon svg { color: #fff; width: 18px; height: 18px; }
+    .sidebar.collapsed .sidebar-upgrade-label,
+    .sidebar.collapsed .sidebar-upgrade-desc,
+    .sidebar.collapsed .sidebar-upgrade-btn { display: none; }
+
 
     .sidebar-bottom {
       border-top: 1px solid var(--border-subtle);
@@ -253,9 +429,11 @@
     .sidebar.collapsed .sidebar-tab span[data-en],
     .sidebar.collapsed .sidebar-tab span[data-vi],
     .sidebar.collapsed .sidebar-bottom-item span,
+    .sidebar.collapsed .sidebar-bottom-item .bottom-right,
+    .sidebar.collapsed .sidebar-avatar-info,
     .sidebar.collapsed .sidebar-lang,
-    .sidebar.collapsed .sidebar-divider,
-    .sidebar.collapsed .sidebar-spacer {
+        .sidebar.collapsed .sidebar-spacer,
+    .sidebar.collapsed .sidebar-search {
       display: none;
     }
     .sidebar.collapsed .sidebar-tab {
@@ -269,6 +447,92 @@
     .sidebar.collapsed .sidebar-brand {
       justify-content: center;
       padding: 16px 0 14px;
+    }
+
+    
+    /* Theme toggle */
+    .sidebar-theme-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+    }
+    .sidebar-theme-toggle.active { background: var(--accent); }
+    .sidebar-theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .sidebar-theme-toggle.active::after { transform: translateX(16px); }
+
+    /* Language pills */
+    .sidebar-lang-pills {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .sidebar-lang-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sidebar-lang-pill.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Avatar */
+    .sidebar-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .sidebar-avatar-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .sidebar-avatar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-avatar-role {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.2;
     }
 
     /* ── Main Container ────────────────────────────────────── */
@@ -411,11 +675,16 @@
       .sidebar .sidebar-tab span[data-vi],
       .sidebar .sidebar-bottom-item span,
       .sidebar .sidebar-lang,
-      .sidebar .sidebar-divider,
+      
       .sidebar .sidebar-spacer { display: none; }
       .sidebar .sidebar-tab { justify-content: center; padding: 0; }
       .sidebar .sidebar-bottom-item { justify-content: center; padding: 0; }
-      .sidebar .sidebar-brand { justify-content: center; padding: 16px 0 14px; }
+      .sidebar .sidebar-brand {
+        justify-content: center;
+        padding: 16px 0 14px;
+      }
+
+      .sidebar .sidebar-toggle-btn { display: none; }
       .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }      .uptime-summary { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .uptime-summary-card { padding: 14px 12px; gap: 12px; }
       .uptime-summary-value { font-size: 22px; }
@@ -446,7 +715,20 @@
   <div class="sidebar-brand">
     <div class="sidebar-brand-icon">GS</div>
     <div class="sidebar-brand-text">G-SKY<span>WATCH</span></div>
+    <button class="sidebar-toggle-btn" onclick="var sb=document.getElementById('sidebar'); sb.classList.toggle('collapsed'); localStorage.setItem('gs-sidebar-v2', sb.classList.contains('collapsed') ? '1' : '0');" title="Toggle sidebar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
   </div>
+
+  <!-- Quick Search -->
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-search">
+    <div class="sidebar-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="sidebar-search-input" placeholder="Quick search" data-vi-placeholder="Tìm kiếm nhanh">
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
 
   <div class="sidebar-nav">
     <a href="index-v2.html" class="sidebar-tab" data-en="Overview" data-vi="Tổng quan">
@@ -467,6 +749,8 @@
     </a>
 
     <div class="sidebar-divider"></div>
+
+    <div class="nav-section-label" data-en="Features" data-vi="Tính năng">Features</div>
 
     <a href="#" class="sidebar-tab" data-en="Threat Map" data-vi="Bản đồ đe dọa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
@@ -514,26 +798,66 @@
     </a>
   </div>
 
-  <div class="sidebar-spacer"></div>
-
-  <div class="sidebar-lang">
-    <button class="lang-btn active" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="vi">VI</button>
+  
+    
   </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <!-- Upgrade Card -->
+  <div class="sidebar-upgrade">
+    <div class="sidebar-upgrade-header">
+      <div class="sidebar-upgrade-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </div>
+      <div class="sidebar-upgrade-label">
+        <span data-en="Current plan:" data-vi="Gói hiện tại:">Current plan:</span>
+        <strong data-en="Pro trial" data-vi="Dùng thử Pro">Pro trial</strong>
+      </div>
+    </div>
+    <div class="sidebar-upgrade-desc" data-en="Upgrade to Pro to get the latest and exclusive features" data-vi="Nâng cấp Pro để nhận các tính năng mới nhất và độc quyền">Upgrade to Pro to get the latest and exclusive features</div>
+    <a href="#" class="sidebar-upgrade-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span data-en="Upgrade to Pro" data-vi="Nâng cấp Pro">Upgrade to Pro</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
 
   <div class="sidebar-bottom">
     <a href="settings.html" class="sidebar-bottom-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       <span data-en="Settings" data-vi="Cài đặt">Settings</span>
     </a>
     <a href="#" class="sidebar-bottom-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
       <span data-en="Help" data-vi="Trợ giúp">Help</span>
     </a>
-    <a href="#" class="sidebar-bottom-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      <span data-en="Log out" data-vi="Đăng xuất">Log out</span>
-    </a>
+    <div class="sidebar-bottom-item" onclick="document.body.classList.toggle('dark-mode')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span data-en="Light mode" data-vi="Chế độ sáng">Light mode</span>
+      <div class="bottom-right">
+        <button class="sidebar-theme-toggle" aria-label="Toggle dark mode"></button>
+      </div>
+    </div>
+    <div class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      <span data-en="Language" data-vi="Ngôn ngữ">Language</span>
+      <div class="bottom-right">
+        <div class="sidebar-lang-pills">
+          <button class="sidebar-lang-pill active" data-lang="en">EN</button>
+          <button class="sidebar-lang-pill" data-lang="vi">VI</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-divider sidebar-divider--full"></div>
+    <div class="sidebar-bottom-item sidebar-avatar-item">
+      <div class="sidebar-avatar">B</div>
+      <div class="sidebar-avatar-info">
+        <div class="sidebar-avatar-name">Brooklyn</div>
+        <div class="sidebar-avatar-role">Admin</div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -771,6 +1095,23 @@
       sidebar.classList.add("collapsed");
     }
   } catch(e) {}
+
+  // Quick Search: expand sidebar on click when collapsed
+  var sidebarSearch = document.querySelector('.sidebar-search');
+  if (sidebarSearch) {
+    sidebarSearch.addEventListener('click', function() {
+      var sb = document.getElementById('sidebar');
+      if (sb && sb.classList.contains('collapsed')) {
+        sb.classList.remove('collapsed');
+        localStorage.setItem('gs-sidebar-v2', '0');
+        setTimeout(function() {
+          var input = sidebarSearch.querySelector('.sidebar-search-input');
+          if (input) input.focus();
+        }, 250);
+      }
+    });
+  }
+
 </script>
 </body>
 </html>

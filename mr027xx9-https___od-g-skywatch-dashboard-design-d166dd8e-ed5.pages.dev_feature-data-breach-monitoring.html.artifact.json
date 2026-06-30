@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mr027xx9-https___od-g-skywatch-dashboard-design-d166dd8e-ed5.pages.dev_feature-data-breach-monitoring.html",
+  "entry": "mr027xx9-https___od-g-skywatch-dashboard-design-d166dd8e-ed5.pages.dev_feature-data-breach-monitoring.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-30T10:27:01.387Z",
+  "updatedAt": "2026-06-30T10:27:01.387Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
