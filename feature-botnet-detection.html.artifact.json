@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "feature-botnet-detection.html",
+  "entry": "feature-botnet-detection.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-26T03:37:19.876Z",
+  "updatedAt": "2026-06-26T03:47:10.312Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

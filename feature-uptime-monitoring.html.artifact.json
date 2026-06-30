@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "feature-uptime-monitoring.html",
+  "entry": "feature-uptime-monitoring.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-25T10:18:53.970Z",
+  "updatedAt": "2026-06-25T10:18:53.970Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

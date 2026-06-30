@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "feature-threat-investigation.html",
+  "entry": "feature-threat-investigation.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-26T02:40:08.367Z",
+  "updatedAt": "2026-06-26T02:40:08.367Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

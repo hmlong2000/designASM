@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "G-SKYWATCH — Assets Metrics Cards Redesign",
+  "entry": "g-skywatch-assets-metrics.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "primary": true,
+  "createdAt": "2026-06-25T03:20:52.982Z",
+  "updatedAt": "2026-06-25T03:20:52.985Z",
+  "metadata": {
+    "identifier": "g-skywatch-assets-metrics",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

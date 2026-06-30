@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "feature-product-weakness.html",
+  "entry": "feature-product-weakness.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-26T02:31:02.856Z",
+  "updatedAt": "2026-06-26T02:31:02.856Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
