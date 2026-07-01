@@ -755,7 +755,8 @@
       font-family: var(--font-mono);
     }
 
-    /* ── Search Bar ─────────────────────────────────────── */
+
+    /* ── Search Bar ──────────────────────────────────────── */
     .ta-search {
       display: flex;
       align-items: center;
@@ -764,32 +765,25 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 8px 14px;
-      margin-bottom: 20px;
-      transition: border-color var(--transition-fast);
+      margin: 20px 0;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .ta-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    .ta-search svg { color: var(--muted); flex-shrink: 0; }
+    .ta-search:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.1);
+    }
+    .ta-search svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
     .ta-search input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: 13px;
-      font-family: var(--font-body);
-      color: var(--fg);
+      flex: 1; border: none; background: none;
+      font-family: var(--font-body); font-size: 13px; color: var(--fg); outline: none;
     }
     .ta-search input::placeholder { color: var(--muted); }
     .ta-search-clear {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 18px;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0 4px;
-      line-height: 1;
+      display: none; width: 20px; height: 20px; border-radius: 50%; border: none;
+      background: var(--surface-alt); color: var(--muted); font-size: 14px; line-height: 1;
+      cursor: pointer; align-items: center; justify-content: center;
     }
-    .ta-search-clear.visible { display: block; }
+    .ta-search-clear.visible { display: flex; }
 
     /* ── Actor Grid (4-col cards) ───────────────────────── */
     .actor-grid {
@@ -937,7 +931,8 @@
     }
     .ta-victim-flag { font-size: 13px; }
 
-    /* Detail button */
+
+
     .ta-detail-btn {
       display: flex;
       align-items: center;
@@ -961,6 +956,8 @@
       border-color: var(--accent);
     }
     .ta-detail-btn svg { width: 14px; height: 14px; }
+
+
 
     /* Sidebar collapsed — only 60px visible */
     .sidebar.collapsed {
@@ -1051,7 +1048,75 @@
       .ta-donut-wrap svg { width: 140px; height: 140px; }
       .ta-donut-value { font-size: 22px; }
       .actor-grid { grid-template-columns: repeat(2, 1fr); }
+
     }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+    .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 90%; max-width: 880px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
+    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
+    .severity-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .severity-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .severity-badge.high { background: var(--high-soft); color: var(--high); }
+    .severity-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .severity-badge.low { background: var(--low-soft); color: var(--low); }
+
   </style>
 </head>
 <body>
@@ -1145,10 +1210,6 @@
     </a>
   </div>
 
-  
-    
-  </div>
-
   <div class="sidebar-divider sidebar-divider--full"></div>
 
   <!-- Upgrade Card -->
@@ -1198,13 +1259,13 @@
       </div>
     </div>
     <div class="sidebar-divider sidebar-divider--full"></div>
-    <div class="sidebar-bottom-item sidebar-avatar-item">
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
       <div class="sidebar-avatar">B</div>
       <div class="sidebar-avatar-info">
         <div class="sidebar-avatar-name">Brooklyn</div>
         <div class="sidebar-avatar-role">Admin</div>
       </div>
-    </div>
+    </a>
   </div>
 </nav>
 
@@ -1329,18 +1390,16 @@
       </div>
     </div>
 
-    <!-- Search -->
-    <div class="ta-search reveal reveal-delay-2">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="ta-search" placeholder="Search threat actors..." data-en-placeholder="Search threat actors..." data-vi-placeholder="Tìm kiếm tác nhân mối đe dọa...">
-      <button class="ta-search-clear" id="ta-search-clear" aria-label="Clear search">&times;</button>
+    <div class="ta-search reveal reveal-delay-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+      <input type="text" id="taSearchInput" placeholder="Search threat actors..." data-placeholder-en="Search threat actors..." data-placeholder-vi="Tìm kiếm threat actors...">
+      <button class="ta-search-clear" id="taSearchClear">&times;</button>
     </div>
 
-    <!-- Threat Actor Cards -->
-    <div class="actor-grid reveal reveal-delay-2">
+    <div class="actor-grid reveal reveal-delay-2" id="actorGrid">
 
       <!-- TA505 -->
-      <div class="ta-card">
+      <div class="ta-card" data-rank="1" data-events="8" data-iocs="89" data-desc="Russian-speaking cybercriminal group known for deploying Dridex, Locky ransomware, and Clop ransomware via phishing campaigns. Active since 2014, targeting financial institutions and healthcare sectors globally." data-synonyms="SectorJ04|SectorJ04 Group|GRACFUL SPIDER|Dudear|Hive0065|DEV-0504|TA505 Gang|Indrik Spider|Silence Group|Gold Drake|MalDoc|FIN7 Subgroup|Andromeda|TrickBot Affiliate|Evil Corp Associate|LockBit Affiliate" data-victims="🇦🇺 Australia|🇨🇦 Canada|🇨🇿 Czech Republic|🇩🇪 Germany|🇺🇸 United States|🇬🇧 United Kingdom|🇫🇷 France|🇯🇵 Japan|🇮🇹 Italy|🇪🇸 Spain|🇧🇷 Brazil|🇮🇳 India|🇰🇷 South Korea|🇳🇱 Netherlands|🇸🇪 Sweden" data-bg="linear-gradient(135deg, #dc2626, #991b1b)" data-initials="TA">
         <div class="ta-header">
           <div class="ta-avatar">
             <div class="ta-avatar-placeholder">TA</div>
@@ -1392,7 +1451,7 @@
       </div>
 
       <!-- Muddy Water -->
-      <div class="ta-card">
+      <div class="ta-card" data-rank="2" data-events="6" data-iocs="41" data-desc="Iranian state-sponsored APT group linked to the Ministry of Intelligence and Security (MOIS). Active since 2014, targeting government, defense, telecom, and energy sectors across Middle East, Europe, and North America." data-synonyms="TEMP.Zagros|Statick Kitten|Seedworm|MERCURY|APT34 Subgroup|OilRig Associate|Charming Kitten Ally|Phosphorus Group|COBALT GYPSY|MAGIC HOUND|Helix Kitten|Darkhydrus|Chafer APT|Remexi|Calypso APT" data-victims="🇮🇱 Israel|🇸🇦 Saudi Arabia|🇦🇪 UAE|🇶🇦 Qatar|🇰🇼 Kuwait|🇧🇭 Bahrain|🇮🇶 Iraq|🇯🇴 Jordan|🇱🇧 Lebanon|🇺🇸 United States|🇬🇧 United Kingdom|🇩🇪 Germany|🇫🇷 France|🇨🇦 Canada|🇦🇺 Australia" data-bg="linear-gradient(135deg, #b45309, #92400e)" data-initials="MW">
         <div class="ta-header">
           <div class="ta-avatar">
             <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #b45309, #92400e);">MW</div>
@@ -1444,7 +1503,7 @@
       </div>
 
       <!-- Callisto -->
-      <div class="ta-card">
+      <div class="ta-card" data-rank="3" data-events="3" data-iocs="81" data-desc="State-sponsored group operating primarily against government and military targets in Eastern Europe and Central Asia. Known for sophisticated spear-phishing campaigns exploiting zero-day vulnerabilities in popular software." data-synonyms="COLD RIVER|SEABORGIUM|TA446|IRON FRONTIER| COLDRIVER|BlueCharlie|Callisto Group|Ghostwriter|UNC4057|Storm-0558|Volt Typhoon Ally|BlueDelta|CHROMIUM|Static Kitten Copy" data-victims="🇺🇦 Ukraine|🇬🇪 Georgia|🇰🇿 Kazakhstan|🇰🇬 Kyrgyzstan|🇺🇿 Uzbekistan|🇱🇹 Lithuania|🇱🇻 Latvia|🇪🇪 Estonia|🇵🇱 Poland|🇫🇮 Finland|🇸🇪 Sweden|🇳🇴 Norway|🇩🇰 Denmark|🇨🇿 Czech Republic|🇷🇴 Romania" data-bg="linear-gradient(135deg, #0369a1, #075985)" data-initials="CA">
         <div class="ta-header">
           <div class="ta-avatar">
             <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #7c3aed, #5b21b6);">CA</div>
@@ -2225,6 +2284,8 @@
 
     </div>
 
+
+
   </main>
 
   <script>
@@ -2249,28 +2310,6 @@
         seg.addEventListener('mouseleave', function() {
           donutTooltip.style.opacity = '0';
         });
-      });
-    }
-
-    // Search filter
-    var searchInput = document.getElementById('ta-search');
-    var searchClear = document.getElementById('ta-search-clear');
-    var taCards = document.querySelectorAll('.ta-card');
-    if (searchInput) {
-      searchInput.addEventListener('input', function() {
-        var q = this.value.trim().toLowerCase();
-        searchClear.classList.toggle('visible', q.length > 0);
-        taCards.forEach(function(card) {
-          var name = card.querySelector('.ta-name');
-          var text = name ? name.textContent.toLowerCase() : '';
-          card.style.display = (!q || text.indexOf(q) !== -1) ? '' : 'none';
-        });
-      });
-      searchClear.addEventListener('click', function() {
-        searchInput.value = '';
-        searchClear.classList.remove('visible');
-        taCards.forEach(function(card) { card.style.display = ''; });
-        searchInput.focus();
       });
     }
 
@@ -2307,6 +2346,28 @@
       }
     } catch(e) {}
   
+    // ── Threat Actor Search ──────────────────
+    var taSearchInput = document.getElementById('taSearchInput');
+    var taSearchClear = document.getElementById('taSearchClear');
+    var actorGrid = document.getElementById('actorGrid');
+    if (taSearchInput && actorGrid) {
+      taSearchInput.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        if (taSearchClear) taSearchClear.classList.toggle('visible', q.length > 0);
+        actorGrid.querySelectorAll('.ta-card').forEach(function(card) {
+          var name = (card.querySelector('.ta-name') || {}).textContent || '';
+          card.style.display = name.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
+    }
+    if (taSearchClear) {
+      taSearchClear.addEventListener('click', function() {
+        taSearchInput.value = '';
+        taSearchInput.dispatchEvent(new Event('input'));
+        taSearchInput.focus();
+      });
+    }
+
     // ── Sidebar Collapse Toggle ──────────────
   var sidebar = document.getElementById("sidebar");
   var panelCollapse = document.getElementById("panelCollapse");
@@ -2339,6 +2400,79 @@
     });
   }
 
+</script>
+
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+        </div>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Pro</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+        </div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Custom</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
+          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
 </script>
 
 </body></html>

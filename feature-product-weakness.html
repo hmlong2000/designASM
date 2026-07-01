@@ -408,6 +408,176 @@
     .sidebar-lang .lang-btn.active { background: var(--accent); color: #fff; }
     .sidebar-lang .lang-btn:hover:not(.active) { color: var(--fg); }
 
+    /* ── Scan Modal ─────────────────────────────────────── */
+    .scan-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .scan-overlay.active { display: flex; opacity: 1; }
+    .scan-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 480px; max-width: 92vw;
+      box-shadow: 0 24px 64px rgba(15,22,41,0.18);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .scan-overlay.active .scan-modal { transform: translateY(0) scale(1); }
+    .scan-header {
+      padding: 24px 28px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .scan-header h3 {
+      font-family: var(--font-display); font-size: 16px; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--fg);
+    }
+    .scan-close {
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      background: var(--surface-alt); cursor: pointer;
+      display: grid; place-items: center; color: var(--muted);
+      transition: all var(--transition-fast);
+    }
+    .scan-close:hover { background: var(--border); color: var(--fg); }
+    .scan-body { padding: 24px 28px 28px; }
+
+    /* Spinner */
+    .scan-spinner-wrap {
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .scan-spinner {
+      width: 72px; height: 72px; position: relative;
+    }
+    .scan-spinner-ring {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      animation: scanSpin 1s linear infinite;
+    }
+    @keyframes scanSpin { to { transform: rotate(360deg); } }
+    .scan-spinner-icon {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      color: var(--accent);
+    }
+    .scan-spinner-icon svg { width: 28px; height: 28px; }
+
+    /* Complete state */
+    .scan-spinner.complete .scan-spinner-ring {
+      border-color: #22c55e; border-top-color: #22c55e;
+      animation: none;
+    }
+    .scan-spinner.complete .scan-spinner-icon { color: #22c55e; }
+
+    /* Progress bar */
+    .scan-progress-wrap { margin-bottom: 20px; }
+    .scan-progress-bar {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: var(--border); overflow: hidden;
+    }
+    .scan-progress-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), #38bdf8);
+      width: 0%; transition: width 0.4s ease;
+    }
+    .scan-progress-fill.complete {
+      background: #22c55e;
+    }
+    .scan-progress-text {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 12px; color: var(--muted);
+    }
+    .scan-progress-pct {
+      font-family: var(--font-mono); font-weight: 600; color: var(--accent);
+    }
+    .scan-progress-pct.complete { color: #22c55e; }
+
+    /* Phase steps */
+    .scan-phases { display: flex; flex-direction: column; gap: 0; }
+    .scan-phase {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; font-size: 13px; color: var(--muted);
+      border-left: 2px solid var(--border);
+      padding-left: 14px; margin-left: 6px;
+      transition: color var(--transition-base);
+    }
+    .scan-phase.active { color: var(--fg); font-weight: 500; }
+    .scan-phase.done { color: #22c55e; }
+    .scan-phase-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+      margin-left: -19px; position: relative;
+      transition: background var(--transition-base);
+    }
+    .scan-phase.active .scan-phase-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.15);
+    }
+    .scan-phase.done .scan-phase-dot { background: #22c55e; }
+    .scan-phase-check {
+      width: 8px; height: 8px; margin-left: -19px;
+      display: none; color: #22c55e; flex-shrink: 0;
+    }
+    .scan-phase.done .scan-phase-check { display: block; }
+    .scan-phase.done .scan-phase-dot { display: none; }
+
+    /* Results */
+    .scan-results { display: none; margin-top: 20px; }
+    .scan-results.show { display: block; }
+    .scan-result-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-radius: var(--radius-sm);
+      background: var(--surface-alt); margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .scan-result-label { color: var(--fg-secondary); }
+    .scan-result-value {
+      font-family: var(--font-mono); font-weight: 600; color: var(--fg);
+    }
+    .scan-result-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    }
+    .scan-result-badge.critical { background: #fde8e8; color: #c53030; }
+    .scan-result-badge.high { background: #fef0e4; color: #c05621; }
+    .scan-result-badge.medium { background: #fdf4e4; color: #D4870E; }
+    .scan-result-badge.low { background: #e6f7ef; color: #276749; }
+
+    .scan-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle);
+    }
+    .scan-footer-btn {
+      padding: 8px 16px; border-radius: var(--radius-xs);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      border: none; transition: all var(--transition-fast);
+    }
+    .scan-footer-btn.secondary {
+      background: var(--surface-alt); color: var(--fg-secondary);
+      border: 1px solid var(--border);
+    }
+    .scan-footer-btn.secondary:hover { background: var(--border); }
+    .scan-footer-btn.primary {
+      background: var(--accent); color: #fff;
+    }
+    .scan-footer-btn.primary:hover { background: var(--accent-hover); }
+
+    /* Button loading state */
+    .header-btn-primary.scanning {
+      pointer-events: none; opacity: 0.7;
+    }
+    .header-btn-primary.scanning::after {
+      content: ''; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: scanSpin 0.7s linear infinite;
+      margin-left: 4px;
+    }
+
     /* Language switching */
     .lang-vi { display: none; }
     body.lang-vi-active .lang-vi { display: block; }
@@ -439,11 +609,11 @@
     /* ── Severity Cards (white bg + colored top border) ──── */
     .severity-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
     .severity-card {
-      border-radius: var(--radius-lg);
-      padding: 20px 18px;
+      border-radius: var(--radius-md);
+      padding: 14px 14px 12px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 8px;
       box-shadow: 0 4px 16px rgba(1, 103, 255, 0.2);
       transition: box-shadow var(--transition-base), transform var(--transition-base);
       position: relative;
@@ -453,15 +623,15 @@
     .severity-card::after {
       content: '';
       position: absolute;
-      top: -20px; right: -20px;
-      width: 80px; height: 80px;
+      top: -16px; right: -16px;
+      width: 56px; height: 56px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       pointer-events: none;
     }
     .severity-card:hover {
       box-shadow: 0 8px 28px rgba(1, 103, 255, 0.3);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     .sev-critical-card {
       background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
@@ -483,18 +653,19 @@
       box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
     }
     .sev-low-card:hover { box-shadow: 0 8px 28px rgba(5, 150, 105, 0.3); }
-    .severity-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
-    .severity-card-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: grid; place-items: center; flex-shrink: 0; color: #fff; }
-    .severity-card-value { font-family: var(--font-mono); font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: #fff; }
-    .severity-card-label { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-    .severity-card-bar { height: 4px; border-radius: 3px; background: rgba(255,255,255,0.2); overflow: hidden; }
-    .severity-card-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); background: #fff; width: 0; }
-    .severity-card.animated .severity-card-bar-fill { width: 8%; }
+    .severity-card-top { display: flex; align-items: center; justify-content: space-between; }
+    .severity-card-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.18); display: grid; place-items: center; flex-shrink: 0; color: #fff; }
+    .severity-card-icon svg { width: 16px; height: 16px; }
+    .severity-card-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: #fff; }
+    .severity-card-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .severity-card-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
+    .severity-card-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); background: #fff; width: 0; }
+    .severity-card.animated .severity-card-bar-fill { width: 11.5%; }
     .sev-critical-card.animated .severity-card-bar-fill { width: 11.5%; }
     .sev-high-card.animated .severity-card-bar-fill { width: 36.5%; }
     .sev-medium-card.animated .severity-card-bar-fill { width: 32.3%; }
     .sev-low-card.animated .severity-card-bar-fill { width: 19.8%; }
-    .severity-card-pct { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.6); text-align: right; }
+    .severity-card-pct { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.6); text-align: right; }
 
     /* ── Product Table ────────────────────────────────────── */
     .product-list-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
@@ -671,12 +842,12 @@
     }
     @media (max-width: 1200px) {
       .main { margin-left: 240px; width: calc(100% - 240px); padding: 16px 20px 32px; }
-      .severity-cards { grid-template-columns: repeat(4, 1fr); gap: 10px; }
-      .severity-card { padding: 16px 14px; gap: 10px; }
-      .severity-card-value { font-size: 24px; }
-      .severity-card-icon { width: 36px; height: 36px; }
-      .severity-card-icon svg { width: 16px; height: 16px; }
-      .severity-card-label { font-size: 11px; }
+      .severity-cards { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .severity-card { padding: 12px 12px 10px; gap: 6px; }
+      .severity-card-value { font-size: 20px; }
+      .severity-card-icon { width: 28px; height: 28px; border-radius: 6px; }
+      .severity-card-icon svg { width: 14px; height: 14px; }
+      .severity-card-label { font-size: 10px; }
       .product-table-header, .product-row { grid-template-columns: 1.2fr 1fr 80px 120px 100px 80px; }
     }
                 @media (max-width: 768px) {
@@ -708,6 +879,10 @@
 
       .sidebar .sidebar-toggle-btn { display: none; }
       .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }
+      .severity-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .severity-card { padding: 12px 10px; gap: 6px; }
+      .severity-card-value { font-size: 18px; }
+      .severity-card-icon { width: 26px; height: 26px; }
     }
 
     @media (max-width: 480px) {
@@ -715,12 +890,70 @@
       .vuln-summary-card { padding: 18px 16px; gap: 14px; }
       .vuln-summary-value { font-size: 28px; }
       .vuln-summary-meta { display: none; }
-      .severity-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .severity-card { padding: 14px 12px; gap: 8px; }
+      .severity-cards { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .severity-card { padding: 10px 10px; gap: 5px; }
       .product-table-header, .product-row { grid-template-columns: 1fr 60px; }
       .product-table-header > *:nth-child(3), .product-row > *:nth-child(3) { display: none; }
       .product-table-header > *:nth-child(5), .product-row > *:nth-child(5) { display: none; }
     }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+    .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 90%; max-width: 880px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
+    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
   </style>
 </head>
 <body>
@@ -867,13 +1100,13 @@
       </div>
     </div>
     <div class="sidebar-divider sidebar-divider--full"></div>
-    <div class="sidebar-bottom-item sidebar-avatar-item">
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
       <div class="sidebar-avatar">B</div>
       <div class="sidebar-avatar-info">
         <div class="sidebar-avatar-name">Brooklyn</div>
         <div class="sidebar-avatar-role">Admin</div>
       </div>
-    </div>
+    </a>
   </div>
 </nav>
 
@@ -884,7 +1117,6 @@
         <p data-en="Monitor and track known vulnerabilities across your product dependencies and third-party components" data-vi="Giám sát và theo dõi các lỗ hổng đã biết qua phụ thuộc sản phẩm và thành phần bên thứ ba">Monitor and track known vulnerabilities across your product dependencies and third-party components</p>
       </div>
       <div class="page-header-right">
-        <button class="header-btn header-btn-secondary" data-en="Export CSV" data-vi="Xuất CSV">Export CSV</button>
         <button class="header-btn header-btn-primary" data-en="Run Scan" data-vi="Chạy quét">Run Scan</button>
       </div>
     </div>
@@ -1168,5 +1400,273 @@
   }
 
 </script>
+<!-- Pricing Modal -->
+<!-- Scan Modal -->
+<div class="scan-overlay" id="scanModal">
+  <div class="scan-modal">
+    <div class="scan-header">
+      <h3 data-en="Scanning Products" data-vi="Đang quét sản phẩm">Scanning Products</h3>
+      <button class="scan-close" id="scanClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="scan-body">
+      <div class="scan-spinner-wrap">
+        <div class="scan-spinner" id="scanSpinner">
+          <div class="scan-spinner-ring"></div>
+          <div class="scan-spinner-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="scan-progress-wrap">
+        <div class="scan-progress-bar"><div class="scan-progress-fill" id="scanProgressFill"></div></div>
+        <div class="scan-progress-text">
+          <span id="scanPhaseText" data-en="Initializing..." data-vi="Đang khởi tạo...">Initializing...</span>
+          <span class="scan-progress-pct" id="scanPct">0%</span>
+        </div>
+      </div>
+
+      <div class="scan-phases" id="scanPhases">
+        <div class="scan-phase active" data-step="0">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Initializing scanner" data-vi="Khởi tạo bộ quét">Initializing scanner</span>
+        </div>
+        <div class="scan-phase" data-step="1">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Scanning product dependencies" data-vi="Quét phụ thuộc sản phẩm">Scanning product dependencies</span>
+        </div>
+        <div class="scan-phase" data-step="2">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Checking CVE database" data-vi="Kiểm tra cơ sở dữ liệu CVE">Checking CVE database</span>
+        </div>
+        <div class="scan-phase" data-step="3">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Analyzing severity levels" data-vi="Phân tích mức độ nghiêm trọng">Analyzing severity levels</span>
+        </div>
+        <div class="scan-phase" data-step="4">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Generating report" data-vi="Tạo báo cáo">Generating report</span>
+        </div>
+      </div>
+
+      <div class="scan-results" id="scanResults">
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Products scanned" data-vi="Sản phẩm đã quét">Products scanned</span>
+          <span class="scan-result-value">7</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="New vulnerabilities found" data-vi="Lỗ hổng mới phát hiện">New vulnerabilities found</span>
+          <span class="scan-result-value">+3</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</span>
+          <span class="scan-result-badge critical">2</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="High" data-vi="Cao">High</span>
+          <span class="scan-result-badge high">1</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Scan duration" data-vi="Thời gian quét">Scan duration</span>
+          <span class="scan-result-value">4.2s</span>
+        </div>
+      </div>
+
+      <div class="scan-footer" id="scanFooter" style="display:none;">
+        <button class="scan-footer-btn secondary" id="scanCloseBtn" data-en="Close" data-vi="Đóng">Close</button>
+        <button class="scan-footer-btn primary" id="scanViewBtn" data-en="View Results" data-vi="Xem kết quả">View Results</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+        </div>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Pro</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+        </div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Custom</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
+          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('scanModal');
+  var btn = document.querySelector('.header-btn-primary');
+  var closeBtn = document.getElementById('scanClose');
+  var closeFooter = document.getElementById('scanCloseBtn');
+  var viewBtn = document.getElementById('scanViewBtn');
+  var fill = document.getElementById('scanProgressFill');
+  var pct = document.getElementById('scanPct');
+  var phaseText = document.getElementById('scanPhaseText');
+  var phases = document.querySelectorAll('.scan-phase');
+  var spinner = document.getElementById('scanSpinner');
+  var results = document.getElementById('scanResults');
+  var footer = document.getElementById('scanFooter');
+
+  var phaseLabels = [
+    { en: 'Initializing scanner...', vi: 'Khởi tạo bộ quét...' },
+    { en: 'Scanning product dependencies...', vi: 'Quét phụ thuộc sản phẩm...' },
+    { en: 'Checking CVE database...', vi: 'Kiểm tra cơ sở dữ liệu CVE...' },
+    { en: 'Analyzing severity levels...', vi: 'Phân tích mức độ nghiêm trọng...' },
+    { en: 'Generating report...', vi: 'Tạo báo cáo...' }
+  ];
+
+  var phasePcts = [0, 15, 45, 75, 95];
+
+  function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+  function openScan() {
+    overlay.classList.add('active');
+    btn.classList.add('scanning');
+    resetScan();
+    runScan();
+  }
+
+  function resetScan() {
+    fill.style.width = '0%';
+    fill.classList.remove('complete');
+    pct.textContent = '0%';
+    pct.classList.remove('complete');
+    spinner.classList.remove('complete');
+    results.classList.remove('show');
+    footer.style.display = 'none';
+    phases.forEach(function(p) { p.classList.remove('active', 'done'); });
+    phases[0].classList.add('active');
+    phaseText.textContent = isVI() ? phaseLabels[0].vi : phaseLabels[0].en;
+  }
+
+  function runScan() {
+    var current = 0;
+    var totalPhases = phases.length;
+
+    function nextPhase() {
+      if (current >= totalPhases) { finishScan(); return; }
+
+      phases.forEach(function(p) { p.classList.remove('active'); });
+      phases[current].classList.add('active');
+      phaseText.textContent = isVI() ? phaseLabels[current].vi : phaseLabels[current].en;
+
+      var targetPct = phasePcts[current];
+      animatePct(targetPct, 600 + current * 200, function() {
+        phases[current].classList.remove('active');
+        phases[current].classList.add('done');
+        current++;
+        setTimeout(nextPhase, 300);
+      });
+    }
+
+    nextPhase();
+  }
+
+  function animatePct(target, duration, cb) {
+    var startPct = parseInt(pct.textContent) || 0;
+    var startTime = Date.now();
+    function tick() {
+      var elapsed = Date.now() - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var val = Math.round(startPct + (target - startPct) * eased);
+      pct.textContent = val + '%';
+      fill.style.width = val + '%';
+      if (progress < 1) requestAnimationFrame(tick);
+      else if (cb) cb();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function finishScan() {
+    pct.textContent = '100%';
+    pct.classList.add('complete');
+    fill.style.width = '100%';
+    fill.classList.add('complete');
+    spinner.classList.add('complete');
+    phaseText.textContent = isVI() ? 'Quét hoàn tất!' : 'Scan complete!';
+    results.classList.add('show');
+    footer.style.display = 'flex';
+    btn.classList.remove('scanning');
+  }
+
+  function closeScan() {
+    overlay.classList.remove('active');
+    btn.classList.remove('scanning');
+  }
+
+  if (btn) btn.addEventListener('click', openScan);
+  if (closeBtn) closeBtn.addEventListener('click', closeScan);
+  if (closeFooter) closeFooter.addEventListener('click', closeScan);
+  if (viewBtn) viewBtn.addEventListener('click', closeScan);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeScan(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeScan(); });
+})();
+</script>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
+</script>
+
 </body>
 </html>

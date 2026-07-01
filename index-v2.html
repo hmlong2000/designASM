@@ -470,6 +470,10 @@
     }
 
     /* Avatar */
+    .sidebar-avatar-item {
+      text-decoration: none;
+      color: inherit;
+    }
     .sidebar-avatar {
       width: 28px;
       height: 28px;
@@ -587,6 +591,8 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
+      position: relative;
+      z-index: 100;
     }
 
     .page-header-left h1 {
@@ -623,9 +629,7 @@
       cursor: pointer;
       transition: border-color var(--transition-fast);
     }
-
     .date-picker:hover { border-color: var(--accent); }
-
     .date-picker svg { color: var(--muted); flex-shrink: 0; }
 
     .refresh-btn {
@@ -2287,6 +2291,235 @@
     .assistant-send:hover { background: var(--accent-hover); }
     .assistant-send svg { width: 18px; height: 18px; }
 
+    /* ── Profile Screen ─────────────────────────────────────── */
+    #profile-screen.active {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 120px);
+    }
+    .profile-hero {
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(6, 182, 212, 0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(99, 102, 241, 0.4) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(14, 165, 233, 0.2) 0%, transparent 70%),
+        linear-gradient(135deg, #0c1a3d 0%, #0a2463 25%, #0167FF 50%, #0ea5e9 75%, #0c1a3d 100%);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle 1.5px at center, rgba(255,255,255,0.12) 0%, transparent 100%);
+      background-size: 28px 28px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .profile-hero::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%);
+      right: -80px;
+      top: -80px;
+      filter: blur(40px);
+    }
+    .profile-avatar-lg {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(99, 102, 241, 0.4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.4), 0 0 60px rgba(99, 102, 241, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    .profile-hero-info {
+      position: relative;
+      z-index: 1;
+    }
+    .profile-hero-info h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .profile-hero-info p {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+    .profile-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .profile-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .profile-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--fg);
+      letter-spacing: -0.01em;
+    }
+    .profile-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .profile-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .profile-info-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .profile-info-value {
+      font-size: 14px;
+      color: var(--fg);
+      font-weight: 500;
+    }
+    .profile-workspaces {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .profile-workspace-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: border-color var(--transition-base), background var(--transition-base);
+    }
+    .profile-workspace-item:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .profile-ws-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .profile-ws-info {
+      flex: 1;
+    }
+    .profile-ws-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .profile-ws-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .profile-ws-badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .profile-ws-badge.owner {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .profile-ws-badge.member {
+      background: var(--surface-alt);
+      color: var(--muted);
+    }
+    .profile-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .profile-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-base);
+    }
+    .profile-btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .profile-btn-primary:hover {
+      background: #0052cc;
+    }
+    .profile-btn-danger {
+      background: var(--critical-soft);
+      color: var(--critical);
+    }
+    .profile-btn-danger:hover {
+      background: var(--critical);
+      color: #fff;
+    }
+    .profile-btn-outline {
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .profile-btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    @media (max-width: 768px) {
+      .profile-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 28px 20px;
+      }
+      .profile-info-grid {
+        grid-template-columns: 1fr;
+      }
+      .profile-actions {
+        flex-direction: column;
+      }
+    }
+
     /* ── Report Screen ─────────────────────────────────────── */
     #report-screen.active {
       display: flex;
@@ -2571,6 +2804,98 @@
       .report-toolbar { flex-direction: column; align-items: stretch; }
       .assistant-input-bar { padding: 10px 14px; }
     }
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+    .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 90%; max-width: 880px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -2717,13 +3042,13 @@
       </div>
     </div>
     <div class="sidebar-divider sidebar-divider--full"></div>
-    <div class="sidebar-bottom-item sidebar-avatar-item">
+    <a href="#" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
       <div class="sidebar-avatar">B</div>
       <div class="sidebar-avatar-info">
         <div class="sidebar-avatar-name">Brooklyn</div>
         <div class="sidebar-avatar-role">Admin</div>
       </div>
-    </div>
+    </a>
   </div>
 </nav>
 
@@ -2742,8 +3067,7 @@
     <div class="page-header-right">
       <div class="date-picker">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-        Jun 6 – Jun 12, 2026
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <span>Jun 6 – Jun 12, 2026</span>
       </div>
       <div class="refresh-btn" title="Refresh scan data">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
@@ -3144,8 +3468,7 @@
       <div class="page-header-right">
         <div class="date-picker">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          Jun 6 – Jun 12, 2026
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          <span>Jun 6 – Jun 12, 2026</span>
         </div>
       </div>
     </div>
@@ -3950,6 +4273,116 @@
     </div>
   </div><!-- /report-screen -->
 
+  <!-- ═══════════ PROFILE SCREEN ═══════════ -->
+  <div id="profile-screen" class="screen">
+
+    <!-- Profile Hero -->
+    <div class="profile-hero">
+      <div class="profile-avatar-lg">B</div>
+      <div class="profile-hero-info">
+        <h2>Brooklyn</h2>
+        <p>brooklyn@gskywatch.io</p>
+        <span class="profile-role-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Admin
+        </span>
+      </div>
+    </div>
+
+    <!-- Account Information -->
+    <div class="profile-section">
+      <h3 class="profile-section-title" data-en="Account Information" data-vi="Thông tin tài khoản">Account Information</h3>
+      <div class="profile-info-grid">
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Full Name" data-vi="Họ và tên">Full Name</span>
+          <span class="profile-info-value">Brooklyn Nguyen</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Email" data-vi="Email">Email</span>
+          <span class="profile-info-value">brooklyn@gskywatch.io</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Role" data-vi="Vai trò">Role</span>
+          <span class="profile-info-value" data-en="Admin" data-vi="Quản trị viên">Admin</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Department" data-vi="Phòng ban">Department</span>
+          <span class="profile-info-value" data-en="Security Operations" data-vi="Vận hành Bảo mật">Security Operations</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Phone" data-vi="Điện thoại">Phone</span>
+          <span class="profile-info-value">+84 901 234 567</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Joined" data-vi="Ngày tham gia">Joined</span>
+          <span class="profile-info-value">15 Jan 2024</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="Last Login" data-vi="Đăng nhập cuối">Last Login</span>
+          <span class="profile-info-value">12 Jun 2026, 09:42 ICT</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="profile-info-label" data-en="2FA Status" data-vi="Trạng thái 2FA">2FA Status</span>
+          <span class="profile-info-value" style="color: var(--success);" data-en="Enabled" data-vi="Đã bật">Enabled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspaces -->
+    <div class="profile-section">
+      <h3 class="profile-section-title" data-en="Workspaces" data-vi="Không gian làm việc">Workspaces</h3>
+      <div class="profile-workspaces">
+        <div class="profile-workspace-item">
+          <div class="profile-ws-icon" style="background: var(--accent-soft);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <div class="profile-ws-info">
+            <div class="profile-ws-name">G-SKYWATCH Primary</div>
+            <div class="profile-ws-meta" data-en="12 members · 248 assets monitored" data-vi="12 thành viên · 248 tài sản được giám sát">12 members · 248 assets monitored</div>
+          </div>
+          <span class="profile-ws-badge owner" data-en="Owner" data-vi="Chủ sở hữu">Owner</span>
+        </div>
+        <div class="profile-workspace-item">
+          <div class="profile-ws-icon" style="background: #f0fdf4;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div class="profile-ws-info">
+            <div class="profile-ws-name">Client: Acme Corp</div>
+            <div class="profile-ws-meta" data-en="8 members · 56 assets monitored" data-vi="8 thành viên · 56 tài sản được giám sát">8 members · 56 assets monitored</div>
+          </div>
+          <span class="profile-ws-badge member" data-en="Member" data-vi="Thành viên">Member</span>
+        </div>
+        <div class="profile-workspace-item">
+          <div class="profile-ws-icon" style="background: #fef3c7;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          </div>
+          <div class="profile-ws-info">
+            <div class="profile-ws-name">Client: TechStart</div>
+            <div class="profile-ws-meta" data-en="5 members · 32 assets monitored" data-vi="5 thành viên · 32 tài sản được giám sát">5 members · 32 assets monitored</div>
+          </div>
+          <span class="profile-ws-badge member" data-en="Member" data-vi="Thành viên">Member</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="profile-actions">
+      <button class="profile-btn profile-btn-outline" data-en="Edit Profile" data-vi="Chỉnh sửa hồ sơ">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        Edit Profile
+      </button>
+      <button class="profile-btn profile-btn-outline" data-en="Change Password" data-vi="Đổi mật khẩu">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        Change Password
+      </button>
+      <button class="profile-btn profile-btn-danger" data-en="Log Out" data-vi="Đăng xuất">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Log Out
+      </button>
+    </div>
+
+  </div><!-- /profile-screen -->
+
 </main>
 
 <script>
@@ -3997,7 +4430,8 @@
           'Overview': document.getElementById('overview-screen'),
           'Assets': document.getElementById('assets-screen'),
           'Sky Assistant': document.getElementById('assistant-screen'),
-          'Report': document.getElementById('report-screen')
+          'Report': document.getElementById('report-screen'),
+          'Profile': document.getElementById('profile-screen')
         };
         Object.keys(screens).forEach(function(key) {
           if (screens[key]) screens[key].classList.remove('active');
@@ -4025,13 +4459,32 @@
           'Overview': document.getElementById('overview-screen'),
           'Assets': document.getElementById('assets-screen'),
           'Sky Assistant': document.getElementById('assistant-screen'),
-          'Report': document.getElementById('report-screen')
+          'Report': document.getElementById('report-screen'),
+          'Profile': document.getElementById('profile-screen')
         };
         Object.keys(screens).forEach(function(key) {
           if (screens[key]) screens[key].classList.toggle('active', key === savedTab);
         });
       }
     } catch(e) {}
+
+    // ── Hash routing — navigate to profile from feature pages ──
+    if (location.hash === '#profile') {
+      sidebarTabs.forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-en') === 'Profile');
+      });
+      var screens = {
+        'Overview': document.getElementById('overview-screen'),
+        'Assets': document.getElementById('assets-screen'),
+        'Sky Assistant': document.getElementById('assistant-screen'),
+        'Report': document.getElementById('report-screen'),
+        'Profile': document.getElementById('profile-screen')
+      };
+      Object.keys(screens).forEach(function(key) {
+        if (screens[key]) screens[key].classList.toggle('active', key === 'Profile');
+      });
+      try { localStorage.setItem('gs-tab', 'Profile'); } catch(e) {}
+    }
   }
 
   // ── Assets Tab Switching ─────────────────────
@@ -4141,6 +4594,93 @@
     });
   }
 
+})();
+</script>
+
+
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Basic -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-value">0</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+        </div>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Pro</span>
+          <div class="pricing-amount">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-value">99</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+        </div>
+      </div>
+      <!-- Custom -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Custom</span>
+          <div class="pricing-amount">
+            <span class="pricing-value" style="font-size:32px;">Custom</span>
+          </div>
+          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn, [data-pricing-trigger]').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
 })();
 </script>
 

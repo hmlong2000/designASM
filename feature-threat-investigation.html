@@ -660,6 +660,64 @@
       .search-submit { width: 34px; height: 34px; }
       .history-row-text { font-size: 11px; }
     }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+    .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 90%; max-width: 880px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
+    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
   </style>
 </head>
 <body>
@@ -805,13 +863,13 @@
       </div>
     </div>
     <div class="sidebar-divider sidebar-divider--full"></div>
-    <div class="sidebar-bottom-item sidebar-avatar-item">
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
       <div class="sidebar-avatar">B</div>
       <div class="sidebar-avatar-info">
         <div class="sidebar-avatar-name">Brooklyn</div>
         <div class="sidebar-avatar-role">Admin</div>
       </div>
-    </div>
+    </a>
   </div>
 </nav>
 
@@ -1115,5 +1173,78 @@
   }
 
 </script>
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+        </div>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Pro</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+        </div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Custom</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
+          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
+</script>
+
 </body>
 </html>

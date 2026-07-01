@@ -662,6 +662,227 @@
       .botnet-search { width: 160px; }
       .botnet-list-header { flex-direction: column; gap: 10px; align-items: flex-start; }
     }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+    .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 90%; max-width: 880px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
+    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
+
+    /* ── Scan Modal ─────────────────────────────────────── */
+    .scan-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .scan-overlay.active { display: flex; opacity: 1; }
+    .scan-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 480px; max-width: 92vw;
+      box-shadow: 0 24px 64px rgba(15,22,41,0.18);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .scan-overlay.active .scan-modal { transform: translateY(0) scale(1); }
+    .scan-header {
+      padding: 24px 28px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .scan-header h3 {
+      font-family: var(--font-display); font-size: 16px; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--fg);
+    }
+    .scan-close {
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      background: var(--surface-alt); cursor: pointer;
+      display: grid; place-items: center; color: var(--muted);
+      transition: all var(--transition-fast);
+    }
+    .scan-close:hover { background: var(--border); color: var(--fg); }
+    .scan-body { padding: 24px 28px 28px; }
+
+    /* Spinner */
+    .scan-spinner-wrap {
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .scan-spinner {
+      width: 72px; height: 72px; position: relative;
+    }
+    .scan-spinner-ring {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      animation: scanSpin 1s linear infinite;
+    }
+    @keyframes scanSpin { to { transform: rotate(360deg); } }
+    .scan-spinner-icon {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      color: var(--accent);
+    }
+    .scan-spinner-icon svg { width: 28px; height: 28px; }
+
+    .scan-spinner.complete .scan-spinner-ring {
+      border-color: #22c55e; border-top-color: #22c55e;
+      animation: none;
+    }
+    .scan-spinner.complete .scan-spinner-icon { color: #22c55e; }
+
+    /* Progress bar */
+    .scan-progress-wrap { margin-bottom: 20px; }
+    .scan-progress-bar {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: var(--border); overflow: hidden;
+    }
+    .scan-progress-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), #38bdf8);
+      width: 0%; transition: width 0.4s ease;
+    }
+    .scan-progress-fill.complete { background: #22c55e; }
+    .scan-progress-text {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 12px; color: var(--muted);
+    }
+    .scan-progress-pct {
+      font-family: var(--font-mono); font-weight: 600; color: var(--accent);
+    }
+    .scan-progress-pct.complete { color: #22c55e; }
+
+    /* Phase steps */
+    .scan-phases { display: flex; flex-direction: column; gap: 0; }
+    .scan-phase {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; font-size: 13px; color: var(--muted);
+      border-left: 2px solid var(--border);
+      padding-left: 14px; margin-left: 6px;
+      transition: color var(--transition-base);
+    }
+    .scan-phase.active { color: var(--fg); font-weight: 500; }
+    .scan-phase.done { color: #22c55e; }
+    .scan-phase-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+      margin-left: -19px; position: relative;
+      transition: background var(--transition-base);
+    }
+    .scan-phase.active .scan-phase-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.15);
+    }
+    .scan-phase.done .scan-phase-dot { background: #22c55e; }
+    .scan-phase-check {
+      width: 8px; height: 8px; margin-left: -19px;
+      display: none; color: #22c55e; flex-shrink: 0;
+    }
+    .scan-phase.done .scan-phase-check { display: block; }
+    .scan-phase.done .scan-phase-dot { display: none; }
+
+    /* Results */
+    .scan-results { display: none; margin-top: 20px; }
+    .scan-results.show { display: block; }
+    .scan-result-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-radius: var(--radius-sm);
+      background: var(--surface-alt); margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .scan-result-label { color: var(--fg-secondary); }
+    .scan-result-value {
+      font-family: var(--font-mono); font-weight: 600; color: var(--fg);
+    }
+    .scan-result-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    }
+    .scan-result-badge.critical { background: #fde8e8; color: #c53030; }
+    .scan-result-badge.high { background: #fef0e4; color: #c05621; }
+    .scan-result-badge.medium { background: #fdf4e4; color: #D4870E; }
+    .scan-result-badge.low { background: #e6f7ef; color: #276749; }
+
+    .scan-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle);
+    }
+    .scan-footer-btn {
+      padding: 8px 16px; border-radius: var(--radius-xs);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      border: none; transition: all var(--transition-fast);
+    }
+    .scan-footer-btn.secondary {
+      background: var(--surface-alt); color: var(--fg-secondary);
+      border: 1px solid var(--border);
+    }
+    .scan-footer-btn.secondary:hover { background: var(--border); }
+    .scan-footer-btn.primary { background: var(--accent); color: #fff; }
+    .scan-footer-btn.primary:hover { background: var(--accent-hover); }
+
+    /* Button loading state */
+    .header-btn-primary.scanning { pointer-events: none; opacity: 0.7; }
+    .header-btn-primary.scanning::after {
+      content: ''; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: scanSpin 0.7s linear infinite;
+      margin-left: 4px;
+    }
   </style>
 </head>
 <body>
@@ -808,13 +1029,13 @@
       </div>
     </div>
     <div class="sidebar-divider sidebar-divider--full"></div>
-    <div class="sidebar-bottom-item sidebar-avatar-item">
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
       <div class="sidebar-avatar">B</div>
       <div class="sidebar-avatar-info">
         <div class="sidebar-avatar-name">Brooklyn</div>
         <div class="sidebar-avatar-role">Admin</div>
       </div>
-    </div>
+    </a>
   </div>
 </nav>
 
@@ -825,8 +1046,7 @@
         <p data-en="Monitor and detect botnet-infected assets across your infrastructure" data-vi="Giám sát và phát hiện các tài sản bị nhiễm botnet trong hạ tầng">Monitor and detect botnet-infected assets across your infrastructure</p>
       </div>
       <div class="page-header-right">
-        <button class="header-btn header-btn-secondary" data-en="Export" data-vi="Xuất">Export</button>
-        <button class="header-btn header-btn-primary" data-en="Scan Now" data-vi="Quét ngay">Scan Now</button>
+        <button class="header-btn header-btn-primary" id="scanNowBtn" data-en="Scan Now" data-vi="Quét ngay">Scan Now</button>
       </div>
     </div>
 
@@ -951,6 +1171,51 @@
     </div>
   </main>
 
+<!-- Scan Modal -->
+<div class="scan-overlay" id="scanModal">
+  <div class="scan-modal">
+    <div class="scan-header">
+      <h3 data-en="Scanning Botnet" data-vi="Đang quét Botnet">Scanning Botnet</h3>
+      <button class="scan-close" id="scanClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="scan-body">
+      <div class="scan-spinner-wrap">
+        <div class="scan-spinner" id="scanSpinner">
+          <div class="scan-spinner-ring"></div>
+          <div class="scan-spinner-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="scan-progress-wrap">
+        <div class="scan-progress-bar"><div class="scan-progress-fill" id="scanProgressFill"></div></div>
+        <div class="scan-progress-text">
+          <span id="scanPhaseText" data-en="Initializing..." data-vi="Đang khởi tạo...">Initializing...</span>
+          <span class="scan-progress-pct" id="scanPct">0%</span>
+        </div>
+      </div>
+      <div class="scan-phases" id="scanPhases">
+        <div class="scan-phase active" data-step="0"><div class="scan-phase-dot"></div><svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Initializing botnet scanner" data-vi="Khởi tạo bộ quét botnet">Initializing botnet scanner</span></div>
+        <div class="scan-phase" data-step="1"><div class="scan-phase-dot"></div><svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Scanning network traffic patterns" data-vi="Quét mẫu traffic mạng">Scanning network traffic patterns</span></div>
+        <div class="scan-phase" data-step="2"><div class="scan-phase-dot"></div><svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Checking C2 communication signatures" data-vi="Kiểm tra chữ ký giao tiếp C2">Checking C2 communication signatures</span></div>
+        <div class="scan-phase" data-step="3"><div class="scan-phase-dot"></div><svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Analyzing infection severity" data-vi="Phân tích mức độ nhiễm">Analyzing infection severity</span></div>
+        <div class="scan-phase" data-step="4"><div class="scan-phase-dot"></div><svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Generating botnet report" data-vi="Tạo báo cáo botnet">Generating botnet report</span></div>
+      </div>
+      <div class="scan-results" id="scanResults">
+        <div class="scan-result-row"><span class="scan-result-label" data-en="Assets scanned" data-vi="Tài sản đã quét">Assets scanned</span><span class="scan-result-value">248</span></div>
+        <div class="scan-result-row"><span class="scan-result-label" data-en="New infections found" data-vi="Lây nhiễm mới phát hiện">New infections found</span><span class="scan-result-value">+5</span></div>
+        <div class="scan-result-row"><span class="scan-result-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</span><span class="scan-result-badge critical">2</span></div>
+        <div class="scan-result-row"><span class="scan-result-label" data-en="Suspected" data-vi="Nghi ngờ">Suspected</span><span class="scan-result-badge medium">3</span></div>
+        <div class="scan-result-row"><span class="scan-result-label" data-en="Scan duration" data-vi="Thời gian quét">Scan duration</span><span class="scan-result-value">6.8s</span></div>
+      </div>
+      <div class="scan-footer" id="scanFooter" style="display:none;">
+        <button class="scan-footer-btn secondary" id="scanCloseBtn" data-en="Close" data-vi="Đóng">Close</button>
+        <button class="scan-footer-btn primary" id="scanViewBtn" data-en="View Results" data-vi="Xem kết quả">View Results</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <script>
     // Search filter
     var searchInput = document.getElementById('botnet-search-input');
@@ -1038,6 +1303,186 @@
     });
   }
 
+  var scanBtn = document.getElementById('scanNowBtn');
+  var scanOverlay = document.getElementById('scanModal');
+  var scanCloseBtn = document.getElementById('scanClose');
+  var scanCloseFooter = document.getElementById('scanCloseBtn');
+  var scanViewBtn = document.getElementById('scanViewBtn');
+  var scanFill = document.getElementById('scanProgressFill');
+  var scanPct = document.getElementById('scanPct');
+  var scanPhaseText = document.getElementById('scanPhaseText');
+  var scanPhases = document.querySelectorAll('.scan-phase');
+  var scanSpinner = document.getElementById('scanSpinner');
+  var scanResults = document.getElementById('scanResults');
+  var scanFooter = document.getElementById('scanFooter');
+
+  var scanPhaseLabels = [
+    { en: 'Initializing botnet scanner...', vi: 'Khởi tạo bộ quét botnet...' },
+    { en: 'Scanning network traffic patterns...', vi: 'Quét mẫu traffic mạng...' },
+    { en: 'Checking C2 communication signatures...', vi: 'Kiểm tra chữ ký giao tiếp C2...' },
+    { en: 'Analyzing infection severity...', vi: 'Phân tích mức độ nhiễm...' },
+    { en: 'Generating botnet report...', vi: 'Tạo báo cáo botnet...' }
+  ];
+  var scanPhasePcts = [0, 15, 45, 75, 95];
+
+  function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+  function openScan() {
+    scanOverlay.classList.add('active');
+    scanBtn.classList.add('scanning');
+    resetScan();
+    runScan();
+  }
+
+  function resetScan() {
+    scanFill.style.width = '0%';
+    scanFill.classList.remove('complete');
+    scanPct.textContent = '0%';
+    scanPct.classList.remove('complete');
+    scanSpinner.classList.remove('complete');
+    scanResults.classList.remove('show');
+    scanFooter.style.display = 'none';
+    scanPhases.forEach(function(p) { p.classList.remove('active', 'done'); });
+    scanPhases[0].classList.add('active');
+    scanPhaseText.textContent = isVI() ? scanPhaseLabels[0].vi : scanPhaseLabels[0].en;
+  }
+
+  function runScan() {
+    var current = 0;
+    var totalPhases = scanPhases.length;
+    function nextPhase() {
+      if (current >= totalPhases) { finishScan(); return; }
+      scanPhases.forEach(function(p) { p.classList.remove('active'); });
+      scanPhases[current].classList.add('active');
+      scanPhaseText.textContent = isVI() ? scanPhaseLabels[current].vi : scanPhaseLabels[current].en;
+      var targetPct = scanPhasePcts[current];
+      animateScanPct(targetPct, 600 + current * 200, function() {
+        scanPhases[current].classList.remove('active');
+        scanPhases[current].classList.add('done');
+        current++;
+        setTimeout(nextPhase, 300);
+      });
+    }
+    nextPhase();
+  }
+
+  function animateScanPct(target, duration, cb) {
+    var startPct = parseInt(scanPct.textContent) || 0;
+    var startTime = Date.now();
+    function tick() {
+      var elapsed = Date.now() - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var val = Math.round(startPct + (target - startPct) * eased);
+      scanPct.textContent = val + '%';
+      scanFill.style.width = val + '%';
+      if (progress < 1) requestAnimationFrame(tick);
+      else if (cb) cb();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function finishScan() {
+    scanPct.textContent = '100%';
+    scanPct.classList.add('complete');
+    scanFill.style.width = '100%';
+    scanFill.classList.add('complete');
+    scanSpinner.classList.add('complete');
+    scanPhaseText.textContent = isVI() ? 'Quét hoàn tất!' : 'Scan complete!';
+    scanResults.classList.add('show');
+    scanFooter.style.display = 'flex';
+    scanBtn.classList.remove('scanning');
+  }
+
+  function closeScan() {
+    scanOverlay.classList.remove('active');
+    scanBtn.classList.remove('scanning');
+  }
+
+  if (scanBtn) scanBtn.addEventListener('click', openScan);
+  if (scanCloseBtn) scanCloseBtn.addEventListener('click', closeScan);
+  if (scanCloseFooter) scanCloseFooter.addEventListener('click', closeScan);
+  if (scanViewBtn) scanViewBtn.addEventListener('click', closeScan);
+  if (scanOverlay) {
+    scanOverlay.addEventListener('click', function(e) { if (e.target === scanOverlay) closeScan(); });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && scanOverlay && scanOverlay.classList.contains('active')) closeScan();
+  });
+
+</script>
+
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+        </div>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Pro</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
+          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+        </div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Custom</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
+          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
 </script>
 
 </body></html>
