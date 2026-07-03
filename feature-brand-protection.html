@@ -552,104 +552,211 @@
     .page-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
     /* ── Summary Strip ─────────────────────────────────────── */
-    .brand-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .brand-summary { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .brand-summary-row { display: grid; gap: 12px; }
+    .brand-summary-row--top { grid-template-columns: 1fr; }
+    .brand-summary-row--bottom { grid-template-columns: repeat(4, 1fr); }
     .brand-summary-card {
-      position: relative; border-radius: var(--radius-lg); padding: 20px; overflow: hidden;
-      display: flex; align-items: center; gap: 14px;
-      transition: transform var(--transition-base), box-shadow var(--transition-base);
+      border-radius: var(--radius-md);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: box-shadow var(--transition-base), transform var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      color: #fff;
     }
     .brand-summary-card::after {
-      content: ''; position: absolute; top: -18px; right: -18px; width: 80px; height: 80px;
-      border-radius: 50%; background: rgba(255,255,255,0.08); pointer-events: none;
+      content: '';
+      position: absolute;
+      top: -16px; right: -16px;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      pointer-events: none;
     }
-    .brand-summary-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-    .bsc-domains { background: linear-gradient(135deg, #0167FF, #0052cc); color: #fff; }
-    .bsc-threats { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; }
-    .bsc-blocked { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
-    .bsc-resolved { background: linear-gradient(135deg, #059669, #047857); color: #fff; }
+    .brand-summary-card:hover {
+      transform: translateY(-1px);
+    }
+    .bsc-typo {
+      background: linear-gradient(135deg, var(--accent) 0%, #0a4fd4 100%);
+      box-shadow: 0 4px 16px rgba(1, 103, 255, 0.2);
+    }
+    .bsc-typo:hover { box-shadow: 0 8px 28px rgba(1, 103, 255, 0.3); }
+    .bsc-critical {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+    }
+    .bsc-critical:hover { box-shadow: 0 8px 28px rgba(220, 38, 38, 0.3); }
+    .bsc-high {
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
+      box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2);
+    }
+    .bsc-high:hover { box-shadow: 0 8px 28px rgba(234, 88, 12, 0.3); }
+    .bsc-medium {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.2);
+    }
+    .bsc-medium:hover { box-shadow: 0 8px 28px rgba(217, 119, 6, 0.3); }
+    .bsc-low {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
+    }
+    .bsc-low:hover { box-shadow: 0 8px 28px rgba(5, 150, 105, 0.3); }
+    .brand-summary-top { display: flex; align-items: center; justify-content: space-between; }
     .brand-summary-icon {
-      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-      background: rgba(255,255,255,0.18); display: grid; place-items: center;
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,0.18); color: #fff;
     }
-    .brand-summary-icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; }
-    .brand-summary-body { flex: 1; min-width: 0; }
-    .brand-summary-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; font-weight: 500; }
-    .brand-summary-value { font-family: var(--font-mono); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-top: 2px; }
-    .brand-summary-meta { font-size: 11px; opacity: 0.75; margin-top: 4px; font-weight: 500; }
-    .brand-summary-trend { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.8); white-space: nowrap; flex-shrink: 0; }
+    .brand-summary-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .brand-summary-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: #fff; }
+    .brand-summary-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .brand-summary-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
+    .brand-summary-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); background: #fff; width: 0; }
+    .bsc-typo.animated .brand-summary-bar-fill { width: 100%; }
+    .bsc-critical.animated .brand-summary-bar-fill { width: 2.5%; }
+    .bsc-high.animated .brand-summary-bar-fill { width: 0%; }
+    .bsc-medium.animated .brand-summary-bar-fill { width: 0.04%; }
+    .bsc-low.animated .brand-summary-bar-fill { width: 32.1%; }
+    .brand-summary-pct { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.6); text-align: right; }
 
-    /* ── Threat Grid ───────────────────────────────────────── */
-    .brand-threats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    .threat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .threat-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .threat-card-header h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
-    .threat-card-header .count { font-family: var(--font-mono); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--surface-alt); color: var(--muted); }
-    .threat-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
-    .threat-row:last-child { border-bottom: none; }
-    .threat-row:hover { background: var(--surface-alt); }
-    .threat-info { display: flex; align-items: center; gap: 10px; }
-    .threat-type-icon { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
-    .threat-domain { font-size: 13px; font-weight: 500; font-family: var(--font-mono); }
-    .threat-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
-    .threat-severity { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .sev-critical { background: var(--critical-soft); color: var(--critical); }
-    .sev-high { background: var(--high-soft); color: var(--high); }
-    .sev-medium { background: var(--amber-soft); color: var(--amber); }
-    .sev-low { background: var(--low-soft); color: var(--low); }
-
-    /* ── Monitored Domains ─────────────────────────────────── */
-    .domains-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .domains-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .domains-header h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+    /* ── Header Buttons ──────────────────────────────────────── */
     .header-btn { padding: 7px 14px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font-body); transition: all var(--transition-fast); border: none; display: inline-flex; align-items: center; gap: 6px; }
     .header-btn-secondary { border: 1px solid var(--border); background: var(--surface); color: var(--fg-secondary); }
     .header-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
     .header-btn-primary { border: 1px solid var(--accent); background: var(--accent); color: #fff; font-weight: 600; }
     .header-btn-primary:hover { background: var(--accent-hover); }
-    .domain-list-header { display: grid; grid-template-columns: 2fr 100px 110px 100px 90px 1fr; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
-    .domain-row { display: grid; grid-template-columns: 2fr 100px 110px 100px 90px 1fr; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
-    .domain-row:last-child { border-bottom: none; }
-    .domain-row:hover { background: var(--surface-alt); }
-    .domain-name-col { display: flex; align-items: center; gap: 10px; }
-    .domain-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .domain-status-dot.clean { background: var(--low); box-shadow: 0 0 6px rgba(39,103,73,0.4); }
-    .domain-status-dot.warning { background: var(--amber); box-shadow: 0 0 6px rgba(212,135,14,0.4); }
-    .domain-status-dot.threat { background: var(--critical); box-shadow: 0 0 6px rgba(197,48,48,0.4); }
-    .domain-text { font-size: 13px; font-weight: 500; font-family: var(--font-mono); }
-    .domain-meta-text { font-size: 11px; color: var(--muted); }
-    .domain-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
-    .domain-last-scan { font-size: 11px; color: var(--muted); }
-    .domain-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .badge-clean { background: var(--low-soft); color: var(--low); }
-    .badge-warning { background: var(--amber-soft); color: var(--amber); }
-    .badge-threat { background: var(--critical-soft); color: var(--critical); }
-    .badge-up { background: var(--low-soft); color: var(--low); }
-    .badge-down { background: var(--critical-soft); color: var(--critical); }
-    .badge-pending { background: var(--amber-soft); color: var(--amber); }
-    .domain-message { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
 
-    /* ── SSL Certificates ──────────────────────────────────── */
-    .ssl-section { margin-top: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .ssl-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .ssl-header h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
-    .ssl-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .ssl-row:last-child { border-bottom: none; }
-    .ssl-row:hover { background: var(--surface-alt); }
-    .ssl-info { display: flex; align-items: center; gap: 10px; }
-    .ssl-icon { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
-    .ssl-domain { font-size: 13px; font-weight: 500; font-family: var(--font-mono); }
-    .ssl-issuer { font-size: 11px; color: var(--muted); }
-    .ssl-expiry { font-size: 12px; font-weight: 500; }
-    .ssl-days { font-family: var(--font-mono); font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
-    .ssl-ok { background: var(--low-soft); color: var(--low); }
-    .ssl-warn { background: var(--amber-soft); color: var(--amber); }
-    .ssl-expired { background: var(--critical-soft); color: var(--critical); }
+    /* ── Search + Filter Bar ────────────────────────────────── */
+    .bp-search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .bp-search-input { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; transition: border-color var(--transition-fast); }
+    .bp-search-input:focus-within { border-color: var(--accent); }
+    .bp-search-input svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+    .bp-search-input input { border: none; outline: none; background: transparent; font-size: 13px; color: var(--fg); width: 100%; font-family: var(--font-body); }
+    .bp-search-input input::placeholder { color: var(--muted); }
+    .bp-filter-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--fg); cursor: pointer; transition: all var(--transition-fast); flex-shrink: 0; }
+    .bp-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    @media (max-width: 1200px) {      .brand-summary { grid-template-columns: repeat(2, 1fr); }
-      .brand-threats { grid-template-columns: 1fr; }
-      .domain-list-header, .domain-row { grid-template-columns: 2fr 90px 100px 90px 80px; }
-      .domain-list-header > *:nth-child(6), .domain-row > *:nth-child(6) { display: none; }
+    /* ── Asset Table ────────────────────────────────────────── */
+    .bp-table-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .bp-table-header { display: grid; grid-template-columns: 2fr 2fr 1.2fr 100px; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
+    .bp-table-row { display: grid; grid-template-columns: 2fr 2fr 1.2fr 100px; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
+    .bp-table-row:last-child { border-bottom: none; }
+    .bp-table-row:hover { background: var(--surface-alt); }
+    .bp-asset-name { font-size: 13px; font-weight: 500; font-family: var(--font-mono); }
+    .bp-similarity { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+    .bp-sev-item { display: flex; align-items: center; gap: 4px; }
+    .bp-sev-icon { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+    .bp-sev-icon svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+    .bp-sev-critical .bp-sev-icon { background: var(--critical-soft); color: var(--critical); }
+    .bp-sev-high .bp-sev-icon { background: var(--high-soft); color: var(--high); }
+    .bp-sev-medium .bp-sev-icon { background: var(--amber-soft); color: var(--amber); }
+    .bp-sev-low .bp-sev-icon { background: var(--low-soft); color: var(--low); }
+    .bp-sev-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+    .bp-last-update { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+    .bp-scanning { display: flex; justify-content: center; }
+
+    /* ── Detail Subpage ────────────────────────────────────── */
+    .bp-detail-screen { display: none; }
+    .bp-detail-screen.active { display: block; }
+    #bp-grid-screen { display: block; }
+    #bp-grid-screen.hidden { display: none; }
+
+    .bp-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+    .bp-detail-header-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .bp-detail-back { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: var(--muted); transition: all 0.15s; }
+    .bp-detail-back:hover { border-color: var(--accent); color: var(--accent); }
+    .bp-detail-back svg { width: 16px; height: 16px; }
+    .bp-detail-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; }
+    .bp-detail-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .bp-detail-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .bp-detail-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .bp-detail-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+    .bp-detail-stat-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+    .bp-detail-stat-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .bp-detail-table-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .bp-detail-table-header { display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.2fr 1fr; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
+    .bp-detail-table-row { display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.2fr 1fr; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
+    .bp-detail-table-row:last-child { border-bottom: none; }
+    .bp-detail-table-row:hover { background: var(--surface-alt); }
+    .bp-detail-typo-domain { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+    .bp-detail-similarity { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+    .bp-detail-web-title { font-size: 12px; color: var(--fg-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bp-detail-ip-cell { display: flex; align-items: center; gap: 6px; }
+    .bp-detail-ip { font-family: var(--font-mono); font-size: 12px; color: var(--fg-secondary); }
+    .bp-detail-ip-badge { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 600; color: var(--muted); font-family: var(--font-mono); }
+    .bp-detail-last-update { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+    .bp-detail-typo-domain.clickable { cursor: pointer; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .bp-detail-typo-domain.clickable:hover { color: var(--accent-hover); }
+
+    /* Typo Detail Modal */
+    .bp-typo-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15,22,41,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.2s; }
+    .bp-typo-overlay.active { display: flex; align-items: center; justify-content: center; opacity: 1; }
+    .bp-typo-modal { background: var(--surface); border-radius: var(--radius-lg); box-shadow: 0 24px 64px rgba(15,22,41,0.18); width: 100%; max-width: 580px; max-height: 85vh; overflow-y: auto; position: relative; }
+    .bp-typo-header { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px 0; }
+    .bp-typo-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg); }
+    .bp-typo-close { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--muted); transition: all 0.15s; flex-shrink: 0; }
+    .bp-typo-close:hover { border-color: var(--critical); color: var(--critical); background: var(--critical-soft); }
+    .bp-typo-close svg { width: 18px; height: 18px; }
+    .bp-typo-body { padding: 16px 28px 28px; }
+    .bp-typo-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-subtle); gap: 20px; }
+    .bp-typo-row:last-child { border-bottom: none; }
+    .bp-typo-row-label { font-size: 14px; color: var(--fg-secondary); font-weight: 400; flex-shrink: 0; min-width: 140px; }
+    .bp-typo-row-value { font-size: 14px; color: var(--fg); font-weight: 600; text-align: right; word-break: break-all; line-height: 1.6; }
+    .bp-typo-row-value.mono { font-family: var(--font-mono); font-size: 13px; }
+    .bp-typo-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    .bp-typo-badge.critical { background: #fee2e2; color: #dc2626; }
+    .bp-typo-badge.high { background: #ffedd5; color: #ea580c; }
+    .bp-typo-badge.medium { background: #fef3c7; color: #d97706; }
+    .bp-typo-badge.low { background: #dcfce7; color: #16a34a; }
+    .bp-typo-badge.safe { background: #dbeafe; color: #2563eb; }
+
+    @media (max-width: 1200px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 2fr 1fr 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(3), .bp-detail-table-row > *:nth-child(3) { display: none; }
+      .bp-detail-summary { grid-template-columns: repeat(3, 1fr); }
     }
+    @media (max-width: 768px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 1.5fr 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(4), .bp-detail-table-row > *:nth-child(4),
+      .bp-detail-table-header > *:nth-child(5), .bp-detail-table-row > *:nth-child(5) { display: none; }
+      .bp-detail-summary { grid-template-columns: 1fr 1fr; }
+      .bp-typo-modal { max-width: 100%; margin: 12px; max-height: 90vh; }
+      .bp-typo-title { font-size: 18px; }
+    }
+    @media (max-width: 480px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(3), .bp-detail-table-row > *:nth-child(3) { display: none; }
+      .bp-detail-summary { grid-template-columns: 1fr; }
+      .bp-typo-modal { margin: 8px; }
+      .bp-typo-header { padding: 16px 16px 0; }
+      .bp-typo-body { padding: 8px 16px 20px; }
+      .bp-typo-title { font-size: 16px; }
+      .bp-typo-row { padding: 12px 0; }
+      .bp-typo-row-label { min-width: 120px; font-size: 13px; }
+      .bp-typo-row-value { font-size: 13px; }
+    }
+
+    /* ── Toggle Switch ──────────────────────────────────────── */
+    .toggle-switch { position: relative; width: 36px; height: 20px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 20px; transition: background var(--transition-fast); }
+    .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: transform var(--transition-fast); }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    /* ── Pagination ─────────────────────────────────────────── */
+    .bp-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--border-subtle); font-size: 12px; color: var(--muted); }
+    .bp-pagination select { padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius-xs); font-size: 12px; color: var(--fg); background: var(--surface); cursor: pointer; }
+    .bp-pagination-btns { display: flex; gap: 4px; }
+    .bp-pagination-btns button { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: var(--radius-xs); background: var(--surface); color: var(--fg-secondary); cursor: pointer; display: grid; place-items: center; font-size: 12px; transition: all var(--transition-fast); }
+    .bp-pagination-btns button:hover { border-color: var(--accent); color: var(--accent); }
+    .bp-pagination-btns button:disabled { opacity: 0.35; cursor: default; }
+
     /* ── Main Container ────────────────────────────────────── */
     .main {
       margin-left: 240px;
@@ -661,10 +768,9 @@
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 1200px) {
       .main { margin-left: 240px; width: calc(100% - 240px); padding: 16px 20px 32px; }
-      .brand-summary { grid-template-columns: repeat(2, 1fr); }
-      .domain-list-header, .domain-row { grid-template-columns: 1fr 120px 100px 120px; }
-      .domain-list-header > *:nth-child(5), .domain-list-header > *:nth-child(6),
-      .domain-row > *:nth-child(5), .domain-row > *:nth-child(6) { display: none; }
+      .brand-summary-row--bottom { grid-template-columns: repeat(4, 1fr); }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1.5fr 1fr 100px; }
+      .bp-table-header > *:nth-child(4), .bp-table-row > *:nth-child(4) { display: none; }
     }
     @media (max-width: 768px) {
       .sidebar { width: 60px; }
@@ -685,17 +791,17 @@
 
       .sidebar .sidebar-toggle-btn { display: none; }
       .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }
-      .brand-summary { grid-template-columns: 1fr; }
-      .domain-list-header, .domain-row { grid-template-columns: 1fr 80px 80px; }
-      .domain-list-header > *:nth-child(4), .domain-row > *:nth-child(4) { display: none; }
+      .brand-summary-row--bottom { grid-template-columns: repeat(2, 1fr); }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1.5fr 1fr 100px; }
+      .bp-table-header > *:nth-child(2), .bp-table-row > *:nth-child(2) { display: none; }
     }
 
     @media (max-width: 480px) {
       .main { padding: 12px 12px 32px; }
-      .brand-summary { grid-template-columns: 1fr; }
-      .domain-list-header, .domain-row { grid-template-columns: 1fr 80px; }
-      .domain-list-header > *:nth-child(3), .domain-row > *:nth-child(3),
-      .domain-list-header > *:nth-child(4), .domain-row > *:nth-child(4) { display: none; }
+      .brand-summary-row--bottom { grid-template-columns: 1fr 1fr; }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1fr 80px; }
+      .bp-table-header > *:nth-child(3), .bp-table-row > *:nth-child(3),
+      .bp-table-header > *:nth-child(4), .bp-table-row > *:nth-child(4) { display: none; }
     }
   
     /* ── Pricing Modal ──────────────────────────────────────── */
@@ -708,15 +814,17 @@
       transition: opacity 0.25s ease;
     }
     .pricing-overlay.active { opacity: 1; pointer-events: auto; }
-    .pricing-modal {
+        .pricing-modal {
       background: var(--surface);
       border-radius: var(--radius-xl);
-      width: 90%; max-width: 880px;
+      width: 95%; max-width: 1200px;
       padding: 40px 36px 36px;
       position: relative;
       transform: translateY(20px) scale(0.97);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
     .pricing-close {
@@ -731,30 +839,67 @@
     .pricing-header { text-align: center; margin-bottom: 32px; }
     .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
     .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
     .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
     .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
-    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
     .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
-    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
-    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
-    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-card:nth-child(2) .pricing-badge { background: #e0f2fe; color: #0369a1; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(4) .pricing-badge { background: #fef3c7; color: #92400e; }
+    .pricing-card:nth-child(5) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
     .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
-    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-value { font: 700 32px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
     .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
     .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
     .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
     .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
-    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
     .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
-    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
     .pricing-btn-primary { background: var(--fg); color: #fff; }
     .pricing-btn-primary:hover { background: #1e293b; }
     .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
     .pricing-btn-secondary:hover { background: var(--border); }
-    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -912,6 +1057,7 @@
 
   <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
   <main class="main">
+  <div id="bp-grid-screen">
     <div class="page-header reveal">
       <div class="page-header-left">
         <h1 data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</h1>
@@ -922,211 +1068,281 @@
       </div>
     </div>
 
-    <!-- Summary -->
+        <!-- Summary -->
     <div class="brand-summary reveal reveal-delay-1">
-      <div class="brand-summary-card bsc-domains">
-        <div class="brand-summary-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <div class="brand-summary-body">
-          <div class="brand-summary-label" data-en="Monitored Domains" data-vi="Tên miền giám sát">Monitored Domains</div>
-          <div class="brand-summary-value">12</div>
-        </div>
-        <span class="brand-summary-trend">+2 new this month</span>
-      </div>
-      <div class="brand-summary-card bsc-threats">
-        <div class="brand-summary-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <div class="brand-summary-body">
-          <div class="brand-summary-label" data-en="Active Threats" data-vi="Mối đe dọa hoạt động">Active Threats</div>
-          <div class="brand-summary-value">7</div>
-        </div>
-        <span class="brand-summary-trend">+3 critical</span>
-      </div>
-      <div class="brand-summary-card bsc-blocked">
-        <div class="brand-summary-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="brand-summary-body">
-          <div class="brand-summary-label" data-en="Blocked" data-vi="Đã chặn">Blocked</div>
-          <div class="brand-summary-value">23</div>
-        </div>
-        <span class="brand-summary-trend">This month</span>
-      </div>
-      <div class="brand-summary-card bsc-resolved">
-        <div class="brand-summary-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="brand-summary-body">
-          <div class="brand-summary-label" data-en="Resolved" data-vi="Đã giải quyết">Resolved</div>
-          <div class="brand-summary-value">156</div>
-        </div>
-        <span class="brand-summary-trend">All time</span>
-      </div>
-    </div>
-
-    <!-- Threats Grid -->
-    <div class="brand-threats reveal reveal-delay-2">
-      <!-- Phishing Threats -->
-      <div class="threat-card">
-        <div class="threat-card-header">
-          <h3 data-en="Phishing & Impersonation" data-vi="Lừa đảo & Giả mạo">Phishing & Impersonation</h3>
-          <span class="count">4</span>
-        </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--critical-soft);color:var(--critical);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-            <div><div class="threat-domain">g-skywatch.com</div><div class="threat-meta">Credential harvesting · SSL active</div></div>
+      <div class="brand-summary-row brand-summary-row--top">
+        <div class="brand-summary-card bsc-typo">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="brand-summary-value">2,621</div>
           </div>
-          <span class="threat-severity sev-critical">CRITICAL</span>
-        </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--high-soft);color:var(--high);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-            <div><div class="threat-domain">gskywatch-login.net</div><div class="threat-meta">Login page clone · 3 days old</div></div>
-          </div>
-          <span class="threat-severity sev-high">HIGH</span>
-        </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--amber-soft);color:var(--amber);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-            <div><div class="threat-domain">gskywatch-secure.com</div><div class="threat-meta">Typosquatting · SSL pending</div></div>
-          </div>
-          <span class="threat-severity sev-medium">MEDIUM</span>
-        </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--amber-soft);color:var(--amber);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-            <div><div class="threat-domain">gskywatch.io-login.ru</div><div class="threat-meta">Subdomain phishing · Recently registered</div></div>
-          </div>
-          <span class="threat-severity sev-medium">MEDIUM</span>
+          <div class="brand-summary-label" data-en="Typo registered" data-vi="Nhập sai đã đăng ký">Typo registered</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">100%</div>
         </div>
       </div>
-
-      <!-- Domain Spoofing -->
-      <div class="threat-card">
-        <div class="threat-card-header">
-          <h3 data-en="Domain Spoofing & Squatting" data-vi="Giả mạo tên miền & chiếm dụng">Domain Spoofing & Squatting</h3>
-          <span class="count">3</span>
-        </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--high-soft);color:var(--high);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-            <div><div class="threat-domain">gskywatch.co</div><div class="threat-meta">Similar domain · Active website</div></div>
+      <div class="brand-summary-row brand-summary-row--bottom">
+        <div class="brand-summary-card bsc-critical">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="brand-summary-value">65</div>
           </div>
-          <span class="threat-severity sev-high">HIGH</span>
+          <div class="brand-summary-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">2.5%</div>
         </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--amber-soft);color:var(--amber);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-            <div><div class="threat-domain">g-skywatch.org</div><div class="threat-meta">Parked domain · For sale</div></div>
+        <div class="brand-summary-card bsc-high">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="brand-summary-value">0</div>
           </div>
-          <span class="threat-severity sev-low">LOW</span>
+          <div class="brand-summary-label" data-en="High" data-vi="Cao">High</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">0%</div>
         </div>
-        <div class="threat-row">
-          <div class="threat-info">
-            <div class="threat-type-icon" style="background:var(--amber-soft);color:var(--amber);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-            <div><div class="threat-domain">gskywatchapp.com</div><div class="threat-meta">Cybersquatting · No content</div></div>
+        <div class="brand-summary-card bsc-medium">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <div class="brand-summary-value">1</div>
           </div>
-          <span class="threat-severity sev-low">LOW</span>
+          <div class="brand-summary-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">0.04%</div>
+        </div>
+        <div class="brand-summary-card bsc-low">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="brand-summary-value">841</div>
+          </div>
+          <div class="brand-summary-label" data-en="Low" data-vi="Thấp">Low</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">32.1%</div>
         </div>
       </div>
     </div>
 
-    <!-- Monitored Domains -->
-    <div class="domains-section reveal reveal-delay-3">
-      <div class="domains-header">
-        <h3 data-en="Monitored Domains" data-vi="Tên miền được giám sát">Monitored Domains</h3>
+    <!-- Search + Filter -->
+    <div class="bp-search-bar reveal reveal-delay-2">
+      <div class="bp-search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search assets..." data-vi-placeholder="Tìm kiếm tài sản...">
       </div>
-      <div class="domain-list-header">
-        <span data-en="Domain" data-vi="Tên miền">Domain</span>
-        <span data-en="Threats Found" data-vi="Mối đe dọa tìm thấy">Threats Found</span>
-        <span data-en="Last Scan" data-vi="Quét lần cuối">Last Scan</span>
-        <span data-en="SSL Status" data-vi="Trạng thái SSL">SSL Status</span>
-        <span data-en="Status" data-vi="Trạng thái">Status</span>
-        <span data-en="Message" data-vi="Tin nhắn">Message</span>
+      <button class="bp-filter-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span data-en="Filter" data-vi="Lọc">Filter</span>
+      </button>
+    </div>
+
+    <!-- Asset Table -->
+    <div class="bp-table-section reveal reveal-delay-3">
+      <div class="bp-table-header">
+        <span data-en="Asset" data-vi="Tài sản">Asset</span>
+        <span data-en="Web Similarity" data-vi="Tương đồng web">Web Similarity</span>
+        <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
+        <span data-en="Scanning" data-vi="Đang quét">Scanning</span>
       </div>
-      <div class="domain-row">
-        <div class="domain-name-col"><div class="domain-status-dot clean"></div><div><div class="domain-text">gskywatch.io</div><div class="domain-meta-text">Primary domain</div></div></div>
-        <div class="domain-value">0</div>
-        <div class="domain-last-scan">5 min ago</div>
-        <div><span class="domain-badge badge-clean">VALID</span></div>
-        <div><span class="domain-badge badge-up">UP</span></div>
-        <div class="domain-message">All systems operational</div>
+            <div class="bp-table-row">
+        <div class="bp-asset-name">emm.trin.net</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">3</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">12</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
-      <div class="domain-row">
-        <div class="domain-name-col"><div class="domain-status-dot clean"></div><div><div class="domain-text">api.gskywatch.io</div><div class="domain-meta-text">API endpoint</div></div></div>
-        <div class="domain-value">0</div>
-        <div class="domain-last-scan">5 min ago</div>
-        <div><span class="domain-badge badge-clean">VALID</span></div>
-        <div><span class="domain-badge badge-up">UP</span></div>
-        <div class="domain-message">API responding normally</div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">powerapps.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">8</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
-      <div class="domain-row">
-        <div class="domain-name-col"><div class="domain-status-dot warning"></div><div><div class="domain-text">g-skywatch.com</div><div class="domain-meta-text">Lookalike — phishing detected</div></div></div>
-        <div class="domain-value" style="color:var(--critical);">2</div>
-        <div class="domain-last-scan">12 min ago</div>
-        <div><span class="domain-badge badge-warning">EXPIRING</span></div>
-        <div><span class="domain-badge badge-down">DOWN</span></div>
-        <div class="domain-message">Phishing site active — takedown requested</div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">pmp.oneweb.net</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">5</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
-      <div class="domain-row">
-        <div class="domain-name-col"><div class="domain-status-dot threat"></div><div><div class="domain-text">gskywatch-login.net</div><div class="domain-meta-text">Phishing — credential harvesting</div></div></div>
-        <div class="domain-value" style="color:var(--critical);">3</div>
-        <div class="domain-last-scan">8 min ago</div>
-        <div><span class="domain-badge badge-clean">VALID</span></div>
-        <div><span class="domain-badge badge-pending">PENDING</span></div>
-        <div class="domain-message">Under investigation — awaiting takedown</div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">testwebservices.hawaiianairlines.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">15</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
-      <div class="domain-row">
-        <div class="domain-name-col"><div class="domain-status-dot clean"></div><div><div class="domain-text">dashboard.gskywatch.io</div><div class="domain-meta-text">Dashboard subdomain</div></div></div>
-        <div class="domain-value">0</div>
-        <div class="domain-last-scan">3 min ago</div>
-        <div><span class="domain-badge badge-clean">VALID</span></div>
-        <div><span class="domain-badge badge-up">UP</span></div>
-        <div class="domain-message">Dashboard accessible — no issues</div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">annualmeeting2022.globe.gov</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">3</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">hawaiianairlines.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">18</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">142</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">mdlive.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">5</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">34</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">digitalwpc.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">7</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">sessions.digitalwpc.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">4</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row">
+        <div class="bp-asset-name">staging-consulting-covid19.euromonitor.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+<div class="bp-pagination">
+        <span>10 rows per page</span>
+        <select><option>10</option><option>25</option><option>50</option></select>
+        <span>1-10 of 10</span>
+        <div class="bp-pagination-btns">
+          <button disabled>&lt;</button>
+          <button disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /bp-grid-screen -->
+
+  <!-- ═══════════════════ DETAIL SUBPAGE ═══════════════════ -->
+  <div id="bp-detail-screen" class="bp-detail-screen">
+    <div class="bp-detail-header">
+      <div class="bp-detail-header-left">
+        <button class="bp-detail-back" onclick="showBpGrid()" title="Back to list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div>
+          <div class="bp-detail-title" id="bp-detail-asset-name">emm.trin.net</div>
+          <div class="bp-detail-subtitle" data-en="Cloned domains detected for this asset" data-vi="Các tên miền sao chép được phát hiện cho tài sản này">Cloned domains detected for this asset</div>
+        </div>
+      </div>
+      <div class="bp-detail-right">
+        <button class="header-btn header-btn-secondary" onclick="showBpGrid()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span data-en="Refresh" data-vi="Làm mới">Refresh</span>
+        </button>
+        <button class="header-btn header-btn-primary">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-en="Export CSV" data-vi="Xuất CSV">Export CSV</span>
+        </button>
       </div>
     </div>
 
-    <!-- SSL Certificates -->
-    <div class="ssl-section reveal reveal-delay-4">
-      <div class="ssl-header">
-        <h3 data-en="SSL Certificate Status" data-vi="Trạng thái chứng chỉ SSL">SSL Certificate Status</h3>
+    <!-- Summary Cards -->
+    <div class="bp-detail-summary">
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--critical);">3</div>
+        <div class="bp-detail-stat-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
       </div>
-      <div class="ssl-row">
-        <div class="ssl-info">
-          <div class="ssl-icon" style="background:var(--low-soft);color:var(--low);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div><div class="ssl-domain">gskywatch.io</div><div class="ssl-issuer">Let's Encrypt · RSA 2048</div></div>
-        </div>
-        <div class="ssl-expiry">Exp: Sep 14, 2026</div>
-        <span class="ssl-days ssl-ok">82 days</span>
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--amber);">1</div>
+        <div class="bp-detail-stat-label" data-en="Medium" data-vi="Trung bình">Medium</div>
       </div>
-      <div class="ssl-row">
-        <div class="ssl-info">
-          <div class="ssl-icon" style="background:var(--low-soft);color:var(--low);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div><div class="ssl-domain">api.gskywatch.io</div><div class="ssl-issuer">DigiCert · RSA 4096</div></div>
-        </div>
-        <div class="ssl-expiry">Exp: Dec 3, 2026</div>
-        <span class="ssl-days ssl-ok">161 days</span>
-      </div>
-      <div class="ssl-row">
-        <div class="ssl-info">
-          <div class="ssl-icon" style="background:var(--amber-soft);color:var(--amber);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <div><div class="ssl-domain">dashboard.gskywatch.io</div><div class="ssl-issuer">Let's Encrypt · ECDSA P-256</div></div>
-        </div>
-        <div class="ssl-expiry">Exp: Jul 8, 2026</div>
-        <span class="ssl-days ssl-warn">13 days</span>
-      </div>
-      <div class="ssl-row">
-        <div class="ssl-info">
-          <div class="ssl-icon" style="background:var(--low-soft);color:var(--low);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div><div class="ssl-domain">auth.gskywatch.io</div><div class="ssl-issuer">Cloudflare · RSA 2048</div></div>
-        </div>
-        <div class="ssl-expiry">Exp: Nov 22, 2026</div>
-        <span class="ssl-days ssl-ok">150 days</span>
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--low);">12</div>
+        <div class="bp-detail-stat-label" data-en="Low" data-vi="Thấp">Low</div>
       </div>
     </div>
+
+    <!-- Search -->
+    <div class="bp-search-bar">
+      <div class="bp-search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search cloned domains..." data-vi-placeholder="Tìm kiếm tên miền sao chép..." id="bp-detail-search">
+      </div>
+    </div>
+
+    <!-- Cloned Domains Table -->
+    <div class="bp-detail-table-section">
+      <div class="bp-detail-table-header">
+        <span data-en="Typo" data-vi="Nhập sai">Typo</span>
+        <span data-en="Web Similarity" data-vi="Tương đồng web">Web Similarity</span>
+        <span data-en="Web Title" data-vi="Tiêu đề web">Web Title</span>
+        <span data-en="IP Address" data-vi="Địa chỉ IP">IP Address</span>
+        <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
+      </div>
+      <div id="bp-detail-rows"></div>
+      <div class="bp-pagination">
+        <span data-en="10 rows per page" data-vi="10 dòng mỗi trang">10 rows per page</span>
+        <select id="bp-detail-page-size"><option>10</option><option>25</option><option>50</option></select>
+        <span id="bp-detail-pagination-info">1-10 of 10</span>
+        <div class="bp-pagination-btns">
+          <button id="bp-detail-prev" disabled>&lt;</button>
+          <button id="bp-detail-next" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /bp-detail-screen -->
+
   </main>
 
   <script>
@@ -1194,6 +1410,19 @@
   }
 
 </script>
+<!-- Typo Detail Modal -->
+<div class="bp-typo-overlay" id="bpTypoModal">
+  <div class="bp-typo-modal">
+    <div class="bp-typo-header">
+      <div class="bp-typo-title" id="bpTypoTitle">emm.trin.net</div>
+      <button class="bp-typo-close" onclick="hideTypoDetail()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="bp-typo-body" id="bpTypoBody"></div>
+  </div>
+</div>
+
 <!-- Pricing Modal -->
 <div class="pricing-overlay" id="pricingModal">
   <div class="pricing-modal">
@@ -1205,56 +1434,344 @@
       <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
     </div>
     <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Free</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span></div>
+          <div class="pricing-desc">For individuals & trial users</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>1 Domain</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> </li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>3-month trial</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Get started</button>
+        </div>
+      </div>
+      <!-- Basic -->
       <div class="pricing-card">
         <div class="pricing-card-top">
           <span class="pricing-badge">Basic</span>
-          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
-          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">1,999</span></div>
+          <div class="pricing-desc">For small & medium businesses</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Domains / 5 IPs / 30 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
         </div>
       </div>
+      <!-- Premium -->
       <div class="pricing-card featured">
         <div class="pricing-card-top">
-          <span class="pricing-badge">Pro</span>
-          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
-          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+          <span class="pricing-badge">Premium</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">3,999</span></div>
+          <div class="pricing-desc">For companies & government agencies</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>10 Domains / 10 IPs / 50 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+          <button class="pricing-btn pricing-btn-primary">Contact us</button>
         </div>
       </div>
+      <!-- Professional -->
       <div class="pricing-card">
         <div class="pricing-card-top">
-          <span class="pricing-badge">Custom</span>
-          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
-          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+          <span class="pricing-badge">Professional</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">7,999</span></div>
+          <div class="pricing-desc">For enterprises & conglomerates</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>20 Domains / 20 IPs / 80 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Advanced</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:24px;">Contact us</span></div>
+          <div class="pricing-desc">For specialized systems needing custom config</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Custom scope &amp; duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>IoC intelligence feed</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+setTimeout(function(){
+  document.querySelectorAll('.brand-summary-card').forEach(function(card){ card.classList.add('animated'); });
+});
+
+// ── Brand Protection Detail Subpage ──
+var bpDetailData = {
+  'emm.trin.net': [
+    { typo: 'emm.trin.net', similarity: '98%', title: 'EMM Trin - Login Portal', ip: '192.168.1.45', count: 2, update: '2026-06-29' },
+    { typo: 'emm.tuin.net', similarity: '96%', title: 'EMM Trin - Auth', ip: '10.0.0.12', count: 1, update: '2026-06-28' },
+    { typo: 'emm.frin.net', similarity: '94%', title: 'EMM Trin Portal', ip: '172.16.0.8', count: 1, update: '2026-06-27' },
+    { typo: 'emm.thin.net', similarity: '92%', title: 'EMM Trin - Sign In', ip: '192.168.2.100', count: 3, update: '2026-06-29' },
+    { typo: 'emm.trrn.net', similarity: '90%', title: 'EMM Trin Login', ip: '10.0.1.55', count: 1, update: '2026-06-26' },
+    { typo: 'emm.srin.net', similarity: '88%', title: 'EMM Trin - Portal', ip: '172.16.1.22', count: 2, update: '2026-06-28' },
+    { typo: 'emm.trid.net', similarity: '86%', title: 'EMM Trin Account', ip: '192.168.3.77', count: 1, update: '2026-06-25' },
+    { typo: 'emm.trie.net', similarity: '84%', title: 'EMM Trin - Access', ip: '10.0.2.33', count: 1, update: '2026-06-27' },
+    { typo: 'emm.grin.net', similarity: '82%', title: 'EMM Trin Dashboard', ip: '172.16.2.11', count: 2, update: '2026-06-26' },
+    { typo: 'emm.trun.net', similarity: '80%', title: 'EMM Trin - Portal', ip: '192.168.4.99', count: 1, update: '2026-06-25' }
+  ],
+  'powerapps.com': [
+    { typo: 'pow3rapps.com', similarity: '97%', title: 'Power Apps - Login', ip: '203.0.113.5', count: 1, update: '2026-06-30' },
+    { typo: 'powerappss.com', similarity: '95%', title: 'Power Apps Portal', ip: '198.51.100.12', count: 2, update: '2026-06-29' },
+    { typo: 'power-apps.com', similarity: '93%', title: 'Power Apps - Sign In', ip: '203.0.113.8', count: 1, update: '2026-06-28' },
+    { typo: 'powerappps.com', similarity: '91%', title: 'Power Apps Login', ip: '198.51.100.20', count: 1, update: '2026-06-30' },
+    { typo: 'powwerapps.com', similarity: '89%', title: 'Power Apps Access', ip: '203.0.113.15', count: 2, update: '2026-06-29' },
+    { typo: 'powerappss.com', similarity: '87%', title: 'Power Apps Auth', ip: '198.51.100.30', count: 1, update: '2026-06-28' },
+    { typo: 'powerappss.com', similarity: '85%', title: 'Power Apps Portal', ip: '203.0.113.22', count: 1, update: '2026-06-27' },
+    { typo: 'powerappps.com', similarity: '83%', title: 'Power Apps - Login', ip: '198.51.100.40', count: 1, update: '2026-06-30' }
+  ],
+  'pmp.oneweb.net': [
+    { typo: 'pmp.oneweb.net', similarity: '96%', title: 'PMP OneWeb - Portal', ip: '192.0.2.10', count: 1, update: '2026-06-29' },
+    { typo: 'pmp.oneweb.net', similarity: '94%', title: 'PMP OneWeb Login', ip: '192.0.2.15', count: 2, update: '2026-06-28' },
+    { typo: 'pmp.oneweb.net', similarity: '91%', title: 'PMP OneWeb - Auth', ip: '192.0.2.20', count: 1, update: '2026-06-27' },
+    { typo: 'pmp.oneweb.net', similarity: '88%', title: 'PMP OneWeb Portal', ip: '192.0.2.25', count: 1, update: '2026-06-26' },
+    { typo: 'pmp.oneweb.net', similarity: '85%', title: 'PMP OneWeb Access', ip: '192.0.2.30', count: 1, update: '2026-06-25' }
+  ],
+  'testwebservices.hawaiianairlines.com': [
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '97%', title: 'Hawaiian Airlines Test', ip: '198.18.0.5', count: 3, update: '2026-06-30' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '95%', title: 'Hawaiian Airlines Portal', ip: '198.18.0.10', count: 2, update: '2026-06-29' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '93%', title: 'Hawaiian Airlines - Login', ip: '198.18.0.15', count: 1, update: '2026-06-28' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '91%', title: 'Hawaiian Airlines Auth', ip: '198.18.0.20', count: 2, update: '2026-06-30' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '89%', title: 'Hawaiian Airlines Test Portal', ip: '198.18.0.25', count: 1, update: '2026-06-29' }
+  ],
+  'annualmeeting2022.globe.gov': [
+    { typo: 'annualmeeting2022.globe.gov', similarity: '95%', title: 'Globe Annual Meeting', ip: '192.0.2.50', count: 1, update: '2026-06-29' },
+    { typo: 'annualmeeting2022.globe.gov', similarity: '92%', title: 'Globe Meeting Portal', ip: '192.0.2.55', count: 1, update: '2026-06-28' },
+    { typo: 'annualmeeting2022.globe.gov', similarity: '89%', title: 'Globe - Meeting 2022', ip: '192.0.2.60', count: 1, update: '2026-06-27' }
+  ],
+  'hawaiianairlines.com': [
+    { typo: 'haawaiianairlines.com', similarity: '98%', title: 'Hawaiian Airlines - Book Now', ip: '198.18.1.5', count: 5, update: '2026-06-30' },
+    { typo: 'hawaiianairlines.com', similarity: '97%', title: 'Hawaiian Airlines Flights', ip: '198.18.1.10', count: 8, update: '2026-06-30' },
+    { typo: 'hawaiian-airlines.com', similarity: '96%', title: 'Hawaiian Airlines Portal', ip: '198.18.1.15', count: 3, update: '2026-06-29' },
+    { typo: 'hawaiianairliness.com', similarity: '95%', title: 'Hawaiian Airlines - Login', ip: '198.18.1.20', count: 4, update: '2026-06-30' },
+    { typo: 'hawaiianairlines.com', similarity: '94%', title: 'Hawaiian Airlines Auth', ip: '198.18.1.25', count: 2, update: '2026-06-29' },
+    { typo: 'hawaiianairlines.com', similarity: '93%', title: 'Hawaiian Airlines Access', ip: '198.18.1.30', count: 6, update: '2026-06-30' }
+  ],
+  'mdlive.com': [
+    { typo: 'mdlive.com', similarity: '97%', title: 'MDLive - Virtual Care', ip: '203.0.113.50', count: 2, update: '2026-06-29' },
+    { typo: 'mdlive.com', similarity: '95%', title: 'MDLive Portal', ip: '203.0.113.55', count: 3, update: '2026-06-28' },
+    { typo: 'mdlive.com', similarity: '93%', title: 'MDLive - Sign In', ip: '203.0.113.60', count: 1, update: '2026-06-27' },
+    { typo: 'mdlive.com', similarity: '91%', title: 'MDLive Login', ip: '203.0.113.65', count: 2, update: '2026-06-29' },
+    { typo: 'mdlive.com', similarity: '89%', title: 'MDLive - Auth Portal', ip: '203.0.113.70', count: 1, update: '2026-06-28' }
+  ],
+  'digitalwpc.com': [
+    { typo: 'digitalwpc.com', similarity: '96%', title: 'Digital WPC Portal', ip: '198.51.100.50', count: 1, update: '2026-06-30' },
+    { typo: 'digitalwpc.com', similarity: '93%', title: 'Digital WPC - Login', ip: '198.51.100.55', count: 2, update: '2026-06-29' },
+    { typo: 'digitalwpc.com', similarity: '90%', title: 'Digital WPC Access', ip: '198.51.100.60', count: 1, update: '2026-06-28' },
+    { typo: 'digitalwpc.com', similarity: '87%', title: 'Digital WPC - Portal', ip: '198.51.100.65', count: 1, update: '2026-06-27' },
+    { typo: 'digitalwpc.com', similarity: '84%', title: 'Digital WPC Auth', ip: '198.51.100.70', count: 2, update: '2026-06-30' }
+  ],
+  'sessions.digitalwpc.com': [
+    { typo: 'sessions.digitalwpc.com', similarity: '97%', title: 'Digital WPC Sessions', ip: '198.51.100.80', count: 1, update: '2026-06-29' },
+    { typo: 'sessions.digitalwpc.com', similarity: '94%', title: 'Sessions - Digital WPC', ip: '198.51.100.85', count: 1, update: '2026-06-28' },
+    { typo: 'sessions.digitalwpc.com', similarity: '91%', title: 'Digital WPC - Sessions', ip: '198.51.100.90', count: 2, update: '2026-06-27' },
+    { typo: 'sessions.digitalwpc.com', similarity: '88%', title: 'Sessions Portal', ip: '198.51.100.95', count: 1, update: '2026-06-26' }
+  ],
+  'staging-consulting-covid19.euromonitor.com': [
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '96%', title: 'Euromonitor Staging', ip: '192.0.2.100', count: 1, update: '2026-06-30' },
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '93%', title: 'Euromonitor - Consulting', ip: '192.0.2.105', count: 1, update: '2026-06-29' },
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '90%', title: 'Euromonitor Portal', ip: '192.0.2.110', count: 1, update: '2026-06-28' }
+  ]
+};
+
+var bpCurrentAsset = '';
+var bpFilteredData = [];
+var bpPage = 1;
+var bpPageSize = 10;
+
+function showBpDetail(assetName) {
+  bpCurrentAsset = assetName;
+  bpFilteredData = bpDetailData[assetName] || [];
+  bpPage = 1;
+  document.getElementById('bp-detail-asset-name').textContent = assetName;
+  document.getElementById('bp-grid-screen').classList.add('hidden');
+  document.getElementById('bp-detail-screen').classList.add('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = 'none';
+  renderBpDetailRows();
+}
+
+function showBpGrid() {
+  document.getElementById('bp-grid-screen').classList.remove('hidden');
+  document.getElementById('bp-detail-screen').classList.remove('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = '';
+}
+
+function renderBpDetailRows() {
+  var container = document.getElementById('bp-detail-rows');
+  var total = bpFilteredData.length;
+  var start = (bpPage - 1) * bpPageSize;
+  var end = Math.min(start + bpPageSize, total);
+  var rows = bpFilteredData.slice(start, end);
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="bp-detail-table-row">' +
+      '<div class="bp-detail-typo-domain clickable" onclick="showTypoDetail(\'' + r.typo.replace(/'/g,"\\'") + '\')">' + r.typo + '</div>' +
+      '<div class="bp-detail-similarity">' + r.similarity + '</div>' +
+      '<div class="bp-detail-web-title" title="' + r.title + '">' + r.title + '</div>' +
+      '<div class="bp-detail-ip-cell"><span class="bp-detail-ip">' + r.ip + '</span><span class="bp-detail-ip-badge">' + r.count + '</span></div>' +
+      '<div class="bp-detail-last-update">' + r.update + '</div>' +
+    '</div>';
+  });
+  container.innerHTML = html;
+  document.getElementById('bp-detail-pagination-info').textContent = (total === 0 ? '0' : (start + 1)) + '-' + end + ' of ' + total;
+  document.getElementById('bp-detail-prev').disabled = bpPage <= 1;
+  document.getElementById('bp-detail-next').disabled = end >= total;
+}
+
+document.getElementById('bp-detail-prev').addEventListener('click', function() {
+  if (bpPage > 1) { bpPage--; renderBpDetailRows(); }
+});
+document.getElementById('bp-detail-next').addEventListener('click', function() {
+  var maxPage = Math.ceil(bpFilteredData.length / bpPageSize);
+  if (bpPage < maxPage) { bpPage++; renderBpDetailRows(); }
+});
+document.getElementById('bp-detail-page-size').addEventListener('change', function() {
+  bpPageSize = parseInt(this.value) || 10;
+  bpPage = 1;
+  renderBpDetailRows();
+});
+document.getElementById('bp-detail-search').addEventListener('input', function() {
+  var q = this.value.toLowerCase();
+  var all = bpDetailData[bpCurrentAsset] || [];
+  bpFilteredData = all.filter(function(r) {
+    return r.typo.toLowerCase().indexOf(q) !== -1 ||
+           r.title.toLowerCase().indexOf(q) !== -1 ||
+           r.ip.toLowerCase().indexOf(q) !== -1;
+  });
+  bpPage = 1;
+  renderBpDetailRows();
+});
+
+// Add onclick to asset rows
+document.querySelectorAll('.bp-table-row').forEach(function(row) {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', function() {
+    var name = this.querySelector('.bp-asset-name');
+    if (name) showBpDetail(name.textContent.trim());
+  });
+});
+// ── Typo Detail Modal ──────────────────────────────────────
+
+var typoDetailData = {
+  'emm.trin.net': { ip:'76.223.54.146\n13.248.169.48', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'9wvgmup5ck.emm.trin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.tuin.net': { ip:'76.223.54.201\n13.248.169.92', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'x8kq2m9p1l.emm.tuin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.frin.net': { ip:'76.223.54.178\n13.248.169.55', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'r5t8n2w6q3.emm.frin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.thin.net': { ip:'76.223.54.133\n13.248.169.71', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'m3j7k1p9x5.emm.thin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trrn.net': { ip:'76.223.54.189\n13.248.169.44', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'q2w6e9r1t4.emm.trrn.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.srin.net': { ip:'76.223.54.167\n13.248.169.83', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'y8u3i5o1p7.emm.srin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trid.net': { ip:'76.223.54.142\n13.248.169.60', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'a4s6d8f2g1.emm.trid.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trie.net': { ip:'76.223.54.155\n13.248.169.77', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'h7j9k2l5m8.emm.trie.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.grin.net': { ip:'76.223.54.198\n13.248.169.39', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'z1x3c5v7b9.emm.grin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trun.net': { ip:'76.223.54.171\n13.248.169.66', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'n4m6b8v0c2.emm.trun.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'powerapps.com': { ip:'13.107.246.254\n20.53.203.104', mail:'0.', nameServer:'ns1-05.azure-dns.com.\nns2-05.azure-dns.net.', geo:'United States', simProb:'12', catchAll:'false', variation:'none', webSim:'95', resDiff:'3' },
+  'pmp.oneweb.net': { ip:'198.51.100.42\n203.0.113.18', mail:'mail.pmp.oneweb.net.', nameServer:'ns1.oneweb.net.\nns2.oneweb.net.', geo:'United Kingdom', simProb:'8', catchAll:'false', variation:'subdomain', webSim:'88', resDiff:'12' },
+  'testwebservices.hawaiianairlines.com': { ip:'204.63.217.100\n198.51.100.200', mail:'0.', nameServer:'ns1.hawaiianairlines.com.\nns2.hawaiianairlines.com.', geo:'United States', simProb:'5', catchAll:'false', variation:'subdomain', webSim:'92', resDiff:'7' },
+  'annualmeeting2022.globe.gov': { ip:'198.51.100.10\n203.0.113.50', mail:'0.', nameServer:'ns1.globe.gov.\nns2.globe.gov.', geo:'Philippines', simProb:'3', catchAll:'false', variation:'subdomain', webSim:'85', resDiff:'15' },
+  'hawaiianairlines.com': { ip:'104.18.0.0\n104.18.1.0', mail:'mail.hawaiianairlines.com.', nameServer:'ns1.hawaiianairlines.com.\nns2.hawaiianairlines.com.', geo:'United States', simProb:'0', catchAll:'false', variation:'none', webSim:'100', resDiff:'0' },
+  'mdlive.com': { ip:'104.16.0.0\n104.16.1.0', mail:'0.', nameServer:'ns1.mdlive.com.\nns2.mdlive.com.', geo:'United States', simProb:'2', catchAll:'false', variation:'none', webSim:'97', resDiff:'2' },
+  'digitalwpc.com': { ip:'198.51.100.80\n203.0.113.120', mail:'mail.digitalwpc.com.', nameServer:'ns1.digitalwpc.com.\nns2.digitalwpc.com.', geo:'United States', simProb:'0', catchAll:'false', variation:'none', webSim:'100', resDiff:'0' },
+  'sessions.digitalwpc.com': { ip:'198.51.100.81\n203.0.113.121', mail:'0.', nameServer:'ns1.digitalwpc.com.\nns2.digitalwpc.com.', geo:'United States', simProb:'1', catchAll:'false', variation:'subdomain', webSim:'98', resDiff:'1' },
+  'staging-consulting-covid19.euromonitor.com': { ip:'104.20.0.0\n104.20.1.0', mail:'0.', nameServer:'ns1.euromonitor.com.\nns2.euromonitor.com.', geo:'United Kingdom', simProb:'4', catchAll:'false', variation:'subdomain', webSim:'90', resDiff:'10' }
+};
+function showTypoDetail(domain) {
+  var modal = document.getElementById('bpTypoModal');
+  var title = document.getElementById('bpTypoTitle');
+  var body = document.getElementById('bpTypoBody');
+  title.textContent = domain;
+  var d = typoDetailData[domain] || { ip:'N/A', mail:'N/A', nameServer:'N/A', geo:'Unknown', simProb:'0', catchAll:'N/A', variation:'N/A', webSim:'0', resDiff:'0' };
+  function row(label, value, mono) {
+    var valClass = 'bp-typo-row-value' + (mono ? ' mono' : '');
+    var formatted = (value || 'N/A').replace(/\n/g, '<br>');
+    return '<div class="bp-typo-row"><div class="bp-typo-row-label">' + label + '</div><div class="' + valClass + '">' + formatted + '</div></div>';
+  }
+  body.innerHTML =
+    row('IP Address', d.ip, true) +
+    row('Mail Server', d.mail, true) +
+    row('Name Server', d.nameServer, true) +
+    row('Geo IP', d.geo, false) +
+    row('Similarity Prob (%)', d.simProb, false) +
+    row('Catch All', d.catchAll, true) +
+    row('Variation', d.variation, false) +
+    row('Website Similarity (%)', d.webSim, false) +
+    row('Resource Difference (%)', d.resDiff, false);
+  modal.classList.add('active');
+}
+function hideTypoDetail() {
+  document.getElementById('bpTypoModal').classList.remove('active');
+}
+document.getElementById('bpTypoModal').addEventListener('click', function(e) {
+  if (e.target === this) hideTypoDetail();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') hideTypoDetail();
+});
+
+</script>
 <script>
 (function(){
   var overlay = document.getElementById('pricingModal');

@@ -678,23 +678,22 @@
     .product-search input { border: none; background: transparent; font-size: 13px; color: var(--fg); font-family: var(--font-body); outline: none; width: 100%; }
     .product-search input::placeholder { color: var(--muted); }
     .product-search-clear { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--border); color: var(--fg-secondary); cursor: pointer; flex-shrink: 0; }
-    .product-table-header { display: grid; grid-template-columns: 1.2fr 1fr 80px 120px 100px 80px; padding: 12px 24px; border-bottom: 1px solid var(--border-subtle); }
+    .product-table-header { display: grid; grid-template-columns: 1.5fr 1fr 80px 80px 120px 80px; padding: 12px 24px; border-bottom: 1px solid var(--border-subtle); }
     .product-table-header > span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .product-row { display: grid; grid-template-columns: 1.2fr 1fr 80px 120px 100px 80px; padding: 14px 24px; align-items: center; border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
+    .product-row { display: grid; grid-template-columns: 1.5fr 1fr 80px 80px 120px 80px; padding: 14px 24px; align-items: center; border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
     .product-row:last-of-type { border-bottom: none; }
     .product-row:hover { background: var(--surface-alt); }
-    .product-name { display: flex; align-items: center; gap: 12px; }
-    .product-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: grid; place-items: center; font-size: 14px; font-weight: 700; font-family: var(--font-display); flex-shrink: 0; }
+    .product-name { display: flex; align-items: center; gap: 0; }
     .product-text { font-size: 13px; font-weight: 600; color: var(--fg); }
     .product-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
     .product-vendor { font-size: 13px; color: var(--fg-secondary); }
-    .product-cve-count { font-family: var(--font-mono); font-size: 14px; font-weight: 600; text-align: center; }
-    .product-usage { display: flex; align-items: center; gap: 10px; }
-    .product-usage-bar { flex: 1; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
-    .product-usage-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
-    .product-usage-count { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--fg-secondary); min-width: 30px; text-align: right; }
-    .product-updated { font-size: 12px; color: var(--muted); }
-    .product-monitoring { display: flex; justify-content: center; }
+    .product-cve-count { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-description { font-size: 12px; color: var(--fg-secondary); line-height: 1.4; }
+    .product-solution { font-size: 12px; color: var(--fg-secondary); }
+    .product-exploitability { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-updated { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .product-client-usage { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-monitoring { display: flex; align-items: center; justify-content: center; }
 
     /* Toggle Switch */
     .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; cursor: pointer; }
@@ -848,7 +847,7 @@
       .severity-card-icon { width: 28px; height: 28px; border-radius: 6px; }
       .severity-card-icon svg { width: 14px; height: 14px; }
       .severity-card-label { font-size: 10px; }
-      .product-table-header, .product-row { grid-template-columns: 1.2fr 1fr 80px 120px 100px 80px; }
+      .product-table-header, .product-row { grid-template-columns: 1.5fr 1fr 80px 1.2fr 1fr 100px 120px; }
     }
                 @media (max-width: 768px) {
       .sidebar {
@@ -897,6 +896,357 @@
       .product-table-header > *:nth-child(5), .product-row > *:nth-child(5) { display: none; }
     }
   
+    /* ── PW Detail Screen ──────────────────────────────────── */
+    #pw-detail-screen { display: none; }
+    #pw-detail-screen.active { display: block; }
+    #pw-grid-screen.hidden { display: none; }
+
+    .pw-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .pw-detail-back {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--fg-secondary);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .pw-detail-back:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .pw-detail-back svg { width: 16px; height: 16px; }
+
+    .pw-detail-title-wrap { flex: 1; }
+    .pw-detail-product-name {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--fg);
+      margin: 0;
+    }
+    .pw-detail-product-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pw-detail-product-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .pw-detail-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .pw-detail-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pw-detail-stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pw-detail-stat-icon svg { width: 18px; height: 18px; }
+    .pw-detail-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--fg);
+      line-height: 1.1;
+    }
+    .pw-detail-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .pw-detail-table-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .pw-detail-table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .pw-detail-table-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .pw-detail-table-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pw-detail-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pw-detail-table thead th {
+      text-align: left;
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+      white-space: nowrap;
+    }
+    .pw-detail-table tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background var(--transition-fast);
+    }
+    .pw-detail-table tbody tr:last-child { border-bottom: none; }
+    .pw-detail-table tbody tr:hover { background: var(--surface-alt); }
+    .pw-detail-table tbody td {
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--fg);
+      vertical-align: middle;
+    }
+
+    .pw-sev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pw-sev-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .pw-sev-badge.high { background: var(--high-soft); color: var(--high); }
+    .pw-sev-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .pw-sev-badge.low { background: var(--low-soft); color: var(--low); }
+
+    .pw-sev-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .pw-sev-badge.critical .pw-sev-dot { background: var(--critical); }
+    .pw-sev-badge.high .pw-sev-dot { background: var(--high); }
+    .pw-sev-badge.medium .pw-sev-dot { background: var(--amber); }
+    .pw-sev-badge.low .pw-sev-dot { background: var(--low); }
+
+    .pw-cvss-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .pw-cvss-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .pw-cvss-badge.high { background: var(--high-soft); color: var(--high); }
+    .pw-cvss-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .pw-cvss-badge.low { background: var(--low-soft); color: var(--low); }
+
+    .pw-cve-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .pw-cve-link:hover { text-decoration: underline; }
+
+    .pw-cwe-tag {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: var(--surface-alt);
+      color: var(--fg-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* ── CVE Detail Popup ─────────────────────────────────── */
+    .pw-vuln-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: rgba(15, 22, 41, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .pw-vuln-modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    .pw-vuln-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 520px;
+      max-width: 92vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(15,22,41,0.18);
+      transform: translateY(12px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .pw-vuln-modal-overlay.active .pw-vuln-modal {
+      transform: translateY(0) scale(1);
+    }
+    .pw-vuln-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 24px 24px 0;
+    }
+    .pw-vuln-modal-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .pw-vuln-modal-cve {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+    .pw-vuln-modal-cwe {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pw-vuln-modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    .pw-vuln-modal-close:hover {
+      background: var(--surface-alt);
+      color: var(--fg);
+    }
+    .pw-vuln-modal-close svg { width: 14px; height: 14px; }
+    .pw-vuln-modal-body {
+      padding: 16px 24px 24px;
+    }
+    .pw-vuln-modal-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .pw-vuln-modal-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pw-vuln-modal-chip.severity {
+      background: var(--critical-soft);
+      color: var(--critical);
+    }
+    .pw-vuln-modal-chip.severity.high {
+      background: var(--high-soft);
+      color: var(--high);
+    }
+    .pw-vuln-modal-chip.severity.medium {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+    .pw-vuln-modal-chip.severity.low {
+      background: var(--low-soft);
+      color: var(--low);
+    }
+    .pw-vuln-modal-chip.cvss {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+    .pw-vuln-modal-chip.updated {
+      background: var(--surface-alt);
+      color: var(--fg-secondary);
+    }
+    .pw-vuln-modal-section {
+      margin-bottom: 16px;
+    }
+    .pw-vuln-modal-section:last-child { margin-bottom: 0; }
+    .pw-vuln-modal-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .pw-vuln-modal-section-content {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--fg-secondary);
+    }
+    .pw-vuln-modal-section-content ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .pw-vuln-modal-section-content li {
+      margin-bottom: 4px;
+    }
+    .pw-vuln-modal-section-content a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .pw-vuln-modal-section-content a:hover { text-decoration: underline; }
+
+    @media (max-width: 1200px) {
+      .pw-detail-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .pw-detail-summary { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .pw-detail-table thead th,
+      .pw-detail-table tbody td { padding: 8px 12px; font-size: 12px; }
+      .pw-detail-product-name { font-size: 16px; }
+    }
+    @media (max-width: 480px) {
+      .pw-detail-summary { grid-template-columns: 1fr; }
+    }
+
     /* ── Pricing Modal ──────────────────────────────────────── */
     .pricing-overlay {
       position: fixed; inset: 0; z-index: 9999;
@@ -907,15 +1257,17 @@
       transition: opacity 0.25s ease;
     }
     .pricing-overlay.active { opacity: 1; pointer-events: auto; }
-    .pricing-modal {
+        .pricing-modal {
       background: var(--surface);
       border-radius: var(--radius-xl);
-      width: 90%; max-width: 880px;
+      width: 95%; max-width: 1200px;
       padding: 40px 36px 36px;
       position: relative;
       transform: translateY(20px) scale(0.97);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
     .pricing-close {
@@ -930,30 +1282,67 @@
     .pricing-header { text-align: center; margin-bottom: 32px; }
     .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
     .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .pricing-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
     .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
     .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
-    .pricing-card-top { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-subtle); }
-    .pricing-badge { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
     .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
-    .pricing-card:nth-child(2) .pricing-badge { background: var(--accent); color: #fff; }
-    .pricing-card:nth-child(3) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
-    .pricing-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+    .pricing-card:nth-child(2) .pricing-badge { background: #e0f2fe; color: #0369a1; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(4) .pricing-badge { background: #fef3c7; color: #92400e; }
+    .pricing-card:nth-child(5) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
     .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
-    .pricing-value { font: 700 40px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-value { font: 700 32px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
     .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
     .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
     .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
     .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
-    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary); padding: 6px 0; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
     .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
-    .pricing-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 16px; border-radius: var(--radius-sm); font: 600 13px/1 var(--font-body); cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
     .pricing-btn-primary { background: var(--fg); color: #fff; }
     .pricing-btn-primary:hover { background: #1e293b; }
     .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
     .pricing-btn-secondary:hover { background: var(--border); }
-    @media (max-width: 768px) { .pricing-modal { padding: 28px 20px 24px; width: 95%; } .pricing-grid { grid-template-columns: 1fr; gap: 16px; } .pricing-title { font-size: 22px; } }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -1111,6 +1500,7 @@
 </nav>
 
   <main class="main">
+  <div id="pw-grid-screen">
     <div class="page-header reveal">
       <div class="page-header-left">
         <h1 data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</h1>
@@ -1197,93 +1587,99 @@
         <span data-en="Product" data-vi="Sản phẩm">Product</span>
         <span data-en="Vendor" data-vi="Nhà cung cấp">Vendor</span>
         <span data-en="No. of CVE" data-vi="Số CVE">No. of CVE</span>
-        <span data-en="Client usage count" data-vi="Lượt sử dụng">Client usage count</span>
+        <span data-en="Client usage count" data-vi="Số lần sử dụng">Client usage count</span>
         <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
         <span data-en="Monitoring" data-vi="Giám sát">Monitoring</span>
       </div>
 
-      <div class="product-row" data-searchable="nginx">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--accent-soft);color:var(--accent);">N</div>
-          <div><div class="product-text">Nginx</div><div class="product-meta">Web Server / Reverse Proxy</div></div>
-        </div>
-        <div class="product-vendor">Nginx Inc.</div>
-        <div class="product-cve-count" style="color:var(--critical);">14</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:85%;background:var(--accent);"></div></div><div class="product-usage-count">847</div></div>
-        <div class="product-updated">Jun 24, 2026</div>
+      <div class="product-row" data-searchable="205_firmware qualcomm">
+        <div class="product-name"><div class="product-text">205_firmware</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">12/06/2026 10:29:55</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="openssl">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--critical-soft);color:var(--critical);">O</div>
-          <div><div class="product-text">OpenSSL</div><div class="product-meta">Cryptographic Library</div></div>
-        </div>
-        <div class="product-vendor">OpenSSL Software Foundation</div>
-        <div class="product-cve-count" style="color:var(--critical);">23</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:92%;background:var(--critical);"></div></div><div class="product-usage-count">912</div></div>
-        <div class="product-updated">Jun 22, 2026</div>
+      <div class="product-row" data-searchable="205 qualcomm">
+        <div class="product-name"><div class="product-text">205</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--high);">2</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">12/06/2026 10:29:55</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="log4j">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--high-soft);color:var(--high);">L</div>
-          <div><div class="product-text">Apache Log4j</div><div class="product-meta">Java Logging Framework</div></div>
-        </div>
-        <div class="product-vendor">Apache Software Foundation</div>
-        <div class="product-cve-count" style="color:var(--high);">18</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:68%;background:var(--high);"></div></div><div class="product-usage-count">678</div></div>
-        <div class="product-updated">Jun 20, 2026</div>
+      <div class="product-row" data-searchable="canon">
+        <div class="product-name"><div class="product-text">canon</div></div>
+        <div class="product-vendor">canon</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">09/06/2026 14:08:45</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="react">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--low-soft);color:var(--low);">R</div>
-          <div><div class="product-text">React</div><div class="product-meta">Frontend JavaScript Library</div></div>
-        </div>
-        <div class="product-vendor">Meta Platforms</div>
-        <div class="product-cve-count" style="color:var(--low);">5</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:72%;background:var(--low);"></div></div><div class="product-usage-count">714</div></div>
-        <div class="product-updated">Jun 25, 2026</div>
+      <div class="product-row" data-searchable="qualcomm">
+        <div class="product-name"><div class="product-text">qualcomm</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">08/06/2026 16:14:22</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="kubernetes">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--amber-soft);color:var(--amber);">K</div>
-          <div><div class="product-text">Kubernetes</div><div class="product-meta">Container Orchestration</div></div>
-        </div>
-        <div class="product-vendor">Cloud Native Computing Foundation</div>
-        <div class="product-cve-count" style="color:var(--amber);">12</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:56%;background:var(--amber);"></div></div><div class="product-usage-count">556</div></div>
-        <div class="product-updated">Jun 23, 2026</div>
+      <div class="product-row" data-searchable="intel">
+        <div class="product-name"><div class="product-text">*</div></div>
+        <div class="product-vendor">intel</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">08/06/2026 14:01:11</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="postgresql">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--accent-soft);color:var(--accent);">P</div>
-          <div><div class="product-text">PostgreSQL</div><div class="product-meta">Relational Database</div></div>
-        </div>
-        <div class="product-vendor">PostgreSQL Global Dev Group</div>
-        <div class="product-cve-count" style="color:var(--high);">9</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:64%;background:var(--high);"></div></div><div class="product-usage-count">634</div></div>
-        <div class="product-updated">Jun 21, 2026</div>
+      <div class="product-row" data-searchable="zimbra_desktop vmware">
+        <div class="product-name"><div class="product-text">zimbra_desktop</div></div>
+        <div class="product-vendor">vmware</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="redis">
-        <div class="product-name">
-          <div class="product-icon" style="background:var(--critical-soft);color:var(--critical);">R</div>
-          <div><div class="product-text">Redis</div><div class="product-meta">In-memory Data Store</div></div>
-        </div>
-        <div class="product-vendor">Redis Ltd.</div>
-        <div class="product-cve-count" style="color:var(--critical);">7</div>
-        <div class="product-usage"><div class="product-usage-bar"><div class="product-usage-fill" style="width:48%;background:var(--critical);"></div></div><div class="product-usage-count">478</div></div>
-        <div class="product-updated">Jun 24, 2026</div>
-        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synacor">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">synacor</div>
+        <div class="product-cve-count" style="color:var(--critical);">8</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_suite zimbra">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">zimbra</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synocor">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">synocor</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_server synacor">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_server</div></div>
+        <div class="product-vendor">synacor</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
       <div class="pagination">
@@ -1297,7 +1693,374 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="pw-detail-screen">
+    <div class="pw-detail-header">
+      <button class="pw-detail-back" onclick="closePWDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="pw-detail-title-wrap">
+        <h2 class="pw-detail-product-name" id="pwDetailProductName"></h2>
+        <div class="pw-detail-product-meta">
+          <span><strong data-en="Vendor:" data-vi="Nhà cung cấp:">Vendor:</strong> <span id="pwDetailVendor"></span></span>
+          <span><strong data-en="Last update:" data-vi="Cập nhật:">Last update:</strong> <span id="pwDetailLastUpdate"></span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pw-detail-summary" id="pwDetailSummary">
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--critical-soft);color:var(--critical);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailCritical">0</div>
+          <div class="pw-detail-stat-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--high-soft);color:var(--high);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailHigh">0</div>
+          <div class="pw-detail-stat-label" data-en="High" data-vi="Cao">High</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--amber-soft);color:var(--amber);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailMedium">0</div>
+          <div class="pw-detail-stat-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--low-soft);color:var(--low);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailLow">0</div>
+          <div class="pw-detail-stat-label" data-en="Low" data-vi="Thấp">Low</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pw-detail-table-section">
+      <div class="pw-detail-table-header">
+        <div class="pw-detail-table-title" data-en="Vulnerability Details" data-vi="Chi tiết lỗ hổng">Vulnerability Details</div>
+        <div class="pw-detail-table-count" id="pwDetailTableCount">0 <span data-en="vulnerabilities" data-vi="lỗ hổng">vulnerabilities</span></div>
+      </div>
+      <table class="pw-detail-table">
+        <thead>
+          <tr>
+            <th data-en="Severity" data-vi="Mức độ">Severity</th>
+            <th data-en="CVSS (V3)" data-vi="CVSS (V3)">CVSS (V3)</th>
+            <th data-en="CVE" data-vi="CVE">CVE</th>
+            <th data-en="CWE" data-vi="CWE">CWE</th>
+            <th data-en="Last update" data-vi="Cập nhật lần cuối">Last update</th>
+          </tr>
+        </thead>
+        <tbody id="pwDetailTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   </main>
+
+  <script>
+  /* CVE Detail Popup */
+  var pwVulnDetailData = {
+    'CVE-2025-48948': {
+      severity: 'Critical', cvss: '9.8', cwe: 'CWE-502',
+      desc: 'Deserialization of untrusted data in Oracle WebLogic Server allows remote attackers to execute arbitrary code via crafted serialized Java objects. This vulnerability exists within the T3/IIOP protocol handler and can be exploited without authentication.',
+      solution: 'Apply the vendor-supplied security patch immediately. Restrict network access to the WebLogic Administration Console and disable T3/IIOP protocols if not required.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48948', 'https://www.oracle.com/security-alerts/'],
+      scanDetail: 'Ports: 7001, 7002\nHosts: weblogic-01.internal\nProtocol: T3/IIOP'
+    },
+    'CVE-2025-48947': {
+      severity: 'Critical', cvss: '9.8', cwe: 'CWE-79',
+      desc: 'Stored cross-site scripting (XSS) vulnerability in Zimbra Collaboration Suite allows remote attackers to inject arbitrary HTML or JavaScript via the email body or calendar invite fields, potentially leading to session hijacking.',
+      solution: 'Upgrade to Zimbra Collaboration Suite 10.1.3 or later. Enable the built-in XSS protection filter in the admin console.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48947'],
+      scanDetail: 'Ports: 443, 8443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48946': {
+      severity: 'Critical', cvss: '9.8', cwe: 'CWE-89',
+      desc: 'SQL injection vulnerability in Zimbra Collaboration Suite allows unauthenticated remote attackers to execute arbitrary SQL commands through the SOAP interface, potentially leading to full database compromise.',
+      solution: 'Apply vendor patches immediately. Implement input validation and parameterized queries in custom integrations.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48946'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48945': {
+      severity: 'Critical', cvss: '9.1', cwe: 'CWE-22',
+      desc: 'Path traversal vulnerability in Zimbra Collaboration Suite allows authenticated attackers to read arbitrary files on the server via crafted URL parameters in the web client interface.',
+      solution: 'Update to the latest version. Restrict file system permissions for the Zimbra service account.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48945'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48944': {
+      severity: 'High', cvss: '8.8', cwe: 'CWE-287',
+      desc: 'Improper authentication in Zimbra Collaboration Suite allows remote attackers to bypass authentication checks and access administrative functions via a specially crafted request to the admin endpoint.',
+      solution: 'Apply the security update. Enable multi-factor authentication for admin accounts.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48944'],
+      scanDetail: 'Ports: 443, 7071\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48943': {
+      severity: 'High', cvss: '8.1', cwe: 'CWE-200',
+      desc: 'Information exposure vulnerability in Zimbra Collaboration Suite leaks internal server details including software versions and configuration paths to unauthenticated remote attackers via error pages.',
+      solution: 'Disable verbose error messages in production. Apply vendor patches to suppress sensitive information in error responses.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48943'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48940': {
+      severity: 'Medium', cvss: '6.5', cwe: 'CWE-532',
+      desc: 'Insertion of sensitive information into log files in Zimbra Collaboration Suite records user credentials and session tokens in plaintext within application log files, accessible to administrators.',
+      solution: 'Configure log filtering to redact sensitive fields. Restrict log file access permissions.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48940'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48939': {
+      severity: 'Medium', cvss: '6.1', cwe: 'CWE-352',
+      desc: 'Cross-site request forgery vulnerability in Zimbra Collaboration Suite allows attackers to perform unauthorized actions on behalf of authenticated users via crafted web requests.',
+      solution: 'Implement anti-CSRF tokens in all state-changing operations. Update to the patched version.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48939'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48938': {
+      severity: 'Low', cvss: '3.7', cwe: 'CWE-200',
+      desc: 'Minor information disclosure vulnerability in Zimbra Collaboration Suite exposes internal hostnames through HTTP response headers to authenticated users.',
+      solution: 'Update to the latest version. Remove or modify custom HTTP headers that expose internal information.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48938'],
+      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+    },
+    'CVE-2025-48942': {
+      severity: 'High', cvss: '7.5', cwe: 'CWE-306',
+      desc: 'Missing authentication for critical function in Qualcomm firmware allows local attackers to access restricted debugging interfaces without proper credentials, potentially enabling arbitrary code execution on the device.',
+      solution: 'Update device firmware to the latest version provided by the device manufacturer. Disable debug interfaces in production environments.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48942'],
+      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+    },
+    'CVE-2025-48941': {
+      severity: 'High', cvss: '7.2', cwe: 'CWE-284',
+      desc: 'Improper access control in Qualcomm firmware allows local applications to access protected memory regions, potentially enabling privilege escalation from user space to kernel level.',
+      solution: 'Apply firmware update from the device vendor. Enable SELinux mandatory access control policies.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48941'],
+      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+    },
+    'CVE-2025-22458': {
+      severity: 'Critical', cvss: '10.0', cwe: 'CWE-89',
+      desc: 'Critical SQL injection vulnerability in Qualcomm firmware management interface allows unauthenticated remote attackers to execute arbitrary SQL commands through the device management API, potentially leading to complete device takeover.',
+      solution: 'Immediately update firmware to the patched version. Disable remote management interfaces if not required.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-22458'],
+      scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+    },
+    'CVE-2025-24970': {
+      severity: 'Critical', cvss: '9.8', cwe: 'CWE-20',
+      desc: 'Improper input validation in Qualcomm firmware allows remote attackers to send malformed packets that trigger buffer overflow conditions, enabling arbitrary code execution with root privileges.',
+      solution: 'Apply the vendor security patch. Implement network-level access controls to limit exposure.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24970'],
+      scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+    },
+    'CVE-2025-50425': {
+      severity: 'Critical', cvss: '9.8', cwe: 'CWE-918',
+      desc: 'Server-side request forgery (SSRF) in Qualcomm firmware cloud sync module allows remote attackers to make arbitrary HTTP requests from the device to internal network resources, potentially accessing sensitive internal services.',
+      solution: 'Update firmware to the latest version. Restrict outbound network connections to known trusted endpoints only.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50425'],
+      scanDetail: 'Ports: 443, 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+    },
+    'CVE-2025-50426': {
+      severity: 'High', cvss: '7.7', cwe: 'CWE-22',
+      desc: 'Path traversal vulnerability in Qualcomm firmware file management allows attackers to read and write files outside the intended directory using crafted file paths in the firmware update mechanism.',
+      solution: 'Apply firmware update. Implement strict path validation in the file management module.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50426'],
+      scanDetail: 'Ports: 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+    },
+    'CVE-2025-25195': {
+      severity: 'Medium', cvss: '5.4', cwe: 'CWE-287',
+      desc: 'Improper authentication in Qualcomm firmware management portal allows users to bypass multi-factor authentication requirements under specific race conditions during the login flow.',
+      solution: 'Update firmware to the patched version. Enforce sequential authentication step validation.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-25195'],
+      scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+    },
+    'CVE-2025-52487': {
+      severity: 'Medium', cvss: '6.5', cwe: 'CWE-79',
+      desc: 'Reflected cross-site scripting (XSS) vulnerability in Qualcomm firmware web interface allows attackers to inject arbitrary JavaScript via the search parameter, which is reflected without proper sanitization.',
+      solution: 'Apply firmware update. Implement Content Security Policy (CSP) headers and input encoding.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52487'],
+      scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+    },
+    'CVE-2025-24971': {
+      severity: 'Medium', cvss: '6.5', cwe: 'CWE-400',
+      desc: 'Uncontrolled resource consumption in Qualcomm firmware DNS resolution module allows remote attackers to cause denial of service by sending high volumes of DNS queries that trigger excessive memory allocation.',
+      solution: 'Update firmware to the patched version. Implement rate limiting on DNS resolution requests.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24971'],
+      scanDetail: 'Ports: 53\nHosts: qualcomm-205-device\nProtocol: DNS'
+    },
+    'CVE-2025-36145': {
+      severity: 'Medium', cvss: '6.5', cwe: 'CWE-502',
+      desc: 'Deserialization of untrusted data in Qualcomm firmware configuration import feature allows local attackers to execute arbitrary code by importing a specially crafted configuration file.',
+      solution: 'Apply firmware update. Validate configuration file integrity before importing.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-36145'],
+      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+    },
+    'CVE-2025-52198': {
+      severity: 'Low', cvss: '3.7', cwe: 'CWE-532',
+      desc: 'Insertion of sensitive information into log files in Qualcomm firmware debug module records device encryption keys in plaintext within system log files during debug mode operation.',
+      solution: 'Update firmware. Disable debug logging in production environments.',
+      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52198'],
+      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+    }
+  };
+
+  function openPWVulnModal(cveId) {
+    var data = pwVulnDetailData[cveId];
+    if (!data) return;
+    var overlay = document.getElementById('pwVulnModal');
+    document.getElementById('pwVulnCveId').textContent = cveId;
+    document.getElementById('pwVulnCwe').textContent = data.cwe;
+
+    var sevClass = data.severity.toLowerCase();
+    var metaHtml = '<span class="pw-vuln-modal-chip severity ' + sevClass + '">' + data.severity + '</span>';
+    metaHtml += '<span class="pw-vuln-modal-chip cvss">CVSS: ' + data.cvss + '</span>';
+    metaHtml += '<span class="pw-vuln-modal-chip updated">' + cveId.split('-').slice(0,3).join('-') + '</span>';
+    document.getElementById('pwVulnMeta').innerHTML = metaHtml;
+
+    document.getElementById('pwVulnDesc').textContent = data.desc;
+    document.getElementById('pwVulnSolution').textContent = data.solution;
+
+    var refsHtml = '<ul>';
+    data.refs.forEach(function(r) { refsHtml += '<li><a href="' + r + '" target="_blank">' + r + '</a></li>'; });
+    refsHtml += '</ul>';
+    document.getElementById('pwVulnRefs').innerHTML = refsHtml;
+
+    var scanLines = data.scanDetail.split('\n');
+    var scanHtml = '';
+    scanLines.forEach(function(line) {
+      var parts = line.split(':');
+      if (parts.length >= 2) {
+        scanHtml += '<div style="display:flex;gap:8px;margin-bottom:4px;"><span style="font-weight:600;color:var(--fg);min-width:70px;">' + parts[0].trim() + ':</span><span>' + parts.slice(1).join(':').trim() + '</span></div>';
+      }
+    });
+    document.getElementById('pwVulnScanDetail').innerHTML = scanHtml;
+
+    overlay.classList.add('active');
+  }
+
+  function closePWVulnModal() {
+    document.getElementById('pwVulnModal').classList.remove('active');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var closeBtn = document.getElementById('pwVulnClose');
+    var modal = document.getElementById('pwVulnModal');
+    if (closeBtn) closeBtn.addEventListener('click', closePWVulnModal);
+    if (modal) modal.addEventListener('click', function(e) { if (e.target === this) closePWVulnModal(); });
+  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePWVulnModal(); });
+
+  /* Product Weakness Detail */
+  var pwCVEData = {
+    '205': [
+      { severity:'High', cvss:'7.5', cve:'CVE-2025-48942', cwe:'CWE-306', updated:'12/06/2026' },
+      { severity:'High', cvss:'7.2', cve:'CVE-2025-48941', cwe:'CWE-284', updated:'12/06/2026' }
+    ],
+    'zimbra_collaboration_suite_synacor': [
+      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48947', cwe:'CWE-79', updated:'16/09/2025' },
+      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48946', cwe:'CWE-89', updated:'16/09/2025' },
+      { severity:'Critical', cvss:'9.1', cve:'CVE-2025-48945', cwe:'CWE-22', updated:'16/09/2025' },
+      { severity:'High', cvss:'8.8', cve:'CVE-2025-48944', cwe:'CWE-287', updated:'16/09/2025' },
+      { severity:'High', cvss:'8.1', cve:'CVE-2025-48943', cwe:'CWE-200', updated:'16/09/2025' },
+      { severity:'Medium', cvss:'6.5', cve:'CVE-2025-48940', cwe:'CWE-532', updated:'16/09/2025' },
+      { severity:'Medium', cvss:'6.1', cve:'CVE-2025-48939', cwe:'CWE-352', updated:'16/09/2025' },
+      { severity:'Low', cvss:'3.7', cve:'CVE-2025-48938', cwe:'CWE-200', updated:'16/09/2025' }
+    ],
+    'weblogic': [
+      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48948', cwe:'CWE-502', updated:'09/06/2026' }
+    ]
+  };
+
+  function openPWDetail(productName, vendor, lastUpdate, cveCount, rowKey) {
+    var grid = document.getElementById('pw-grid-screen');
+    var detail = document.getElementById('pw-detail-screen');
+    var pageHeader = document.querySelector('.page-header');
+    if (grid) grid.classList.add('hidden');
+    if (detail) detail.classList.add('active');
+    if (pageHeader) pageHeader.style.display = 'none';
+
+    document.getElementById('pwDetailProductName').textContent = productName;
+    document.getElementById('pwDetailVendor').textContent = vendor;
+    document.getElementById('pwDetailLastUpdate').textContent = lastUpdate;
+
+    var cves = pwCVEData[rowKey] || [];
+    var crit = 0, high = 0, med = 0, low = 0;
+    cves.forEach(function(c) {
+      if (c.severity === 'Critical') crit++;
+      else if (c.severity === 'High') high++;
+      else if (c.severity === 'Medium') med++;
+      else low++;
+    });
+    document.getElementById('pwDetailCritical').textContent = crit;
+    document.getElementById('pwDetailHigh').textContent = high;
+    document.getElementById('pwDetailMedium').textContent = med;
+    document.getElementById('pwDetailLow').textContent = low;
+    document.getElementById('pwDetailTableCount').innerHTML = cves.length + ' <span data-en="vulnerabilities" data-vi="lỗ hổng">vulnerabilities</span>';
+
+    var tbody = document.getElementById('pwDetailTableBody');
+    tbody.innerHTML = '';
+    cves.forEach(function(c) {
+      var sevClass = c.severity.toLowerCase();
+      var tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.setAttribute('data-cve', c.cve);
+      tr.innerHTML =
+        '<td><span class="pw-sev-badge ' + sevClass + '"><span class="pw-sev-dot"></span>' + c.severity + '</span></td>' +
+        '<td><span class="pw-cvss-badge ' + sevClass + '">' + c.cvss + '</span></td>' +
+        '<td><span class="pw-cve-link">' + c.cve + '</span></td>' +
+        '<td><span class="pw-cwe-tag">' + c.cwe + '</span></td>' +
+        '<td>' + c.updated + '</td>';
+      tr.addEventListener('click', function(e) {
+        openPWVulnModal(c.cve);
+      });
+      tbody.appendChild(tr);
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+  function closePWDetail() {
+    var grid = document.getElementById('pw-grid-screen');
+    var detail = document.getElementById('pw-detail-screen');
+    var pageHeader = document.querySelector('.page-header');
+    if (grid) grid.classList.remove('hidden');
+    if (detail) detail.classList.remove('active');
+    if (pageHeader) pageHeader.style.display = '';
+  }
+
+  (function() {
+    document.querySelectorAll('.product-row').forEach(function(row) {
+      var cveEl = row.querySelector('.product-cve-count');
+      if (!cveEl) return;
+      var cveCount = parseInt(cveEl.textContent) || 0;
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', function(e) {
+        if (e.target.closest('.toggle-switch') || e.target.closest('.toggle-slider')) return;
+        var name = row.querySelector('.product-text').textContent;
+        var vendor = row.querySelector('.product-vendor').textContent;
+        var updated = row.querySelector('.product-updated').textContent;
+        var rowKey;
+        if (name === '205') rowKey = '205';
+        else if (name === 'zimbra_collaboration_suite' && vendor === 'synacor') rowKey = 'zimbra_collaboration_suite_synacor';
+        else if (name === 'weblogic') rowKey = 'weblogic';
+        else rowKey = name;
+        openPWDetail(name, vendor, updated, cveCount, rowKey);
+      });
+    });
+  })();
+  </script>
 
   <script>
   (function() {
@@ -1401,6 +2164,40 @@
 
 </script>
 <!-- Pricing Modal -->
+<!-- CVE Detail Popup -->
+<div class="pw-vuln-modal-overlay" id="pwVulnModal">
+  <div class="pw-vuln-modal">
+    <div class="pw-vuln-modal-header">
+      <div class="pw-vuln-modal-header-left">
+        <div class="pw-vuln-modal-cve" id="pwVulnCveId"></div>
+        <div class="pw-vuln-modal-cwe" id="pwVulnCwe"></div>
+      </div>
+      <button class="pw-vuln-modal-close" id="pwVulnClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="pw-vuln-modal-body">
+      <div class="pw-vuln-modal-meta" id="pwVulnMeta"></div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Description" data-vi="Mô tả">Description</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnDesc"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Solution" data-vi="Giải pháp">Solution</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnSolution"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="References" data-vi="Tham khảo">References</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnRefs"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Scan detail" data-vi="Chi tiết quét">Scan detail</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnScanDetail"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Scan Modal -->
 <div class="scan-overlay" id="scanModal">
   <div class="scan-modal">
@@ -1495,51 +2292,121 @@
       <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
     </div>
     <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Free</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span></div>
+          <div class="pricing-desc">For individuals & trial users</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>1 Domain</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> </li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>3-month trial</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Get started</button>
+        </div>
+      </div>
+      <!-- Basic -->
       <div class="pricing-card">
         <div class="pricing-card-top">
           <span class="pricing-badge">Basic</span>
-          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span><span class="pricing-period">/month</span></div>
-          <div class="pricing-desc" data-en="Perfect for small teams" data-vi="Phù hợp cho đội nhóm nhỏ">Perfect for small teams</div>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">1,999</span></div>
+          <div class="pricing-desc">For small & medium businesses</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="5 Monitored Assets" data-vi="5 tài sản giám sát">5 Monitored Assets</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Basic Vulnerability Scanning" data-vi="Quét lỗ hổng cơ bản">Basic Vulnerability Scanning</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Email Notifications" data-vi="Thông báo qua email">Email Notifications</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Domains / 5 IPs / 30 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-primary" data-en="Get Started" data-vi="Bắt đầu">Get Started</button>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
         </div>
       </div>
+      <!-- Premium -->
       <div class="pricing-card featured">
         <div class="pricing-card-top">
-          <span class="pricing-badge">Pro</span>
-          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">99</span><span class="pricing-period">/month</span></div>
-          <div class="pricing-desc" data-en="Perfect for growing teams" data-vi="Phù hợp cho đội nhóm đang phát triển">Perfect for growing teams</div>
+          <span class="pricing-badge">Premium</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">3,999</span></div>
+          <div class="pricing-desc">For companies & government agencies</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Assets" data-vi="Không giới hạn tài sản">Unlimited Assets</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Advanced Threat Detection" data-vi="Phát hiện mối đe dọa nâng cao">Advanced Threat Detection</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Real-time Monitoring" data-vi="Giám sát thời gian thực">Real-time Monitoring</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Priority Support" data-vi="Hỗ trợ ưu tiên">Priority Support</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>10 Domains / 10 IPs / 50 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-primary" data-en="Start Hiring" data-vi="Bắt đầu">Start Hiring</button>
+          <button class="pricing-btn pricing-btn-primary">Contact us</button>
         </div>
       </div>
+      <!-- Professional -->
       <div class="pricing-card">
         <div class="pricing-card-top">
-          <span class="pricing-badge">Custom</span>
-          <div class="pricing-amount"><span class="pricing-value" style="font-size:32px;">Custom</span></div>
-          <div class="pricing-desc" data-en="For large organizations" data-vi="Dành cho tổ chức lớn">For large organizations</div>
+          <span class="pricing-badge">Professional</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">7,999</span></div>
+          <div class="pricing-desc">For enterprises & conglomerates</div>
         </div>
         <div class="pricing-card-bottom">
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Unlimited Everything" data-vi="Không giới hạn mọi thứ">Unlimited Everything</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Custom Integrations" data-vi="Tích hợp tùy chỉnh">Custom Integrations</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="Dedicated Account Manager" data-vi="Quản lý tài khoản riêng">Dedicated Account Manager</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="SLA Guarantee" data-vi="Đảm bảo SLA">SLA Guarantee</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>20 Domains / 20 IPs / 80 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
           </ul>
-          <button class="pricing-btn pricing-btn-secondary" data-en="Contact Us" data-vi="Liên hệ">Contact Us</button>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Advanced</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:24px;">Contact us</span></div>
+          <div class="pricing-desc">For specialized systems needing custom config</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Custom scope &amp; duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>IoC intelligence feed</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
         </div>
       </div>
     </div>
