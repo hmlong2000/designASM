@@ -746,10 +746,122 @@
       .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
       .pricing-title { font-size: 22px; }
     }
+    /* ── Detail Subpage ────────────────────────────────────── */
+    .db-detail-screen { display: none; }
+    .db-detail-screen.active { display: block; }
+    #db-grid-screen { display: block; }
+    #db-grid-screen.hidden { display: none; }
+
+    .db-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+    .db-detail-header-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .db-detail-back { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: var(--muted); transition: all 0.15s; }
+    .db-detail-back:hover { border-color: var(--accent); color: var(--accent); }
+    .db-detail-back svg { width: 16px; height: 16px; }
+    .db-detail-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; }
+    .db-detail-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .db-detail-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .db-detail-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .db-detail-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+    .db-detail-stat-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+    .db-detail-stat-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .db-detail-table-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .db-detail-table-header { display: grid; grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr 1fr; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
+    .db-detail-table-header span { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
+    .db-detail-table-header span:hover { color: var(--fg); }
+    .db-detail-table-row { display: grid; grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr 1fr; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
+    .db-detail-table-row:last-child { border-bottom: none; }
+    .db-detail-table-row:hover { background: var(--surface-alt); }
+    .db-detail-account { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--fg); }
+    .db-detail-password { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+    .db-detail-date { font-family: var(--font-mono); font-size: 12px; color: var(--fg-secondary); }
+    .db-detail-status { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    @media (max-width: 1200px) {
+      .db-detail-table-header, .db-detail-table-row { grid-template-columns: 2fr 1.5fr 1fr 1fr; }
+      .db-detail-table-header > *:nth-child(4), .db-detail-table-row > *:nth-child(4) { display: none; }
+      .db-detail-summary { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .db-detail-table-header, .db-detail-table-row { grid-template-columns: 1.5fr 1fr 1fr; }
+      .db-detail-table-header > *:nth-child(4), .db-detail-table-row > *:nth-child(4),
+      .db-detail-table-header > *:nth-child(5), .db-detail-table-row > *:nth-child(5) { display: none; }
+      .db-detail-summary { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .db-detail-table-header, .db-detail-table-row { grid-template-columns: 1fr 1fr; }
+      .db-detail-table-header > *:nth-child(3), .db-detail-table-row > *:nth-child(3) { display: none; }
+      .db-detail-summary { grid-template-columns: 1fr; }
+    }
+
+    /* ── Account Detail Modal ──────────────────────────────── */
+    .db-acct-overlay {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(15, 22, 41, 0.5);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .db-acct-overlay.active { opacity: 1; pointer-events: auto; }
+    .db-acct-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 90%; max-width: 480px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .db-acct-overlay.active .db-acct-modal { transform: translateY(0) scale(1); }
+    .db-acct-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .db-acct-modal-title {
+      font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg);
+    }
+    .db-acct-modal-close {
+      width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-alt);
+      display: grid; place-items: center; cursor: pointer; transition: background 0.15s; flex-shrink: 0;
+    }
+    .db-acct-modal-close:hover { background: var(--border); }
+    .db-acct-modal-close svg { width: 14px; height: 14px; color: var(--muted); }
+    .db-acct-modal-body { padding: 18px 22px 22px; }
+    .db-acct-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .db-acct-row:last-child { border-bottom: none; }
+    .db-acct-label {
+      font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+      min-width: 120px; flex-shrink: 0; padding-top: 1px;
+    }
+    .db-acct-value {
+      font-size: 13px; font-weight: 500; color: var(--fg); word-break: break-all;
+    }
+    .db-acct-value--mono {
+      font-family: var(--font-mono); letter-spacing: 0.02em;
+    }
+    .db-acct-modal-footer {
+      padding: 12px 22px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex; justify-content: flex-end;
+    }
+    .db-acct-modal-btn {
+      padding: 8px 16px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 600;
+      border: 1px solid var(--border); background: var(--surface-alt); color: var(--fg);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .db-acct-modal-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .db-detail-table-row { cursor: pointer; }
   </style>
 </head>
 <body>
-
+<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.getElementById("sidebar").classList.add("collapsed")}</script>
 
   <!-- TOP NAV -->
   <nav class="sidebar" id="sidebar">
@@ -839,10 +951,6 @@
     </a>
   </div>
 
-  
-    
-  </div>
-
   <div class="sidebar-divider sidebar-divider--full"></div>
 
   <!-- Upgrade Card -->
@@ -903,6 +1011,7 @@
 </nav>
 
   <main class="main">
+  <div id="db-grid-screen">
 
 <div class="page-header reveal">
 <div class="page-header-left">
@@ -1042,6 +1151,74 @@
 </div>
 </div>
 </div>
+  </div><!-- /db-grid-screen -->
+
+  <!-- ═══════════════════ DETAIL SUBPAGE ═══════════════════ -->
+  <div id="db-detail-screen" class="db-detail-screen">
+    <div class="db-detail-header">
+      <div class="db-detail-header-left">
+        <button class="db-detail-back" onclick="showDbGrid()" title="Back to list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div>
+          <div class="db-detail-title" id="db-detail-asset-name">hawaiianairlines.com</div>
+          <div class="db-detail-subtitle" data-en="Breached accounts detected for this asset" data-vi="Tài khoản bị rò rỉ được phát hiện cho tài sản này">Breached accounts detected for this asset</div>
+        </div>
+      </div>
+      <div class="db-detail-right">
+        <button class="header-btn header-btn-secondary" onclick="showDbGrid()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span data-en="Refresh" data-vi="Làm mới">Refresh</span>
+        </button>
+        <button class="header-btn header-btn-primary">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-en="Export CSV" data-vi="Xuất CSV">Export CSV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="db-detail-summary">
+      <div class="db-detail-stat-card">
+        <div class="db-detail-stat-value" id="db-detail-total" style="color:var(--critical);">246</div>
+        <div class="db-detail-stat-label" data-en="Breached accounts" data-vi="Tài khoản bị rò rỉ">Breached accounts</div>
+      </div>
+      <div class="db-detail-stat-card">
+        <div class="db-detail-stat-value" id="db-detail-published" style="color:var(--amber);">189</div>
+        <div class="db-detail-stat-label" data-en="Published" data-vi="Đã công bố">Published</div>
+      </div>
+      <div class="db-detail-stat-card">
+        <div class="db-detail-stat-value" id="db-detail-fix" style="color:var(--low);">0</div>
+        <div class="db-detail-stat-label" data-en="Fixed" data-vi="Đã sửa">Fixed</div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="breach-search" style="margin-bottom:20px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="db-detail-search" placeholder="Search accounts..." data-en-placeholder="Search accounts..." data-vi-placeholder="Tìm tài khoản..." style="border:none;background:transparent;outline:none;font-size:12px;font-family:var(--font-body);color:var(--fg);width:180px;">
+    </div>
+
+    <!-- Breached Accounts Table -->
+    <div class="db-detail-table-section">
+      <div class="db-detail-table-header">
+        <span data-en="Account" data-vi="Tài khoản">Account <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span data-en="Password" data-vi="Mật khẩu">Password <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span data-en="Breach date" data-vi="Ngày rò rỉ">Breach date <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span data-en="Published date" data-vi="Ngày công bố">Published date <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span data-en="Fix status" data-vi="Trạng thái sửa">Fix status</span>
+      </div>
+      <div id="db-detail-rows"></div>
+      <div class="pagination">
+        <span class="pagination-info" id="db-detail-pagination-info">1-10 of 246</span>
+        <div class="pagination-controls">
+          <button class="pagination-btn" id="db-detail-prev" disabled>&#8249;</button>
+          <button class="pagination-btn active" id="db-detail-page-num">1</button>
+          <button class="pagination-btn" id="db-detail-next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /db-detail-screen -->
 
 </main>
 
@@ -1110,6 +1287,209 @@
     });
   }
 
+</script>
+  <!-- ═══════════════════ ACCOUNT DETAIL MODAL ═══════════════════ -->
+  <div class="db-acct-overlay" id="dbAcctOverlay">
+    <div class="db-acct-modal">
+      <div class="db-acct-modal-header">
+        <div class="db-acct-modal-title" id="dbAcctModalTitle">Account Details</div>
+        <button class="db-acct-modal-close" onclick="hideAcctDetail()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="db-acct-modal-body" id="dbAcctModalBody"></div>
+      <div class="db-acct-modal-footer">
+        <button class="db-acct-modal-btn" onclick="hideAcctDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+var dbCurrentAsset = '';
+var dbFilteredData = [];
+var dbPage = 1;
+var dbPageSize = 10;
+
+var dbDetailData = {
+  'hawaiianairlines.com': [
+    { account: '331321020', email: '331321020@unknown.com', password: 'Lo***********', name: 'Lorenzo Diaz', phone: '+1-555-0142', breach: '27/07/2025, 22:40:34', published: '27/07/2025, 22:40:34', fix: 'None' },
+    { account: 'cagerter@murphyusa.com', email: 'cagerter@murphyusa.com', password: 'OX*********', name: 'Cager Ter', phone: '+1-555-0198', breach: '27/06/2025, 17:34:01', published: '18/07/2025, 10:41:54', fix: 'None' },
+    { account: 'rowlingzora@campbells.com', email: 'rowlingzora@campbells.com', password: '5z*********', name: 'Zora Rowling', phone: '+1-555-0276', breach: '14/07/2025, 18:09:13', published: '14/07/2025, 18:09:13', fix: 'None' },
+    { account: '317639174', email: '317639174@unknown.com', password: 'ln*******', name: 'Luis Nguyen', phone: '+1-555-0334', breach: '30/03/2025, 03:02:07', published: '14/07/2025, 18:09:13', fix: 'None' },
+    { account: 'quixy808', email: 'quixy808@unknown.com', password: '4A*********', name: 'Quixy Tran', phone: '+1-555-0411', breach: '14/07/2025, 06:09:01', published: '14/07/2025, 06:09:01', fix: 'None' },
+    { account: 'jpkasun2006@gmail.com', email: 'jpkasun2006@gmail.com', password: 'dr*******', name: 'Kasun Perera', phone: '+1-555-0567', breach: '14/07/2025, 06:09:01', published: '14/07/2025, 06:09:01', fix: 'None' },
+    { account: 'lynhle1', email: 'lynhle1@unknown.com', password: 'Jq*******', name: 'Lynh Le', phone: '+1-555-0689', breach: '14/07/2025, 06:06:24', published: '14/07/2025, 06:06:24', fix: 'None' },
+    { account: 'mattbrubaker77', email: 'mattbrubaker77@unknown.com', password: 'St*******', name: 'Matt Brubaker', phone: '+1-555-0723', breach: '14/07/2025, 06:06:24', published: '14/07/2025, 06:06:24', fix: 'None' },
+    { account: 'AHaseman@ups.com', email: 'AHaseman@ups.com', password: 'vh***********', name: 'A Haseman', phone: '+1-555-0814', breach: '14/07/2025, 06:06:24', published: '14/07/2025, 06:06:24', fix: 'None' },
+    { account: 'mattiec20', email: 'mattiec20@unknown.com', password: 'Ke*******', name: 'Matti C', phone: '+1-555-0905', breach: '14/07/2025, 06:06:24', published: '14/07/2025, 06:06:24', fix: 'None' },
+    { account: 'john.doe@outlook.com', email: 'john.doe@outlook.com', password: 'Qw**********', name: 'John Doe', phone: '+1-555-1047', breach: '13/07/2025, 14:22:18', published: '13/07/2025, 14:22:18', fix: 'None' },
+    { account: 'sarah.connor@gmail.com', email: 'sarah.connor@gmail.com', password: 'Xm******', name: 'Sarah Connor', phone: '+1-555-1183', breach: '13/07/2025, 11:05:47', published: '13/07/2025, 11:05:47', fix: 'None' },
+    { account: 'mike.wilson@yahoo.com', email: 'mike.wilson@yahoo.com', password: 'Bn***********', name: 'Mike Wilson', phone: '+1-555-1299', breach: '12/07/2025, 23:18:56', published: '12/07/2025, 23:18:56', fix: 'None' },
+    { account: 'emily.brown@hotmail.com', email: 'emily.brown@hotmail.com', password: 'Zx*******', name: 'Emily Brown', phone: '+1-555-1341', breach: '12/07/2025, 19:44:33', published: '12/07/2025, 19:44:33', fix: 'None' },
+    { account: 'alex.jones@protonmail.com', email: 'alex.jones@protonmail.com', password: 'Ht*********', name: 'Alex Jones', phone: '+1-555-1458', breach: '12/07/2025, 16:30:12', published: '12/07/2025, 16:30:12', fix: 'None' },
+    { account: 'lisa.garcia@icloud.com', email: 'lisa.garcia@icloud.com', password: 'Kl******', name: 'Lisa Garcia', phone: '+1-555-1572', breach: '12/07/2025, 08:55:41', published: '12/07/2025, 08:55:41', fix: 'None' },
+    { account: 'david.lee@aol.com', email: 'david.lee@aol.com', password: 'Fg***********', name: 'David Lee', phone: '+1-555-1683', breach: '11/07/2025, 22:12:08', published: '11/07/2025, 22:12:08', fix: 'None' },
+    { account: 'emma.white@live.com', email: 'emma.white@live.com', password: 'Vb*******', name: 'Emma White', phone: '+1-555-1794', breach: '11/07/2025, 15:39:55', published: '11/07/2025, 15:39:55', fix: 'None' },
+    { account: 'chris.taylor@outlook.com', email: 'chris.taylor@outlook.com', password: 'Nm*********', name: 'Chris Taylor', phone: '+1-555-1837', breach: '11/07/2025, 09:27:14', published: '11/07/2025, 09:27:14', fix: 'None' },
+    { account: 'jessica.martin@gmail.com', email: 'jessica.martin@gmail.com', password: 'Ps**********', name: 'Jessica Martin', phone: '+1-555-1948', breach: '10/07/2025, 21:48:36', published: '10/07/2025, 21:48:36', fix: 'None' },
+    { account: 'daniel.jackson@yahoo.com', email: 'daniel.jackson@yahoo.com', password: 'Yt******', name: 'Daniel Jackson', phone: '+1-555-2061', breach: '10/07/2025, 14:16:22', published: '10/07/2025, 14:16:22', fix: 'None' },
+    { account: 'rachel.king@hotmail.com', email: 'rachel.king@hotmail.com', password: 'Wq*******', name: 'Rachel King', phone: '+1-555-2175', breach: '10/07/2025, 07:03:48', published: '10/07/2025, 07:03:48', fix: 'None' },
+    { account: 'kevin.wright@protonmail.com', email: 'kevin.wright@protonmail.com', password: 'Lm***********', name: 'Kevin Wright', phone: '+1-555-2289', breach: '09/07/2025, 19:55:17', published: '09/07/2025, 19:55:17', fix: 'None' },
+    { account: 'nancy.hall@icloud.com', email: 'nancy.hall@icloud.com', password: 'Rt*********', name: 'Nancy Hall', phone: '+1-555-2314', breach: '09/07/2025, 12:41:33', published: '09/07/2025, 12:41:33', fix: 'None' },
+    { account: 'mark.lopez@aol.com', email: 'mark.lopez@aol.com', password: 'Gh*******', name: 'Mark Lopez', phone: '+1-555-2457', breach: '09/07/2025, 05:28:09', published: '09/07/2025, 05:28:09', fix: 'None' },
+    { account: 'sandra.clark@live.com', email: 'sandra.clark@live.com', password: 'Df**********', name: 'Sandra Clark', phone: '+1-555-2563', breach: '08/07/2025, 22:14:45', published: '08/07/2025, 22:14:45', fix: 'None' },
+    { account: 'brian.lewis@outlook.com', email: 'brian.lewis@outlook.com', password: 'Jn******', name: 'Brian Lewis', phone: '+1-555-2678', breach: '08/07/2025, 15:02:31', published: '08/07/2025, 15:02:31', fix: 'None' },
+    { account: 'amanda.walker@gmail.com', email: 'amanda.walker@gmail.com', password: 'Bm***********', name: 'Amanda Walker', phone: '+1-555-2791', breach: '08/07/2025, 08:49:18', published: '08/07/2025, 08:49:18', fix: 'None' },
+    { account: 'peter.hall@yahoo.com', email: 'peter.hall@yahoo.com', password: 'Xc*******', name: 'Peter Hall', phone: '+1-555-2834', breach: '07/07/2025, 21:35:52', published: '07/07/2025, 21:35:52', fix: 'None' },
+    { account: 'laura.young@hotmail.com', email: 'laura.young@hotmail.com', password: 'Kw*********', name: 'Laura Young', phone: '+1-555-2947', breach: '07/07/2025, 14:22:46', published: '07/07/2025, 14:22:46', fix: 'None' }
+  ],
+  'gskywatch.io': [
+    { account: 'admin@gskywatch.io', email: 'admin@gskywatch.io', password: 'Tr**********', name: 'Admin User', phone: '+1-555-3012', breach: '28/07/2025, 14:22:10', published: '28/07/2025, 14:22:10', fix: 'None' },
+    { account: 'devops@gskywatch.io', email: 'devops@gskywatch.io', password: 'Pq*******', name: 'DevOps Team', phone: '+1-555-3124', breach: '28/07/2025, 10:15:33', published: '28/07/2025, 10:15:33', fix: 'None' },
+    { account: 'support@gskywatch.io', email: 'support@gskywatch.io', password: 'Nv*********', name: 'Support Team', phone: '+1-555-3287', breach: '27/07/2025, 22:08:47', published: '27/07/2025, 22:08:47', fix: 'None' },
+    { account: 'ops@gskywatch.io', email: 'ops@gskywatch.io', password: 'Hj***********', name: 'Ops Engineer', phone: '+1-555-3341', breach: '27/07/2025, 16:54:21', published: '27/07/2025, 16:54:21', fix: 'None' },
+    { account: 'security@gskywatch.io', email: 'security@gskywatch.io', password: 'Zm******', name: 'Security Lead', phone: '+1-555-3459', breach: '27/07/2025, 11:40:55', published: '27/07/2025, 11:40:55', fix: 'None' },
+    { account: 'monitor@gskywatch.io', email: 'monitor@gskywatch.io', password: 'Wx**********', name: 'Monitor Bot', phone: '+1-555-3568', breach: '26/07/2025, 20:27:18', published: '26/07/2025, 20:27:18', fix: 'None' },
+    { account: 'alerts@gskywatch.io', email: 'alerts@gskywatch.io', password: 'Lk*******', name: 'Alerts Service', phone: '+1-555-3672', breach: '26/07/2025, 15:13:42', published: '26/07/2025, 15:13:42', fix: 'None' },
+    { account: 'api@gskywatch.io', email: 'api@gskywatch.io', password: 'Fb*********', name: 'API Gateway', phone: '+1-555-3783', breach: '26/07/2025, 10:00:06', published: '26/07/2025, 10:00:06', fix: 'None' },
+    { account: 'ci@gskywatch.io', email: 'ci@gskywatch.io', password: 'Rn***********', name: 'CI Pipeline', phone: '+1-555-3894', breach: '25/07/2025, 22:46:39', published: '25/07/2025, 22:46:39', fix: 'None' },
+    { account: 'deploy@gskywatch.io', email: 'deploy@gskywatch.io', password: 'Gt******', name: 'Deploy Bot', phone: '+1-555-3945', breach: '25/07/2025, 17:33:12', published: '25/07/2025, 17:33:12', fix: 'None' },
+    { account: 'test@gskywatch.io', email: 'test@gskywatch.io', password: 'Yh**********', name: 'Test Account', phone: '+1-555-4067', breach: '25/07/2025, 12:19:45', published: '25/07/2025, 12:19:45', fix: 'None' },
+    { account: 'staging@gskywatch.io', email: 'staging@gskywatch.io', password: 'Bn*******', name: 'Staging Env', phone: '+1-555-4189', breach: '25/07/2025, 07:06:18', published: '25/07/2025, 07:06:18', fix: 'None' }
+  ]
+};
+
+// Generate some data for other assets
+var dbFirstNames = ['John','Jane','Alice','Bob','Charlie','David','Emma','Frank','Grace','Henry','Iris','Jack','Kate','Leo','Mia','Noah','Olivia','Paul','Quinn','Rose','Sam','Tina','Uma','Victor','Wendy','Xander','Yara','Zane'];
+var dbLastNames = ['Smith','Johnson','Lee','Garcia','Martinez','Clark','Lewis','Walker','Hall','Young','Wright','Lopez','Hill','Scott','Green','Adams','Baker','Nelson','Carter','Mitchell','Perez','Roberts','Turner','Phillips','Campbell','Parker','Evans','Edwards','Collins','Stewart'];
+['api.gskywatch.io','auth.gskywatch.io','dashboard.gskywatch.io','ws.gskywatch.io','cdn.gskywatch.io','mail.gskywatch.io','vpn.gskywatch.io','legacy.gskywatch.io','staging.gskywatch.io','docs.gskywatch.io'].forEach(function(asset) {
+  var count = Math.floor(Math.random() * 20) + 3;
+  var data = [];
+  for (var i = 0; i < count; i++) {
+    var fn = dbFirstNames[Math.floor(Math.random() * dbFirstNames.length)];
+    var ln = dbLastNames[Math.floor(Math.random() * dbLastNames.length)];
+    var domains = ['gmail.com','yahoo.com','outlook.com','hotmail.com','protonmail.com','icloud.com','live.com','aol.com','company.io','corp.dev'];
+    var domain = domains[Math.floor(Math.random() * domains.length)];
+    var acct = fn.toLowerCase() + '.' + ln.toLowerCase() + '@' + domain;
+    var passChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var passLen = Math.floor(Math.random() * 6) + 5;
+    var pass = '';
+    for (var j = 0; j < passLen; j++) pass += passChars.charAt(Math.floor(Math.random() * passChars.length));
+    var day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+    var month = String(Math.floor(Math.random() * 7) + 1).padStart(2, '0');
+    var hr = String(Math.floor(Math.random() * 24)).padStart(2, '0');
+    var min = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+    var sec = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+    var ph = '+1-555-' + String(Math.floor(Math.random() * 9000) + 1000);
+    data.push({
+      account: acct,
+      email: acct,
+      password: pass.substring(0, 2) + '********',
+      name: fn + ' ' + ln,
+      phone: ph,
+      breach: day + '/0' + month + '/2025, ' + hr + ':' + min + ':' + sec,
+      published: day + '/0' + month + '/2025, ' + hr + ':' + min + ':' + sec,
+      fix: 'None'
+    });
+  }
+  dbDetailData[asset] = data;
+});
+
+function showDbDetail(assetName) {
+  dbCurrentAsset = assetName;
+  dbFilteredData = dbDetailData[assetName] || [];
+  dbPage = 1;
+  document.getElementById('db-detail-asset-name').textContent = assetName;
+  document.getElementById('db-detail-total').textContent = dbFilteredData.length;
+  document.getElementById('db-detail-published').textContent = dbFilteredData.length;
+  document.getElementById('db-detail-fix').textContent = '0';
+  document.getElementById('db-grid-screen').classList.add('hidden');
+  document.getElementById('db-detail-screen').classList.add('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = 'none';
+  renderDbDetailRows();
+}
+
+function showDbGrid() {
+  document.getElementById('db-grid-screen').classList.remove('hidden');
+  document.getElementById('db-detail-screen').classList.remove('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = '';
+}
+
+function showAcctDetail(idx) {
+  var all = dbDetailData[dbCurrentAsset] || [];
+  var r = all[idx];
+  if (!r) return;
+  document.getElementById('dbAcctModalTitle').textContent = 'Account Details';
+  var html =
+    '<div class="db-acct-row"><div class="db-acct-label">Username</div><div class="db-acct-value">' + r.account + '</div></div>' +
+    '<div class="db-acct-row"><div class="db-acct-label">Email</div><div class="db-acct-value">' + (r.email || r.account) + '</div></div>' +
+    '<div class="db-acct-row"><div class="db-acct-label">Password</div><div class="db-acct-value db-acct-value--mono">' + r.password + '</div></div>' +
+    '<div class="db-acct-row"><div class="db-acct-label">Name</div><div class="db-acct-value">' + (r.name || 'N/A') + '</div></div>' +
+    '<div class="db-acct-row"><div class="db-acct-label">Phone number</div><div class="db-acct-value">' + (r.phone || 'N/A') + '</div></div>' +
+    '<div class="db-acct-row"><div class="db-acct-label">Leak date</div><div class="db-acct-value">' + r.breach + '</div></div>';
+  document.getElementById('dbAcctModalBody').innerHTML = html;
+  document.getElementById('dbAcctOverlay').classList.add('active');
+}
+
+function hideAcctDetail() {
+  document.getElementById('dbAcctOverlay').classList.remove('active');
+}
+
+function renderDbDetailRows() {
+  var container = document.getElementById('db-detail-rows');
+  var total = dbFilteredData.length;
+  var start = (dbPage - 1) * dbPageSize;
+  var end = Math.min(start + dbPageSize, total);
+  var rows = dbFilteredData.slice(start, end);
+  var html = '';
+  rows.forEach(function(r, i) {
+    var globalIdx = start + i;
+    html += '<div class="db-detail-table-row" onclick="showAcctDetail(' + globalIdx + ')" style="cursor:pointer;">' +
+      '<div class="db-detail-account">' + r.account + '</div>' +
+      '<div class="db-detail-password">' + r.password + '</div>' +
+      '<div class="db-detail-date">' + r.breach + '</div>' +
+      '<div class="db-detail-date">' + r.published + '</div>' +
+      '<div class="db-detail-status">' + r.fix + '</div>' +
+    '</div>';
+  });
+  container.innerHTML = html;
+  document.getElementById('db-detail-pagination-info').textContent = (total === 0 ? '0' : (start + 1)) + '-' + end + ' of ' + total;
+  document.getElementById('db-detail-prev').disabled = dbPage <= 1;
+  document.getElementById('db-detail-page-num').textContent = dbPage;
+  var maxPage = Math.ceil(total / dbPageSize);
+  document.getElementById('db-detail-next').disabled = dbPage >= maxPage;
+}
+
+document.getElementById('db-detail-prev').addEventListener('click', function() {
+  if (dbPage > 1) { dbPage--; renderDbDetailRows(); }
+});
+document.getElementById('db-detail-next').addEventListener('click', function() {
+  var maxPage = Math.ceil(dbFilteredData.length / dbPageSize);
+  if (dbPage < maxPage) { dbPage++; renderDbDetailRows(); }
+});
+document.getElementById('db-detail-search').addEventListener('input', function() {
+  var q = this.value.toLowerCase();
+  var all = dbDetailData[dbCurrentAsset] || [];
+  dbFilteredData = all.filter(function(r) {
+    return r.account.toLowerCase().indexOf(q) !== -1 ||
+           r.password.toLowerCase().indexOf(q) !== -1 ||
+           r.breach.toLowerCase().indexOf(q) !== -1;
+  });
+  dbPage = 1;
+  renderDbDetailRows();
+});
+
+// Add onclick to asset rows
+document.querySelectorAll('.breach-row').forEach(function(row) {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', function(e) {
+    if (e.target.closest('.toggle-switch')) return;
+    var name = this.querySelector('.breach-asset');
+    if (name) showDbDetail(name.textContent.trim());
+  });
+});
 </script>
 <!-- Pricing Modal -->
 <div class="pricing-overlay" id="pricingModal">
@@ -1251,6 +1631,12 @@
   document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
     btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
   });
+
+  var acctOverlay = document.getElementById('dbAcctOverlay');
+  if (acctOverlay) {
+    acctOverlay.addEventListener('click', function(e){ if(e.target===acctOverlay) hideAcctDetail(); });
+  }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') hideAcctDetail(); });
 })();
 </script>
 

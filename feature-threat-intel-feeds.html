@@ -688,6 +688,119 @@
       .intel-table-header > *:nth-child(4), .intel-row > *:nth-child(4) { display: none; }
       .intel-table-header > *:nth-child(5), .intel-row > *:nth-child(5) { display: none; }
     }
+
+    /* ── IoC Detail Popup ──────────────────────────────────── */
+    .tif-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .tif-overlay.active { opacity: 1; pointer-events: auto; }
+    .tif-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 95%; max-width: 640px;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .tif-overlay.active .tif-modal { transform: translateY(0) scale(1); }
+    .tif-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s; z-index: 2;
+    }
+    .tif-close:hover { background: var(--border); }
+    .tif-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .tif-title {
+      padding: 24px 24px 0;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--fg);
+      word-break: break-all;
+    }
+    .tif-body { padding: 0 24px 24px; }
+    .tif-row {
+      display: flex;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tif-row:last-child { border-bottom: none; }
+    .tif-label {
+      width: 140px;
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+    }
+    .tif-value {
+      flex: 1;
+      font-size: 13px;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+    .tif-value a {
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .tif-value a:hover { text-decoration: underline; }
+    .tif-related-search {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      margin-bottom: 8px;
+      transition: border-color var(--transition-fast);
+    }
+    .tif-related-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .tif-related-search::placeholder { color: var(--muted); }
+    .tif-related-list {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .tif-related-list div {
+      padding: 6px 10px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--fg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tif-related-list div:last-child { border-bottom: none; }
+    .tif-alias-list {
+      max-height: 140px;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .tif-alias-list div {
+      padding: 6px 10px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--fg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tif-alias-list div:last-child { border-bottom: none; }
   
     /* ── Pricing Modal ──────────────────────────────────────── */
     .pricing-overlay {
@@ -878,10 +991,6 @@
     </a>
   </div>
 
-  
-    
-  </div>
-
   <div class="sidebar-divider sidebar-divider--full"></div>
 
   <!-- Upgrade Card -->
@@ -988,7 +1097,7 @@
       <div class="intel-list-header">
         <div class="intel-list-header-left">
           <h3 data-en="Intel Feeds" data-vi="Luồng tin tức">Intel Feeds</h3>
-          <span class="intel-list-count">12 <span data-en="feeds" data-vi="nguồn">feeds</span></span>
+          <div class="intel-list-count">13 feeds</div>
         </div>
         <div class="intel-search">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1006,99 +1115,108 @@
       </div>
 
       <div id="intel-table-body">
-        <div class="intel-row" data-search="testphp.vulnweb.com SQL Injection">
-          <div class="intel-ioc">http://testphp.vulnweb.com</div>
-          <div class="intel-family">CVE-2024-1234</div>
-          <div class="intel-attack"><span class="type-badge type-badge--website">SQL Injection</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="tradeboard.mefound.com" data-search="tradeboard.mefound.com malware domain apt_lazarus">
+          <div class="intel-ioc">tradeboard.mefound.com</div>
+          <div class="intel-family">apt_lazarus</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">03/07/2026</div>
         </div>
-        <div class="intel-row" data-search="testasp.vulnweb.com XSS">
-          <div class="intel-ioc">http://testasp.vulnweb.com</div>
-          <div class="intel-family">CVE-2024-5678</div>
-          <div class="intel-attack"><span class="type-badge type-badge--subdomain">XSS</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="exbonus.mrbasic.com" data-search="exbonus.mrbasic.com malware domain apt_lazarus">
+          <div class="intel-ioc">exbonus.mrbasic.com</div>
+          <div class="intel-family">apt_lazarus</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">03/07/2026</div>
         </div>
-        <div class="intel-row" data-search="testaspnet.vulnweb.com RCE">
-          <div class="intel-ioc">http://testaspnet.vulnweb.com</div>
-          <div class="intel-family">CVE-2024-9012</div>
-          <div class="intel-attack"><span class="type-badge type-badge--ip">RCE</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="45.77.66.188" data-search="45.77.66.188 malware ip apt_lazarus">
+          <div class="intel-ioc">45.77.66.188</div>
+          <div class="intel-family">apt_lazarus</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--ip">IP</span></div>
+          <div class="intel-updated">02/07/2026</div>
         </div>
-        <div class="intel-row" data-search="testfire.net CSRF">
-          <div class="intel-ioc">http://testfire.net</div>
-          <div class="intel-family">CVE-2024-3456</div>
-          <div class="intel-attack"><span class="type-badge type-badge--website">CSRF</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="cdn.securelist.com" data-search="cdn.securelist.com phishing url apt28">
+          <div class="intel-ioc">cdn.securelist.com</div>
+          <div class="intel-family">apt28</div>
+          <div class="intel-attack"><span class="type-badge type-badge--website">Phishing</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--website">URL</span></div>
+          <div class="intel-updated">02/07/2026</div>
         </div>
-        <div class="intel-row" data-search="demo.testfire.net IDOR">
-          <div class="intel-ioc">http://demo.testfire.net</div>
-          <div class="intel-family">CVE-2024-7890</div>
-          <div class="intel-attack"><span class="type-badge type-badge--subdomain">IDOR</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="login.microsoftonline.com" data-search="login.microsoftonline.com phishing url apt29">
+          <div class="intel-ioc">login.microsoftonline.com</div>
+          <div class="intel-family">apt29</div>
+          <div class="intel-attack"><span class="type-badge type-badge--website">Phishing</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--website">URL</span></div>
+          <div class="intel-updated">01/07/2026</div>
         </div>
-        <div class="intel-row" data-search="juice-shop.herokuapp.com SQL Injection">
-          <div class="intel-ioc">http://juice-shop.herokuapp.com</div>
-          <div class="intel-family">CVE-2024-2345</div>
-          <div class="intel-attack"><span class="type-badge type-badge--website">SQL Injection</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="192.168.105.47" data-search="192.168.105.47 c2 ip fin7">
+          <div class="intel-ioc">192.168.105.47</div>
+          <div class="intel-family">fin7</div>
+          <div class="intel-attack"><span class="type-badge type-badge--subdomain">C2</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--ip">IP</span></div>
+          <div class="intel-updated">01/07/2026</div>
         </div>
-        <div class="intel-row" data-search="owasp-juice.shop XSS">
-          <div class="intel-ioc">https://owasp-juice.shop</div>
-          <div class="intel-family">CVE-2024-6789</div>
-          <div class="intel-attack"><span class="type-badge type-badge--subdomain">XSS</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="update-check.windows.com" data-search="update-check.windows.com malware domain turla">
+          <div class="intel-ioc">update-check.windows.com</div>
+          <div class="intel-family">turla</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">30/06/2026</div>
         </div>
-        <div class="intel-row" data-search="crackme.starcitizentools.com RCE">
-          <div class="intel-ioc">https://crackme.starcitizentools.com</div>
-          <div class="intel-family">CVE-2024-1357</div>
-          <div class="intel-attack"><span class="type-badge type-badge--ip">RCE</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="mail.service-now.com" data-search="mail.service-now.com phishing url carbanak">
+          <div class="intel-ioc">mail.service-now.com</div>
+          <div class="intel-family">carbanak</div>
+          <div class="intel-attack"><span class="type-badge type-badge--website">Phishing</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--website">URL</span></div>
+          <div class="intel-updated">30/06/2026</div>
         </div>
-        <div class="intel-row" data-search="hackyourselffirst.troyhunt.com CSRF">
-          <div class="intel-ioc">https://hackyourselffirst.troyhunt.com</div>
-          <div class="intel-family">CVE-2024-4567</div>
-          <div class="intel-attack"><span class="type-badge type-badge--website">CSRF</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="db.fgodin.fr" data-search="db.fgodin.fr malware domain sandworm">
+          <div class="intel-ioc">db.fgodin.fr</div>
+          <div class="intel-family">sandworm</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">29/06/2026</div>
         </div>
-        <div class="intel-row" data-search="vulnweb2.testsparker.com IDOR">
-          <div class="intel-ioc">http://vulnweb2.testsparker.com</div>
-          <div class="intel-family">CVE-2024-8901</div>
-          <div class="intel-attack"><span class="type-badge type-badge--subdomain">IDOR</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="89.248.167.131" data-search="89.248.167.131 c2 ip equinix">
+          <div class="intel-ioc">89.248.167.131</div>
+          <div class="intel-family">equinix</div>
+          <div class="intel-attack"><span class="type-badge type-badge--subdomain">C2</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--ip">IP</span></div>
+          <div class="intel-updated">29/06/2026</div>
         </div>
-        <div class="intel-row" data-search="hackerone.com SQL Injection">
-          <div class="intel-ioc">https://hackerone.com</div>
-          <div class="intel-family">CVE-2024-5678</div>
-          <div class="intel-attack"><span class="type-badge type-badge--website">SQL Injection</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="ns1.crownpeople.top" data-search="ns1.crownpeople.top malware domain darkhotel">
+          <div class="intel-ioc">ns1.crownpeople.top</div>
+          <div class="intel-family">darkhotel</div>
+          <div class="intel-attack"><span class="type-badge type-badge--ip">Malware</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">28/06/2026</div>
         </div>
-        <div class="intel-row" data-search="bugcrowd.com XSS">
-          <div class="intel-ioc">https://bugcrowd.com</div>
-          <div class="intel-family">CVE-2024-2468</div>
-          <div class="intel-attack"><span class="type-badge type-badge--subdomain">XSS</span></div>
-          <div class="intel-type"><span class="type-badge type-badge--domain">Website</span></div>
-          <div class="intel-updated">19/06/2026</div>
+        <div class="intel-row" data-ioc="smtp.bellalite.info" data-search="smtp.bellalite.info phishing url sofacy">
+          <div class="intel-ioc">smtp.bellalite.info</div>
+          <div class="intel-family">sofacy</div>
+          <div class="intel-attack"><span class="type-badge type-badge--website">Phishing</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--domain">Domain</span></div>
+          <div class="intel-updated">28/06/2026</div>
         </div>
+        <div class="intel-row" data-ioc="cdn.securelist.com" data-search="cdn.securelist.com phishing url apt28">
+          <div class="intel-ioc">cdn.securelist.com</div>
+          <div class="intel-family">apt28</div>
+          <div class="intel-attack"><span class="type-badge type-badge--website">Phishing</span></div>
+          <div class="intel-type"><span class="type-badge type-badge--website">URL</span></div>
+          <div class="intel-updated">02/07/2026</div>
+        </div>
+
       </div>
 
       <!-- Pagination -->
       <div class="pagination">
-        <div class="pagination-info">Rows per page: 10 &nbsp;|&nbsp; Page 1 of 1</div>
+        <div class="pagination-info">Rows per page: 10 &nbsp;|&nbsp; Page 1 of 2</div>
         <div class="pagination-controls">
           <button class="pagination-btn" disabled="">«</button>
           <button class="pagination-btn active">1</button>
-          <button class="pagination-btn" disabled="">»</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">»</button>
         </div>
       </div>
     </div>
@@ -1173,10 +1291,215 @@
       }
     });
   }
+  </script>
+
+  <!-- IoC Detail Popup -->
+<div class="tif-overlay" id="tifOverlay">
+  <div class="tif-modal">
+    <button class="tif-close" onclick="document.getElementById('tifOverlay').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="tif-title" id="tifTitle"></div>
+    <div class="tif-body">
+      <div class="tif-row"><div class="tif-label">Last update</div><div class="tif-value" id="tifLastUpdate"></div></div>
+      <div class="tif-row"><div class="tif-label">Reference</div><div class="tif-value" id="tifReference"></div></div>
+      <div class="tif-row" style="align-items:flex-start">
+        <div class="tif-label">Related IoCs</div>
+        <div style="flex:1;width:100%">
+          <input type="text" class="tif-related-search" id="tifRelatedSearch" placeholder="Search IoC">
+          <div class="tif-related-list" id="tifRelatedList"></div>
+        </div>
+      </div>
+      <div class="tif-row"><div class="tif-label">Attack type</div><div class="tif-value" id="tifAttackType"></div></div>
+      <div class="tif-row"><div class="tif-label">Type</div><div class="tif-value" id="tifType"></div></div>
+      <div class="tif-row"><div class="tif-label">Family name</div><div class="tif-value" id="tifFamilyName"></div></div>
+      <div class="tif-row" style="align-items:flex-start">
+        <div class="tif-label">Family alias</div>
+        <div class="tif-alias-list" id="tifAliasList" style="flex:1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+  // IoC Detail Popup
+  var tifData = {
+    'tradeboard.mefound.com': {
+      lastUpdate: '03/07/2026, 03:40:24',
+      reference: 'https://cdn.securelist.com/files/2017/04/Lazarus_Under_The_Hood_PDF_final.pdf',
+      relatedIocs: ['exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com'],
+      attackType: 'malware',
+      type: 'domain',
+      familyName: 'apt_lazarus',
+      familyAlias: ['appleworm','apt-c-26','apt-q-1','dangerous passwords','hidden cobra','lazarus group','lazarus hiddcobra','lazarus group bluenoroff']
+    },
+    'exbonus.mrbasic.com': {
+      lastUpdate: '03/07/2026, 03:40:24',
+      reference: 'https://cdn.securelist.com/files/2017/04/Lazarus_Under_The_Hood_PDF_final.pdf',
+      relatedIocs: ['tradeboard.mefound.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com','exbonus.mrbasic.com'],
+      attackType: 'malware',
+      type: 'domain',
+      familyName: 'apt_lazarus',
+      familyAlias: ['appleworm','apt-c-26','apt-q-1','dangerous passwords','hidden cobra','lazarus group']
+    },
+    '45.77.66.188': {
+      lastUpdate: '02/07/2026, 14:22:10',
+      reference: 'https://otx.alienvault.com/indicator/ip/45.77.66.188',
+      relatedIocs: ['tradeboard.mefound.com','exbonus.mrbasic.com','45.77.66.188','192.168.105.47'],
+      attackType: 'malware',
+      type: 'ip',
+      familyName: 'apt_lazarus',
+      familyAlias: ['appleworm','apt-c-26','apt-q-1','dangerous passwords','hidden cobra']
+    },
+    'cdn.securelist.com': {
+      lastUpdate: '02/07/2026, 09:15:33',
+      reference: 'https://securelist.com/apt28-report/91348/',
+      relatedIocs: ['cdn.securelist.com','mail.service-now.com','smtp.bellalite.info'],
+      attackType: 'phishing',
+      type: 'url',
+      familyName: 'apt28',
+      familyAlias: ['fancy bear','sednit','sophacy','pawn storm','tsar team','strontium']
+    },
+    'login.microsoftonline.com': {
+      lastUpdate: '01/07/2026, 11:42:08',
+      reference: 'https://www.microsoft.com/en-us/security/blog/2021/05/27/threat-actor-named-nobelium/',
+      relatedIocs: ['login.microsoftonline.com','cdn.securelist.com'],
+      attackType: 'phishing',
+      type: 'url',
+      familyName: 'apt29',
+      familyAlias: ['cozy bear','the dukes','cozyduke','sandstorm','dark halo']
+    },
+    '192.168.105.47': {
+      lastUpdate: '01/07/2026, 08:11:55',
+      reference: 'https://attack.mitre.org/groups/G0046/',
+      relatedIocs: ['192.168.105.47','45.77.66.188','89.248.167.131'],
+      attackType: 'c2',
+      type: 'ip',
+      familyName: 'fin7',
+      familyAlias: ['fin 7','carbanak group','navigator group','armageddon gang']
+    },
+    'update-check.windows.com': {
+      lastUpdate: '30/06/2026, 16:30:42',
+      reference: 'https://www.welivesecurity.com/2020/12/02/turla-craving-named-pipes/',
+      relatedIocs: ['update-check.windows.com','ns1.crownpeople.top'],
+      attackType: 'malware',
+      type: 'domain',
+      familyName: 'turla',
+      familyAlias: ['snake','venomous bear','waterbug','utterlytaunt']
+    },
+    'mail.service-now.com': {
+      lastUpdate: '30/06/2026, 12:05:17',
+      reference: 'https://www.fireeye.com/blog/threat-research/2017/12/attacker-use-of-dns.html',
+      relatedIocs: ['mail.service-now.com','smtp.bellalite.info','cdn.securelist.com'],
+      attackType: 'phishing',
+      type: 'url',
+      familyName: 'carbanak',
+      familyAlias: ['carbanak group','anunak','fin7']
+    },
+    'db.fgodin.fr': {
+      lastUpdate: '29/06/2026, 19:44:29',
+      reference: 'https://attack.mitre.org/groups/G0016/',
+      relatedIocs: ['db.fgodin.fr','ns1.crownpeople.top','smtp.bellalite.info'],
+      attackType: 'malware',
+      type: 'domain',
+      familyName: 'sandworm',
+      familyAlias: ['sandworm team','iron vortex','voodoo bear','frosty pumpkin']
+    },
+    '89.248.167.131': {
+      lastUpdate: '29/06/2026, 15:20:03',
+      reference: 'https://www.group-ib.com/blog/turla-equation-group/',
+      relatedIocs: ['89.248.167.131','45.77.66.188','192.168.105.47'],
+      attackType: 'c2',
+      type: 'ip',
+      familyName: 'equinix',
+      familyAlias: ['equinix malware','darkhotel']
+    },
+    'ns1.crownpeople.top': {
+      lastUpdate: '28/06/2026, 22:11:48',
+      reference: 'https://attack.mitre.org/groups/G0001/',
+      relatedIocs: ['ns1.crownpeople.top','db.fgodin.fr','smtp.bellalite.info'],
+      attackType: 'malware',
+      type: 'domain',
+      familyName: 'darkhotel',
+      familyAlias: ['dark hotel','dukes apt','pitbull apt','tapaoux']
+    },
+    'smtp.bellalite.info': {
+      lastUpdate: '28/06/2026, 18:03:56',
+      reference: 'https://attack.mitre.org/groups/G0016/',
+      relatedIocs: ['smtp.bellalite.info','mail.service-now.com','cdn.securelist.com'],
+      attackType: 'phishing',
+      type: 'domain',
+      familyName: 'sofacy',
+      familyAlias: ['fancy bear','sednit','apt28','pawn storm']
+    }
+  };
+
+  var tifOverlay = document.getElementById('tifOverlay');
+  var tifTitle = document.getElementById('tifTitle');
+  var tifLastUpdate = document.getElementById('tifLastUpdate');
+  var tifReference = document.getElementById('tifReference');
+  var tifRelatedList = document.getElementById('tifRelatedList');
+  var tifRelatedSearch = document.getElementById('tifRelatedSearch');
+  var tifAttackType = document.getElementById('tifAttackType');
+  var tifType = document.getElementById('tifType');
+  var tifFamilyName = document.getElementById('tifFamilyName');
+  var tifAliasList = document.getElementById('tifAliasList');
+
+  function showTifPopup(ioc) {
+    var d = tifData[ioc];
+    if (!d) return;
+    tifTitle.textContent = ioc;
+    tifLastUpdate.textContent = d.lastUpdate;
+    tifReference.innerHTML = '<a href="' + d.reference + '" target="_blank">' + d.reference + '</a>';
+    tifAttackType.textContent = d.attackType;
+    tifType.textContent = d.type;
+    tifFamilyName.textContent = d.familyName;
+    renderRelated(d.relatedIocs, '');
+    tifAliasList.innerHTML = '';
+    d.familyAlias.forEach(function(a) {
+      var el = document.createElement('div');
+      el.textContent = a;
+      tifAliasList.appendChild(el);
+    });
+    tifOverlay.classList.add('active');
+    tifRelatedSearch.value = '';
+  }
+
+  function renderRelated(list, filter) {
+    tifRelatedList.innerHTML = '';
+    list.forEach(function(ioc) {
+      if (filter && ioc.toLowerCase().indexOf(filter.toLowerCase()) === -1) return;
+      var el = document.createElement('div');
+      el.textContent = ioc;
+      tifRelatedList.appendChild(el);
+    });
+  }
+
+  if (tifRelatedSearch) {
+    tifRelatedSearch.addEventListener('input', function() {
+      var ioc = tifTitle.textContent;
+      var d = tifData[ioc];
+      if (d) renderRelated(d.relatedIocs, this.value);
+    });
+  }
+
+  if (tifOverlay) {
+    tifOverlay.addEventListener('click', function(e) { if (e.target === tifOverlay) tifOverlay.classList.remove('active'); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') tifOverlay.classList.remove('active'); });
+  }
+
+  // Row click handlers
+  document.querySelectorAll('.intel-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var ioc = this.getAttribute('data-ioc');
+      if (ioc) showTifPopup(ioc);
+    });
+    row.style.cursor = 'pointer';
+  });
 
 </script>
 
-<!-- Pricing Modal -->
+  <!-- Pricing Modal -->
 <div class="pricing-overlay" id="pricingModal">
   <div class="pricing-modal">
     <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">

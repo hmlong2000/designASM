@@ -1436,10 +1436,6 @@
     </a>
   </div>
 
-  
-    
-  </div>
-
   <div class="sidebar-divider sidebar-divider--full"></div>
 
   <!-- Upgrade Card -->
@@ -1772,285 +1768,281 @@
   </main>
 
   <script>
-  /* CVE Detail Popup */
-  var pwVulnDetailData = {
-    'CVE-2025-48948': {
-      severity: 'Critical', cvss: '9.8', cwe: 'CWE-502',
-      desc: 'Deserialization of untrusted data in Oracle WebLogic Server allows remote attackers to execute arbitrary code via crafted serialized Java objects. This vulnerability exists within the T3/IIOP protocol handler and can be exploited without authentication.',
-      solution: 'Apply the vendor-supplied security patch immediately. Restrict network access to the WebLogic Administration Console and disable T3/IIOP protocols if not required.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48948', 'https://www.oracle.com/security-alerts/'],
-      scanDetail: 'Ports: 7001, 7002\nHosts: weblogic-01.internal\nProtocol: T3/IIOP'
-    },
-    'CVE-2025-48947': {
-      severity: 'Critical', cvss: '9.8', cwe: 'CWE-79',
-      desc: 'Stored cross-site scripting (XSS) vulnerability in Zimbra Collaboration Suite allows remote attackers to inject arbitrary HTML or JavaScript via the email body or calendar invite fields, potentially leading to session hijacking.',
-      solution: 'Upgrade to Zimbra Collaboration Suite 10.1.3 or later. Enable the built-in XSS protection filter in the admin console.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48947'],
-      scanDetail: 'Ports: 443, 8443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48946': {
-      severity: 'Critical', cvss: '9.8', cwe: 'CWE-89',
-      desc: 'SQL injection vulnerability in Zimbra Collaboration Suite allows unauthenticated remote attackers to execute arbitrary SQL commands through the SOAP interface, potentially leading to full database compromise.',
-      solution: 'Apply vendor patches immediately. Implement input validation and parameterized queries in custom integrations.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48946'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48945': {
-      severity: 'Critical', cvss: '9.1', cwe: 'CWE-22',
-      desc: 'Path traversal vulnerability in Zimbra Collaboration Suite allows authenticated attackers to read arbitrary files on the server via crafted URL parameters in the web client interface.',
-      solution: 'Update to the latest version. Restrict file system permissions for the Zimbra service account.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48945'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48944': {
-      severity: 'High', cvss: '8.8', cwe: 'CWE-287',
-      desc: 'Improper authentication in Zimbra Collaboration Suite allows remote attackers to bypass authentication checks and access administrative functions via a specially crafted request to the admin endpoint.',
-      solution: 'Apply the security update. Enable multi-factor authentication for admin accounts.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48944'],
-      scanDetail: 'Ports: 443, 7071\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48943': {
-      severity: 'High', cvss: '8.1', cwe: 'CWE-200',
-      desc: 'Information exposure vulnerability in Zimbra Collaboration Suite leaks internal server details including software versions and configuration paths to unauthenticated remote attackers via error pages.',
-      solution: 'Disable verbose error messages in production. Apply vendor patches to suppress sensitive information in error responses.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48943'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48940': {
-      severity: 'Medium', cvss: '6.5', cwe: 'CWE-532',
-      desc: 'Insertion of sensitive information into log files in Zimbra Collaboration Suite records user credentials and session tokens in plaintext within application log files, accessible to administrators.',
-      solution: 'Configure log filtering to redact sensitive fields. Restrict log file access permissions.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48940'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48939': {
-      severity: 'Medium', cvss: '6.1', cwe: 'CWE-352',
-      desc: 'Cross-site request forgery vulnerability in Zimbra Collaboration Suite allows attackers to perform unauthorized actions on behalf of authenticated users via crafted web requests.',
-      solution: 'Implement anti-CSRF tokens in all state-changing operations. Update to the patched version.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48939'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48938': {
-      severity: 'Low', cvss: '3.7', cwe: 'CWE-200',
-      desc: 'Minor information disclosure vulnerability in Zimbra Collaboration Suite exposes internal hostnames through HTTP response headers to authenticated users.',
-      solution: 'Update to the latest version. Remove or modify custom HTTP headers that expose internal information.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48938'],
-      scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
-    },
-    'CVE-2025-48942': {
-      severity: 'High', cvss: '7.5', cwe: 'CWE-306',
-      desc: 'Missing authentication for critical function in Qualcomm firmware allows local attackers to access restricted debugging interfaces without proper credentials, potentially enabling arbitrary code execution on the device.',
-      solution: 'Update device firmware to the latest version provided by the device manufacturer. Disable debug interfaces in production environments.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48942'],
-      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
-    },
-    'CVE-2025-48941': {
-      severity: 'High', cvss: '7.2', cwe: 'CWE-284',
-      desc: 'Improper access control in Qualcomm firmware allows local applications to access protected memory regions, potentially enabling privilege escalation from user space to kernel level.',
-      solution: 'Apply firmware update from the device vendor. Enable SELinux mandatory access control policies.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48941'],
-      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
-    },
-    'CVE-2025-22458': {
-      severity: 'Critical', cvss: '10.0', cwe: 'CWE-89',
-      desc: 'Critical SQL injection vulnerability in Qualcomm firmware management interface allows unauthenticated remote attackers to execute arbitrary SQL commands through the device management API, potentially leading to complete device takeover.',
-      solution: 'Immediately update firmware to the patched version. Disable remote management interfaces if not required.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-22458'],
-      scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
-    },
-    'CVE-2025-24970': {
-      severity: 'Critical', cvss: '9.8', cwe: 'CWE-20',
-      desc: 'Improper input validation in Qualcomm firmware allows remote attackers to send malformed packets that trigger buffer overflow conditions, enabling arbitrary code execution with root privileges.',
-      solution: 'Apply the vendor security patch. Implement network-level access controls to limit exposure.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24970'],
-      scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
-    },
-    'CVE-2025-50425': {
-      severity: 'Critical', cvss: '9.8', cwe: 'CWE-918',
-      desc: 'Server-side request forgery (SSRF) in Qualcomm firmware cloud sync module allows remote attackers to make arbitrary HTTP requests from the device to internal network resources, potentially accessing sensitive internal services.',
-      solution: 'Update firmware to the latest version. Restrict outbound network connections to known trusted endpoints only.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50425'],
-      scanDetail: 'Ports: 443, 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
-    },
-    'CVE-2025-50426': {
-      severity: 'High', cvss: '7.7', cwe: 'CWE-22',
-      desc: 'Path traversal vulnerability in Qualcomm firmware file management allows attackers to read and write files outside the intended directory using crafted file paths in the firmware update mechanism.',
-      solution: 'Apply firmware update. Implement strict path validation in the file management module.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50426'],
-      scanDetail: 'Ports: 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
-    },
-    'CVE-2025-25195': {
-      severity: 'Medium', cvss: '5.4', cwe: 'CWE-287',
-      desc: 'Improper authentication in Qualcomm firmware management portal allows users to bypass multi-factor authentication requirements under specific race conditions during the login flow.',
-      solution: 'Update firmware to the patched version. Enforce sequential authentication step validation.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-25195'],
-      scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
-    },
-    'CVE-2025-52487': {
-      severity: 'Medium', cvss: '6.5', cwe: 'CWE-79',
-      desc: 'Reflected cross-site scripting (XSS) vulnerability in Qualcomm firmware web interface allows attackers to inject arbitrary JavaScript via the search parameter, which is reflected without proper sanitization.',
-      solution: 'Apply firmware update. Implement Content Security Policy (CSP) headers and input encoding.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52487'],
-      scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
-    },
-    'CVE-2025-24971': {
-      severity: 'Medium', cvss: '6.5', cwe: 'CWE-400',
-      desc: 'Uncontrolled resource consumption in Qualcomm firmware DNS resolution module allows remote attackers to cause denial of service by sending high volumes of DNS queries that trigger excessive memory allocation.',
-      solution: 'Update firmware to the patched version. Implement rate limiting on DNS resolution requests.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24971'],
-      scanDetail: 'Ports: 53\nHosts: qualcomm-205-device\nProtocol: DNS'
-    },
-    'CVE-2025-36145': {
-      severity: 'Medium', cvss: '6.5', cwe: 'CWE-502',
-      desc: 'Deserialization of untrusted data in Qualcomm firmware configuration import feature allows local attackers to execute arbitrary code by importing a specially crafted configuration file.',
-      solution: 'Apply firmware update. Validate configuration file integrity before importing.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-36145'],
-      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
-    },
-    'CVE-2025-52198': {
-      severity: 'Low', cvss: '3.7', cwe: 'CWE-532',
-      desc: 'Insertion of sensitive information into log files in Qualcomm firmware debug module records device encryption keys in plaintext within system log files during debug mode operation.',
-      solution: 'Update firmware. Disable debug logging in production environments.',
-      refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52198'],
-      scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
-    }
-  };
-
-  function openPWVulnModal(cveId) {
-    var data = pwVulnDetailData[cveId];
-    if (!data) return;
-    var overlay = document.getElementById('pwVulnModal');
-    document.getElementById('pwVulnCveId').textContent = cveId;
-    document.getElementById('pwVulnCwe').textContent = data.cwe;
-
-    var sevClass = data.severity.toLowerCase();
-    var metaHtml = '<span class="pw-vuln-modal-chip severity ' + sevClass + '">' + data.severity + '</span>';
-    metaHtml += '<span class="pw-vuln-modal-chip cvss">CVSS: ' + data.cvss + '</span>';
-    metaHtml += '<span class="pw-vuln-modal-chip updated">' + cveId.split('-').slice(0,3).join('-') + '</span>';
-    document.getElementById('pwVulnMeta').innerHTML = metaHtml;
-
-    document.getElementById('pwVulnDesc').textContent = data.desc;
-    document.getElementById('pwVulnSolution').textContent = data.solution;
-
-    var refsHtml = '<ul>';
-    data.refs.forEach(function(r) { refsHtml += '<li><a href="' + r + '" target="_blank">' + r + '</a></li>'; });
-    refsHtml += '</ul>';
-    document.getElementById('pwVulnRefs').innerHTML = refsHtml;
-
-    var scanLines = data.scanDetail.split('\n');
-    var scanHtml = '';
-    scanLines.forEach(function(line) {
-      var parts = line.split(':');
-      if (parts.length >= 2) {
-        scanHtml += '<div style="display:flex;gap:8px;margin-bottom:4px;"><span style="font-weight:600;color:var(--fg);min-width:70px;">' + parts[0].trim() + ':</span><span>' + parts.slice(1).join(':').trim() + '</span></div>';
-      }
-    });
-    document.getElementById('pwVulnScanDetail').innerHTML = scanHtml;
-
-    overlay.classList.add('active');
-  }
-
-  function closePWVulnModal() {
-    document.getElementById('pwVulnModal').classList.remove('active');
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var closeBtn = document.getElementById('pwVulnClose');
-    var modal = document.getElementById('pwVulnModal');
-    if (closeBtn) closeBtn.addEventListener('click', closePWVulnModal);
-    if (modal) modal.addEventListener('click', function(e) { if (e.target === this) closePWVulnModal(); });
-  });
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePWVulnModal(); });
-
-  /* Product Weakness Detail */
-  var pwCVEData = {
-    '205': [
-      { severity:'High', cvss:'7.5', cve:'CVE-2025-48942', cwe:'CWE-306', updated:'12/06/2026' },
-      { severity:'High', cvss:'7.2', cve:'CVE-2025-48941', cwe:'CWE-284', updated:'12/06/2026' }
-    ],
-    'zimbra_collaboration_suite_synacor': [
-      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48947', cwe:'CWE-79', updated:'16/09/2025' },
-      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48946', cwe:'CWE-89', updated:'16/09/2025' },
-      { severity:'Critical', cvss:'9.1', cve:'CVE-2025-48945', cwe:'CWE-22', updated:'16/09/2025' },
-      { severity:'High', cvss:'8.8', cve:'CVE-2025-48944', cwe:'CWE-287', updated:'16/09/2025' },
-      { severity:'High', cvss:'8.1', cve:'CVE-2025-48943', cwe:'CWE-200', updated:'16/09/2025' },
-      { severity:'Medium', cvss:'6.5', cve:'CVE-2025-48940', cwe:'CWE-532', updated:'16/09/2025' },
-      { severity:'Medium', cvss:'6.1', cve:'CVE-2025-48939', cwe:'CWE-352', updated:'16/09/2025' },
-      { severity:'Low', cvss:'3.7', cve:'CVE-2025-48938', cwe:'CWE-200', updated:'16/09/2025' }
-    ],
-    'weblogic': [
-      { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48948', cwe:'CWE-502', updated:'09/06/2026' }
-    ]
-  };
-
-  function openPWDetail(productName, vendor, lastUpdate, cveCount, rowKey) {
-    var grid = document.getElementById('pw-grid-screen');
-    var detail = document.getElementById('pw-detail-screen');
-    var pageHeader = document.querySelector('.page-header');
-    if (grid) grid.classList.add('hidden');
-    if (detail) detail.classList.add('active');
-    if (pageHeader) pageHeader.style.display = 'none';
-
-    document.getElementById('pwDetailProductName').textContent = productName;
-    document.getElementById('pwDetailVendor').textContent = vendor;
-    document.getElementById('pwDetailLastUpdate').textContent = lastUpdate;
-
-    var cves = pwCVEData[rowKey] || [];
-    var crit = 0, high = 0, med = 0, low = 0;
-    cves.forEach(function(c) {
-      if (c.severity === 'Critical') crit++;
-      else if (c.severity === 'High') high++;
-      else if (c.severity === 'Medium') med++;
-      else low++;
-    });
-    document.getElementById('pwDetailCritical').textContent = crit;
-    document.getElementById('pwDetailHigh').textContent = high;
-    document.getElementById('pwDetailMedium').textContent = med;
-    document.getElementById('pwDetailLow').textContent = low;
-    document.getElementById('pwDetailTableCount').innerHTML = cves.length + ' <span data-en="vulnerabilities" data-vi="lỗ hổng">vulnerabilities</span>';
-
-    var tbody = document.getElementById('pwDetailTableBody');
-    tbody.innerHTML = '';
-    cves.forEach(function(c) {
-      var sevClass = c.severity.toLowerCase();
-      var tr = document.createElement('tr');
-      tr.style.cursor = 'pointer';
-      tr.setAttribute('data-cve', c.cve);
-      tr.innerHTML =
-        '<td><span class="pw-sev-badge ' + sevClass + '"><span class="pw-sev-dot"></span>' + c.severity + '</span></td>' +
-        '<td><span class="pw-cvss-badge ' + sevClass + '">' + c.cvss + '</span></td>' +
-        '<td><span class="pw-cve-link">' + c.cve + '</span></td>' +
-        '<td><span class="pw-cwe-tag">' + c.cwe + '</span></td>' +
-        '<td>' + c.updated + '</td>';
-      tr.addEventListener('click', function(e) {
-        openPWVulnModal(c.cve);
-      });
-      tbody.appendChild(tr);
-    });
-
-    window.scrollTo(0, 0);
-  }
-
-  function closePWDetail() {
-    var grid = document.getElementById('pw-grid-screen');
-    var detail = document.getElementById('pw-detail-screen');
-    var pageHeader = document.querySelector('.page-header');
-    if (grid) grid.classList.remove('hidden');
-    if (detail) detail.classList.remove('active');
-    if (pageHeader) pageHeader.style.display = '';
-  }
-
   (function() {
+    /* CVE Detail Popup */
+    var pwVulnDetailData = {
+      'CVE-2025-48948': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-502',
+        desc: 'Deserialization of untrusted data in Oracle WebLogic Server allows remote attackers to execute arbitrary code via crafted serialized Java objects. This vulnerability exists within the T3/IIOP protocol handler and can be exploited without authentication.',
+        solution: 'Apply the vendor-supplied security patch immediately. Restrict network access to the WebLogic Administration Console and disable T3/IIOP protocols if not required.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48948', 'https://www.oracle.com/security-alerts/'],
+        scanDetail: 'Ports: 7001, 7002\nHosts: weblogic-01.internal\nProtocol: T3/IIOP'
+      },
+      'CVE-2025-48947': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-79',
+        desc: 'Stored cross-site scripting (XSS) vulnerability in Zimbra Collaboration Suite allows remote attackers to inject arbitrary HTML or JavaScript via the email body or calendar invite fields, potentially leading to session hijacking.',
+        solution: 'Upgrade to Zimbra Collaboration Suite 10.1.3 or later. Enable the built-in XSS protection filter in the admin console.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48947'],
+        scanDetail: 'Ports: 443, 8443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48946': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-89',
+        desc: 'SQL injection vulnerability in Zimbra Collaboration Suite allows unauthenticated remote attackers to execute arbitrary SQL commands through the SOAP interface, potentially leading to full database compromise.',
+        solution: 'Apply vendor patches immediately. Implement input validation and parameterized queries in custom integrations.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48946'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48945': {
+        severity: 'Critical', cvss: '9.1', cwe: 'CWE-22',
+        desc: 'Path traversal vulnerability in Zimbra Collaboration Suite allows authenticated attackers to read arbitrary files on the server via crafted URL parameters in the web client interface.',
+        solution: 'Update to the latest version. Restrict file system permissions for the Zimbra service account.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48945'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48944': {
+        severity: 'High', cvss: '8.8', cwe: 'CWE-287',
+        desc: 'Improper authentication in Zimbra Collaboration Suite allows remote attackers to bypass authentication checks and access administrative functions via a specially crafted request to the admin endpoint.',
+        solution: 'Apply the security update. Enable multi-factor authentication for admin accounts.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48944'],
+        scanDetail: 'Ports: 443, 7071\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48943': {
+        severity: 'High', cvss: '8.1', cwe: 'CWE-200',
+        desc: 'Information exposure vulnerability in Zimbra Collaboration Suite leaks internal server details including software versions and configuration paths to unauthenticated remote attackers via error pages.',
+        solution: 'Disable verbose error messages in production. Apply vendor patches to suppress sensitive information in error responses.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48943'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48940': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-532',
+        desc: 'Insertion of sensitive information into log files in Zimbra Collaboration Suite records user credentials and session tokens in plaintext within application log files, accessible to administrators.',
+        solution: 'Configure log filtering to redact sensitive fields. Restrict log file access permissions.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48940'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48939': {
+        severity: 'Medium', cvss: '6.1', cwe: 'CWE-352',
+        desc: 'Cross-site request forgery vulnerability in Zimbra Collaboration Suite allows attackers to perform unauthorized actions on behalf of authenticated users via crafted web requests.',
+        solution: 'Implement anti-CSRF tokens in all state-changing operations. Update to the patched version.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48939'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48938': {
+        severity: 'Low', cvss: '3.7', cwe: 'CWE-200',
+        desc: 'Minor information disclosure vulnerability in Zimbra Collaboration Suite exposes internal hostnames through HTTP response headers to authenticated users.',
+        solution: 'Update to the latest version. Remove or modify custom HTTP headers that expose internal information.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48938'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48942': {
+        severity: 'High', cvss: '7.5', cwe: 'CWE-306',
+        desc: 'Missing authentication for critical function in Qualcomm firmware allows local attackers to access restricted debugging interfaces without proper credentials, potentially enabling arbitrary code execution on the device.',
+        solution: 'Update device firmware to the latest version provided by the device manufacturer. Disable debug interfaces in production environments.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48942'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-48941': {
+        severity: 'High', cvss: '7.2', cwe: 'CWE-284',
+        desc: 'Improper access control in Qualcomm firmware allows local applications to access protected memory regions, potentially enabling privilege escalation from user space to kernel level.',
+        solution: 'Apply firmware update from the device vendor. Enable SELinux mandatory access control policies.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48941'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-22458': {
+        severity: 'Critical', cvss: '10.0', cwe: 'CWE-89',
+        desc: 'Critical SQL injection vulnerability in Qualcomm firmware management interface allows unauthenticated remote attackers to execute arbitrary SQL commands through the device management API, potentially leading to complete device takeover.',
+        solution: 'Immediately update firmware to the patched version. Disable remote management interfaces if not required.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-22458'],
+        scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+      },
+      'CVE-2025-24970': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-20',
+        desc: 'Improper input validation in Qualcomm firmware allows remote attackers to send malformed packets that trigger buffer overflow conditions, enabling arbitrary code execution with root privileges.',
+        solution: 'Apply the vendor security patch. Implement network-level access controls to limit exposure.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24970'],
+        scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-50425': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-918',
+        desc: 'Server-side request forgery (SSRF) in Qualcomm firmware cloud sync module allows remote attackers to make arbitrary HTTP requests from the device to internal network resources, potentially accessing sensitive internal services.',
+        solution: 'Update firmware to the latest version. Restrict outbound network connections to known trusted endpoints only.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50425'],
+        scanDetail: 'Ports: 443, 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-50426': {
+        severity: 'High', cvss: '7.7', cwe: 'CWE-22',
+        desc: 'Path traversal vulnerability in Qualcomm firmware file management allows attackers to read and write files outside the intended directory using crafted file paths in the firmware update mechanism.',
+        solution: 'Apply firmware update. Implement strict path validation in the file management module.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50426'],
+        scanDetail: 'Ports: 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-25195': {
+        severity: 'Medium', cvss: '5.4', cwe: 'CWE-287',
+        desc: 'Improper authentication in Qualcomm firmware management portal allows users to bypass multi-factor authentication requirements under specific race conditions during the login flow.',
+        solution: 'Update firmware to the patched version. Enforce sequential authentication step validation.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-25195'],
+        scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-52487': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-79',
+        desc: 'Reflected cross-site scripting (XSS) vulnerability in Qualcomm firmware web interface allows attackers to inject arbitrary JavaScript via the search parameter, which is reflected without proper sanitization.',
+        solution: 'Apply firmware update. Implement Content Security Policy (CSP) headers and input encoding.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52487'],
+        scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+      },
+      'CVE-2025-24971': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-400',
+        desc: 'Uncontrolled resource consumption in Qualcomm firmware DNS resolution module allows remote attackers to cause denial of service by sending high volumes of DNS queries that trigger excessive memory allocation.',
+        solution: 'Update firmware to the patched version. Implement rate limiting on DNS resolution requests.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24971'],
+        scanDetail: 'Ports: 53\nHosts: qualcomm-205-device\nProtocol: DNS'
+      },
+      'CVE-2025-36145': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-502',
+        desc: 'Deserialization of untrusted data in Qualcomm firmware configuration import feature allows local attackers to execute arbitrary code by importing a specially crafted configuration file.',
+        solution: 'Apply firmware update. Validate configuration file integrity before importing.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-36145'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-52198': {
+        severity: 'Low', cvss: '3.7', cwe: 'CWE-532',
+        desc: 'Insertion of sensitive information into log files in Qualcomm firmware debug module records device encryption keys in plaintext within system log files during debug mode operation.',
+        solution: 'Update firmware. Disable debug logging in production environments.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52198'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      }
+    };
+
+    window.openPWVulnModal = function(cveId) {
+      var data = pwVulnDetailData[cveId];
+      if (!data) return;
+      var overlay = document.getElementById('pwVulnModal');
+      if (!overlay) return;
+      document.getElementById('pwVulnCveId').textContent = cveId;
+      document.getElementById('pwVulnCwe').textContent = data.cwe;
+      var sevClass = data.severity.toLowerCase();
+      var metaHtml = '<span class="pw-vuln-modal-chip severity ' + sevClass + '">' + data.severity + '</span>';
+      metaHtml += '<span class="pw-vuln-modal-chip cvss">CVSS: ' + data.cvss + '</span>';
+      metaHtml += '<span class="pw-vuln-modal-chip updated">' + cveId.split('-').slice(0,3).join('-') + '</span>';
+      document.getElementById('pwVulnMeta').innerHTML = metaHtml;
+      document.getElementById('pwVulnDesc').textContent = data.desc;
+      document.getElementById('pwVulnSolution').textContent = data.solution;
+      var refsHtml = '<ul>';
+      data.refs.forEach(function(r) { refsHtml += '<li><a href="' + r + '" target="_blank">' + r + '</a></li>'; });
+      refsHtml += '</ul>';
+      document.getElementById('pwVulnRefs').innerHTML = refsHtml;
+      var scanLines = data.scanDetail.split('\n');
+      var scanHtml = '';
+      scanLines.forEach(function(line) {
+        var parts = line.split(':');
+        if (parts.length >= 2) {
+          scanHtml += '<div style="display:flex;gap:8px;margin-bottom:4px;"><span style="font-weight:600;color:var(--fg);min-width:70px;">' + parts[0].trim() + ':</span><span>' + parts.slice(1).join(':').trim() + '</span></div>';
+        }
+      });
+      document.getElementById('pwVulnScanDetail').innerHTML = scanHtml;
+      overlay.classList.add('active');
+
+      // Bind close handlers here (elements exist now)
+      var closeBtn = document.getElementById('pwVulnClose');
+      if (closeBtn) {
+        closeBtn.onclick = function() { closePWVulnModal(); };
+      }
+      overlay.onclick = function(e) { if (e.target === overlay) closePWVulnModal(); };
+    };
+
+    window.closePWVulnModal = function() {
+      var overlay = document.getElementById('pwVulnModal');
+      if (overlay) overlay.classList.remove('active');
+    };
+
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePWVulnModal(); });
+
+    /* Product Weakness Detail */
+    var pwCVEData = {
+      '205': [
+        { severity:'High', cvss:'7.5', cve:'CVE-2025-48942', cwe:'CWE-306', updated:'12/06/2026' },
+        { severity:'High', cvss:'7.2', cve:'CVE-2025-48941', cwe:'CWE-284', updated:'12/06/2026' }
+      ],
+      'zimbra_collaboration_suite_synacor': [
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48947', cwe:'CWE-79', updated:'16/09/2025' },
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48946', cwe:'CWE-89', updated:'16/09/2025' },
+        { severity:'Critical', cvss:'9.1', cve:'CVE-2025-48945', cwe:'CWE-22', updated:'16/09/2025' },
+        { severity:'High', cvss:'8.8', cve:'CVE-2025-48944', cwe:'CWE-287', updated:'16/09/2025' },
+        { severity:'High', cvss:'8.1', cve:'CVE-2025-48943', cwe:'CWE-200', updated:'16/09/2025' },
+        { severity:'Medium', cvss:'6.5', cve:'CVE-2025-48940', cwe:'CWE-532', updated:'16/09/2025' },
+        { severity:'Medium', cvss:'6.1', cve:'CVE-2025-48939', cwe:'CWE-352', updated:'16/09/2025' },
+        { severity:'Low', cvss:'3.7', cve:'CVE-2025-48938', cwe:'CWE-200', updated:'16/09/2025' }
+      ],
+      'weblogic': [
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48948', cwe:'CWE-502', updated:'09/06/2026' }
+      ]
+    };
+
+    window.openPWDetail = function(productName, vendor, lastUpdate, cveCount, rowKey) {
+      var grid = document.getElementById('pw-grid-screen');
+      var detail = document.getElementById('pw-detail-screen');
+      var pageHeader = document.querySelector('#pw-grid-screen .page-header');
+      if (grid) grid.classList.add('hidden');
+      if (detail) detail.classList.add('active');
+      if (pageHeader) pageHeader.style.display = 'none';
+      document.getElementById('pwDetailProductName').textContent = productName;
+      document.getElementById('pwDetailVendor').textContent = vendor;
+      document.getElementById('pwDetailLastUpdate').textContent = lastUpdate;
+      var cves = pwCVEData[rowKey] || [];
+      var crit = 0, high = 0, med = 0, low = 0;
+      cves.forEach(function(c) {
+        if (c.severity === 'Critical') crit++;
+        else if (c.severity === 'High') high++;
+        else if (c.severity === 'Medium') med++;
+        else low++;
+      });
+      document.getElementById('pwDetailCritical').textContent = crit;
+      document.getElementById('pwDetailHigh').textContent = high;
+      document.getElementById('pwDetailMedium').textContent = med;
+      document.getElementById('pwDetailLow').textContent = low;
+      document.getElementById('pwDetailTableCount').innerHTML = cves.length + ' <span data-en="vulnerabilities" data-vi="l\u1ed9 h\u1ecfng">vulnerabilities</span>';
+      var tbody = document.getElementById('pwDetailTableBody');
+      tbody.innerHTML = '';
+      cves.forEach(function(c) {
+        var sevClass = c.severity.toLowerCase();
+        var tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.setAttribute('data-cve', c.cve);
+        tr.innerHTML =
+          '<td><span class="pw-sev-badge ' + sevClass + '"><span class="pw-sev-dot"></span>' + c.severity + '</span></td>' +
+          '<td><span class="pw-cvss-badge ' + sevClass + '">' + c.cvss + '</span></td>' +
+          '<td><span class="pw-cve-link">' + c.cve + '</span></td>' +
+          '<td><span class="pw-cwe-tag">' + c.cwe + '</span></td>' +
+          '<td>' + c.updated + '</td>';
+        tr.addEventListener('click', function() { openPWVulnModal(c.cve); });
+        tbody.appendChild(tr);
+      });
+      window.scrollTo(0, 0);
+    };
+
+    window.closePWDetail = function() {
+      var grid = document.getElementById('pw-grid-screen');
+      var detail = document.getElementById('pw-detail-screen');
+      var pageHeader = document.querySelector('#pw-grid-screen .page-header');
+      if (grid) grid.classList.remove('hidden');
+      if (detail) detail.classList.remove('active');
+      if (pageHeader) pageHeader.style.display = '';
+    };
+
+    // Product row click handlers
     document.querySelectorAll('.product-row').forEach(function(row) {
-      var cveEl = row.querySelector('.product-cve-count');
-      if (!cveEl) return;
-      var cveCount = parseInt(cveEl.textContent) || 0;
       row.style.cursor = 'pointer';
       row.addEventListener('click', function(e) {
         if (e.target.closest('.toggle-switch') || e.target.closest('.toggle-slider')) return;
-        var name = row.querySelector('.product-text').textContent;
-        var vendor = row.querySelector('.product-vendor').textContent;
-        var updated = row.querySelector('.product-updated').textContent;
+        var nameEl = row.querySelector('.product-text');
+        var vendorEl = row.querySelector('.product-vendor');
+        var updatedEl = row.querySelector('.product-updated');
+        var cveEl = row.querySelector('.product-cve-count');
+        if (!nameEl) return;
+        var name = nameEl.textContent;
+        var vendor = vendorEl ? vendorEl.textContent : '';
+        var updated = updatedEl ? updatedEl.textContent : '';
+        var cveCount = cveEl ? (parseInt(cveEl.textContent) || 0) : 0;
         var rowKey;
         if (name === '205') rowKey = '205';
         else if (name === 'zimbra_collaboration_suite' && vendor === 'synacor') rowKey = 'zimbra_collaboration_suite_synacor';
