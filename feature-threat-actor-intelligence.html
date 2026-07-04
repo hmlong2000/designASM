@@ -379,6 +379,14 @@
       background: var(--surface-alt);
     }
     .sidebar-bottom-item:hover svg { opacity: 0.8; }
+    .sidebar-bottom-right .bottom-right { margin-left: auto; }
+    .sidebar-bottom-item .bottom-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
 
     .sidebar-lang {
       display: flex;
@@ -1012,6 +1020,7 @@
       .sidebar .sidebar-tab span[data-en],
       .sidebar .sidebar-tab span[data-vi],
       .sidebar .sidebar-bottom-item span,
+      .sidebar .sidebar-bottom-item .bottom-right,
       .sidebar .sidebar-lang,
       
       .sidebar .sidebar-spacer {
@@ -1469,10 +1478,78 @@
       .ta-ioc-table-header > div:nth-child(3),
       .ta-ioc-row > div:nth-child(3) { display: none; }
     }
+      /* Dark mode */
+      body.dark-mode {
+        --bg: #0d1117;
+        --bg-wash: #0a0d14;
+        --surface: #161b22;
+        --surface-raised: #1c2129;
+        --surface-alt: #12161e;
+        --fg: #e6edf3;
+        --fg-secondary: #8b949e;
+        --muted: #484f58;
+        --border: #30363d;
+        --border-subtle: #21262d;
+        --accent-soft: rgba(1,103,255,0.15);
+        --accent-hover: #388bfd;
+        --teal: #39d2c0;
+        --teal-soft: rgba(57,210,192,0.15);
+        --amber: #f0883e;
+        --amber-soft: rgba(240,136,62,0.15);
+        --critical: #f85149;
+        --critical-soft: rgba(248,81,73,0.15);
+        --high: #f0883e;
+        --high-soft: rgba(240,136,62,0.15);
+        --medium: #d29922;
+        --medium-soft: rgba(210,153,34,0.15);
+        --low: #3fb950;
+        --low-soft: rgba(63,185,80,0.15);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        color-scheme: dark;
+      }
+      body.dark-mode .sidebar {
+        background: #0d1117;
+        border-right-color: #21262d;
+      }
+      body.dark-mode .sidebar-bottom-item:hover,
+      body.dark-mode .sidebar-tab:hover,
+      body.dark-mode .sidebar-tab.active {
+        background: rgba(255,255,255,0.06);
+      }
+      body.dark-mode .sidebar-nav-label { color: #484f58; }
+      body.dark-mode .card, body.dark-mode .bento-card, body.dark-mode .metric-card {
+        background: var(--surface);
+        border-color: var(--border);
+      }
+      body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-value, body.dark-mode .bento-title, body.dark-mode .card-title {
+        color: var(--fg);
+      }
+      body.dark-mode table { background: var(--surface); }
+      body.dark-mode th { background: var(--surface-alt); color: var(--fg-secondary); border-color: var(--border); }
+      body.dark-mode td { border-color: var(--border-subtle); color: var(--fg); }
+      body.dark-mode tr:hover td { background: rgba(255,255,255,0.03); }
+      body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .subpage, body.dark-mode .popup { background: var(--bg); }
+      body.dark-mode .chat-container, body.dark-mode .search-container { background: var(--surface); }
+      body.dark-mode .toggle-slider { background: var(--surface-alt); }
+      body.dark-mode .toggle-slider::before { background: #e6edf3; }
+      body.dark-mode .hero-card { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
   </style>
 </head>
 <body>
-<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.getElementById("sidebar").classList.add("collapsed")}</script>
+<script>if(localStorage.getItem("gs-theme")==="dark"){document.body.classList.add("dark-mode");document.addEventListener("DOMContentLoaded",function(){var t=document.getElementById("themeToggle");if(t)t.classList.add("active")})}</script>
+<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.addEventListener("DOMContentLoaded",function(){var s=document.getElementById("sidebar");if(s)s.classList.add("collapsed")})}</script>
 
   <!-- TOP NAV -->
   <nav class="sidebar" id="sidebar">
@@ -1589,21 +1666,21 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       <span data-en="Settings" data-vi="Cài đặt">Settings</span>
     </a>
-    <a href="#" class="sidebar-bottom-item">
+    <a href="https://skywatch.gcsc.vn/" target="_blank" rel="noopener" class="sidebar-bottom-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
       <span data-en="Help" data-vi="Trợ giúp">Help</span>
     </a>
-    <div class="sidebar-bottom-item" onclick="document.body.classList.toggle('dark-mode')">
+    <div class="sidebar-bottom-item" style="cursor:default;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-      <span data-en="Light mode" data-vi="Chế độ sáng">Light mode</span>
-      <div class="bottom-right">
-        <button class="sidebar-theme-toggle" aria-label="Toggle dark mode"></button>
+      <span data-en="Theme" data-vi="Giao diện">Theme</span>
+      <div class="bottom-right sidebar-bottom-right">
+        <button class="sidebar-theme-toggle" id="themeToggle" aria-label="Toggle theme" onclick="this.classList.toggle('active');document.body.classList.toggle('dark-mode');localStorage.setItem('gs-theme',document.body.classList.contains('dark-mode')?'dark':'light')"></button>
       </div>
     </div>
     <div class="sidebar-bottom-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
       <span data-en="Language" data-vi="Ngôn ngữ">Language</span>
-      <div class="bottom-right">
+      <div class="bottom-right sidebar-bottom-right">
         <div class="sidebar-lang-pills">
           <button class="sidebar-lang-pill active" data-lang="en">EN</button>
           <button class="sidebar-lang-pill" data-lang="vi">VI</button>

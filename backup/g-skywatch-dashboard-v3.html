@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G-SKYWATCH — Attack Surface Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F0EB;
+      --bg-warm: #EDE7DF;
+      --surface: #FFFFFF;
+      --surface-alt: #FAFAF8;
+      --navy: #1A2332;
+      --navy-light: #243042;
+      --navy-dim: #2D3A4C;
+      --fg: #1C1917;
+      --fg-light: #44403C;
+      --muted: #78716C;
+      --muted-light: #A8A29E;
+      --border: #E7E0D8;
+      --border-strong: #D6CFC6;
+      --teal: #0A9396;
+      --teal-dark: #087F7E;
+      --teal-light: #E0F5F5;
+      --amber: #D4870E;
+      --amber-light: #FEF3C7;
+      --coral: #DC4A3F;
+      --coral-light: #FEE2E2;
+      --green: #16A34A;
+      --green-light: #DCFCE7;
+      --blue: #2563EB;
+      --blue-light: #DBEAFE;
+      --violet: #7C3AED;
+      --violet-light: #EDE9FE;
+
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+      --r-sm: 6px;
+      --r-md: 10px;
+      --r-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ── Status Bar (top) ────────────────────────────────── */
+    .status-bar {
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 24px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .status-bar .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .status-bar .status-item.active {
+      color: rgba(255,255,255,0.9);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-dot.warn { background: var(--amber); }
+    .status-dot.critical { background: var(--coral); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-bar .spacer { flex: 1; }
+
+    .status-bar .status-value {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    .header {
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      padding: 0 24px;
+      gap: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .header-brand svg { width: 26px; height: 26px; }
+
+    .header-brand .brand-accent {
+      color: var(--teal);
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 2px;
+      margin-left: 12px;
+    }
+
+    .header-nav-btn {
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+    }
+
+    .header-nav-btn:hover {
+      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .header-nav-btn.active {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .header-spacer { flex: 1; }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .header-search:hover {
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .header-search kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.4);
+      margin-left: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+    }
+
+    .header-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.15s;
+    }
+
+    .header-icon-btn:hover {
+      border-color: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 8px;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .header-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-display);
+    }
+
+    .header-username {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      white-space: nowrap;
+    }
+
+    /* ── Lang Toggle ─────────────────────────────────────── */
+    .lang-toggle {
+      display: flex;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(255,255,255,0.12);
+      overflow: hidden;
+      margin-left: 12px;
+    }
+
+    .lang-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lang-btn.active {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── Main Layout ─────────────────────────────────────── */
+    .main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 24px;
+    }
+
+    /* ── Exec Summary Strip ──────────────────────────────── */
+    .exec-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 300px;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .metric-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .metric-icon.teal { background: var(--teal-light); color: var(--teal); }
+    .metric-icon.blue { background: var(--blue-light); color: var(--blue); }
+    .metric-icon.amber { background: var(--amber-light); color: var(--amber); }
+    .metric-icon.violet { background: var(--violet-light); color: var(--violet); }
+
+    .metric-info { flex: 1; min-width: 0; }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .metric-change {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .metric-change.up { color: var(--green); }
+    .metric-change.down { color: var(--coral); }
+
+    .metric-sub {
+      display: flex;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .metric-sub-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--fg-light);
+    }
+
+    /* Risk Score Card */
+    .risk-card {
+      background: var(--navy);
+      border: none;
+      color: #fff;
+      padding: 16px 20px;
+      gap: 16px;
+    }
+
+    .risk-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(26,35,50,0.3);
+    }
+
+    .risk-ring-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .risk-ring-wrap svg {
+      width: 64px;
+      height: 64px;
+      transform: rotate(-90deg);
+    }
+
+    .risk-ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 5; }
+    .risk-ring-fill {
+      fill: none;
+      stroke: var(--amber);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 163.36;
+      stroke-dashoffset: 32.67;
+      transition: stroke-dashoffset 1.2s ease;
+    }
+
+    .risk-ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .risk-ring-value {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .risk-ring-unit {
+      font-size: 9px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .risk-info h3 {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 3px;
+      color: #fff;
+    }
+
+    .risk-info p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(212,135,14,0.2);
+      color: var(--amber);
+      margin-top: 6px;
+    }
+
+    /* ── 2-Column Layout ─────────────────────────────────── */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .col-wide { }
+
+    .col-narrow { }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card:last-child { margin-bottom: 0; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .card-title .dot.teal { background: var(--teal); }
+    .card-title .dot.coral { background: var(--coral); }
+    .card-title .dot.amber { background: var(--amber); }
+    .card-title .dot.green { background: var(--green); }
+    .card-title .dot.blue { background: var(--blue); }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .card-badge.teal {
+      background: var(--teal-light);
+      color: var(--teal);
+    }
+
+    .card-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--teal);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.15s;
+    }
+
+    .card-link:hover { gap: 6px; }
+
+    /* ── Attack Surface Bar Chart ────────────────────────── */
+    .surface-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .surface-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 60px 60px;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      transition: background 0.15s;
+    }
+
+    .surface-row:hover {
+      background: var(--bg);
+    }
+
+    .surface-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .surface-bar-wrap {
+      height: 8px;
+      background: var(--bg-warm);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .surface-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+      width: 0;
+    }
+
+    .surface-bar-fill.teal { background: var(--teal); }
+    .surface-bar-fill.blue { background: var(--blue); }
+    .surface-bar-fill.amber { background: var(--amber); }
+    .surface-bar-fill.green { background: var(--green); }
+    .surface-bar-fill.coral { background: var(--coral); }
+    .surface-bar-fill.violet { background: var(--violet); }
+
+    .surface-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
+      letter-spacing: -0.01em;
+    }
+
+    .surface-change {
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+
+    .surface-change.up { color: var(--green); }
+    .surface-change.down { color: var(--coral); }
+
+    /* ── Risk Matrix ─────────────────────────────────────── */
+    .risk-matrix {
+      display: grid;
+      grid-template-columns: auto repeat(5, 1fr);
+      gap: 3px;
+    }
+
+    .matrix-y-label {
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-right: 8px;
+    }
+
+    .matrix-x-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .matrix-cell {
+      aspect-ratio: 1;
+      border-radius: var(--r-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .matrix-cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 2;
+    }
+
+    .matrix-cell.empty {
+      background: var(--bg);
+      cursor: default;
+    }
+
+    .matrix-cell.empty:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .matrix-cell .cell-label {
+      font-size: 8px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+      opacity: 0.7;
+    }
+
+    .cell-critical { background: #FCA5A5; color: #991B1B; }
+    .cell-high { background: #FED7AA; color: #9A3412; }
+    .cell-medium { background: #FEF3C7; color: #92400E; }
+    .cell-low { background: #D1FAE5; color: #065F46; }
+    .cell-info { background: var(--bg); color: var(--muted); }
+
+    .matrix-axis-x {
+      grid-column: 2 / -1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+    }
+
+    /* ── Vulnerability Severity ──────────────────────────── */
+    .severity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .severity-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--r-sm);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .severity-row:hover { background: var(--bg); }
+
+    .severity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .severity-dot.critical { background: var(--coral); }
+    .severity-dot.high { background: var(--amber); }
+    .severity-dot.medium { background: #EAB308; }
+    .severity-dot.low { background: var(--green); }
+
+    .severity-label {
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .severity-count {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .severity-bar {
+      width: 80px;
+      height: 5px;
+      background: var(--bg-warm);
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .severity-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s ease;
+    }
+
+    .severity-bar-fill.critical { background: var(--coral); }
+    .severity-bar-fill.high { background: var(--amber); }
+    .severity-bar-fill.medium { background: #EAB308; }
+    .severity-bar-fill.low { background: var(--green); }
+
+    .severity-pct {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      width: 32px;
+      text-align: right;
+    }
+
+    /* ── Issue Categories ────────────────────────────────── */
+    .category-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .category-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .category-item:hover {
+      border-color: var(--teal);
+      background: var(--teal-light);
+      transform: translateY(-1px);
+    }
+
+    .category-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .category-icon svg { width: 14px; height: 14px; }
+
+    .category-icon.teal { background: var(--teal-light); color: var(--teal); }
+    .category-icon.blue { background: var(--blue-light); color: var(--blue); }
+    .category-icon.amber { background: var(--amber-light); color: var(--amber); }
+    .category-icon.violet { background: var(--violet-light); color: var(--violet); }
+    .category-icon.coral { background: var(--coral-light); color: var(--coral); }
+    .category-icon.green { background: var(--green-light); color: var(--green); }
+
+    .category-info { flex: 1; min-width: 0; }
+
+    .category-name {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .category-count {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ── Remediation Pipeline ────────────────────────────── */
+    .pipeline {
+      display: flex;
+      align-items: stretch;
+      gap: 2px;
+      margin-top: 4px;
+    }
+
+    .pipeline-stage {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      border-radius: var(--r-sm);
+      position: relative;
+      transition: transform 0.15s;
+    }
+
+    .pipeline-stage:hover { transform: translateY(-2px); }
+
+    .pipeline-stage.new { background: #FEE2E2; }
+    .pipeline-stage.progress { background: #DBEAFE; }
+    .pipeline-stage.fixed { background: #D1FAE5; }
+    .pipeline-stage.verified { background: #E0F5F5; }
+
+    .pipeline-count {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pipeline-stage.new .pipeline-count { color: #991B1B; }
+    .pipeline-stage.progress .pipeline-count { color: #1E40AF; }
+    .pipeline-stage.fixed .pipeline-count { color: #065F46; }
+    .pipeline-stage.verified .pipeline-count { color: var(--teal-dark); }
+
+    .pipeline-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--fg-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+    }
+
+    .pipeline-arrow {
+      display: flex;
+      align-items: center;
+      color: var(--muted-light);
+      flex-shrink: 0;
+    }
+
+    .pipeline-arrow svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── Detection Timeline ──────────────────────────────── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 10px 1fr auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .timeline-item:last-child { border-bottom: none; }
+
+    .timeline-item { margin: 0; padding: 12px 0; border-radius: 0; }
+    .timeline-item:hover { background: var(--bg-warm); border-radius: var(--r-sm); }
+
+    .timeline-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .timeline-dot.critical { background: var(--coral); }
+    .timeline-dot.high { background: var(--amber); }
+    .timeline-dot.info { background: var(--blue); }
+    .timeline-dot.ok { background: var(--green); }
+
+    .timeline-content { min-width: 0; }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .timeline-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .timeline-time {
+      font-size: 11px;
+      color: var(--muted-light);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    /* ── Domain Exposure ─────────────────────────────────── */
+    .domain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .domain-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 50px;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      transition: background 0.15s;
+    }
+
+    .domain-row:hover { background: var(--bg); }
+
+    .domain-label {
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .domain-bar-wrap {
+      height: 6px;
+      background: var(--bg-warm);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .domain-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--teal);
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+      width: 0;
+    }
+
+    .domain-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* ── Open Issues ─────────────────────────────────────── */
+    .issue-summary {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .issue-stat {
+      text-align: center;
+      flex: 1;
+    }
+
+    .issue-stat-val {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .issue-stat.critical .issue-stat-val { color: var(--coral); }
+    .issue-stat.high .issue-stat-val { color: var(--amber); }
+    .issue-stat.medium .issue-stat-val { color: #D97706; }
+    .issue-stat.low .issue-stat-val { color: var(--green); }
+
+    .issue-stat-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    .issue-table-header {
+      display: grid;
+      grid-template-columns: 80px 1fr 140px 90px;
+      gap: 12px;
+      padding: 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .issue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .issue-row {
+      display: grid;
+      grid-template-columns: 10px 1fr auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      cursor: pointer;
+    }
+
+    .issue-row:last-child { border-bottom: none; }
+    .issue-row { margin: 0; padding: 12px 0; border-radius: 0; }
+    .issue-row:hover { background: var(--bg-warm); border-radius: var(--r-sm); }
+
+    .issue-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .issue-dot.critical { background: var(--coral); }
+    .issue-dot.high { background: var(--amber); }
+    .issue-dot.medium { background: #D97706; }
+    .issue-dot.low { background: var(--green); }
+    .issue-dot.progress { background: var(--blue); }
+
+    .issue-content { min-width: 0; }
+
+    .issue-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .issue-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+    }
+
+    .issue-tag.critical { background: var(--coral-light); color: var(--coral); }
+    .issue-tag.high { background: var(--amber-light); color: var(--amber); }
+    .issue-tag.medium { background: #FEF3C7; color: #D97706; }
+    .issue-tag.low { background: var(--green-light); color: var(--green); }
+    .issue-tag.progress { background: var(--blue-light); color: var(--blue); }
+
+    .issue-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .issue-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    .issue-status {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .issue-status.open { background: var(--coral-light); color: var(--coral); }
+    .issue-status.progress { background: var(--blue-light); color: var(--blue); }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 20px 24px;
+      font-size: 11px;
+      color: var(--muted-light);
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--fg-light);
+    }
+
+    .footer-status {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* ── Animations ──────────────────────────────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes barGrow {
+      from { width: 0; }
+    }
+
+    .anim-in {
+      animation: fadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* ── Focus Visible ───────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+    }
+
+    /* ── Skip Link ───────────────────────────────────────── */
+    .skip-link {
+      position: fixed;
+      top: -100px;
+      left: 16px;
+      background: var(--teal);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 9999;
+      transition: top 0.2s;
+    }
+
+    .skip-link:focus { top: 16px; }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .exec-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .exec-strip .metric-card:last-child {
+        grid-column: 1 / -1;
+      }
+      .header-nav { display: none; }
+      .columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .exec-strip {
+        grid-template-columns: 1fr;
+      }
+      .header-search { display: none; }
+      .header-username { display: none; }
+      .header { padding: 0 16px; gap: 12px; }
+      .main { padding: 16px; }
+      .category-grid { grid-template-columns: 1fr; }
+      .surface-row { grid-template-columns: 90px 1fr 50px; }
+      .surface-change { display: none; }
+      .domain-row { grid-template-columns: 140px 1fr 40px; }
+      .risk-matrix { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .status-bar { display: none; }
+      .header-brand span { display: none; }
+      .lang-toggle { display: none; }
+      .exec-strip { gap: 8px; }
+      .metric-card { padding: 12px 14px; gap: 10px; }
+      .metric-value { font-size: 20px; }
+      .card { padding: 16px; }
+      .pipeline { flex-direction: column; gap: 4px; }
+      .pipeline-arrow { display: none; }
+    }
+
+    /* ── Reduced Motion ──────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .status-dot { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Status Bar -->
+  <div class="status-bar" role="status" aria-label="System status">
+    <div class="status-item active">
+      <span class="status-dot"></span>
+      <span>SCAN ENGINE</span>
+      <span class="status-value">v4.2.1</span>
+    </div>
+    <div class="status-item active">
+      <span class="status-dot"></span>
+      <span>API</span>
+      <span class="status-value">Operational</span>
+    </div>
+    <div class="status-item">
+      <span>LAST SCAN</span>
+      <span class="status-value">12 min ago</span>
+    </div>
+    <div class="status-item">
+      <span>DATA RETENTION</span>
+      <span class="status-value">90 days</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="status-item">
+      <span>NODES</span>
+      <span class="status-value">14 / 14</span>
+    </div>
+    <div class="status-item">
+      <span class="status-dot warn"></span>
+      <span>QUEUE</span>
+      <span class="status-value">23 pending</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-brand">
+      <svg viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="6" fill="#0A9396"/>
+        <path d="M7 19V7l6 6 6-6v12" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>G-<span class="brand-accent">SKYWATCH</span></span>
+    </div>
+
+    <nav class="header-nav" role="tablist" aria-label="Main navigation">
+      <button class="header-nav-btn active" role="tab" aria-selected="true" data-en="Overview" data-vi="Tổng quan">Overview</button>
+      <button class="header-nav-btn" role="tab" aria-selected="false" data-en="Assets" data-vi="Tài sản">Assets</button>
+      <button class="header-nav-btn" role="tab" aria-selected="false" data-en="Vulnerabilities" data-vi="Lỗ hổng">Vulnerabilities</button>
+      <button class="header-nav-btn" role="tab" aria-selected="false" data-en="Detections" data-vi="Phát hiện">Detections</button>
+      <button class="header-nav-btn" role="tab" aria-selected="false" data-en="Remediation" data-vi="Khắc phục">Remediation</button>
+      <button class="header-nav-btn" role="tab" aria-selected="false" data-en="Reports" data-vi="Báo cáo">Reports</button>
+    </nav>
+
+    <div class="header-spacer"></div>
+
+    <div class="lang-toggle" role="group" aria-label="Language toggle">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="vi">VI</button>
+    </div>
+
+    <div class="header-search" role="search" aria-label="Search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span data-en="Search assets, issues…" data-vi="Tìm tài sản, sự cố…">Search assets, issues…</span>
+      <kbd>⌘K</kbd>
+    </div>
+
+    <div class="header-actions">
+      <button class="header-icon-btn" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button class="header-icon-btn" aria-label="Settings" data-en="Settings" data-vi="Cài đặt">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+
+    <div class="header-user">
+      <div class="header-avatar">NM</div>
+      <div>
+        <div class="header-username">Nguyen Minh</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main" id="main-content">
+
+    <!-- Executive Strip -->
+    <div class="exec-strip anim-in" style="animation-delay: 0.05s">
+      <div class="metric-card" tabindex="0" role="button">
+        <div class="metric-icon teal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="metric-info">
+          <div class="metric-label" data-en="People" data-vi="Nhân sự">People</div>
+          <div class="metric-row">
+            <div class="metric-value">12</div>
+            <div class="metric-change up">↑ 8.3%</div>
+          </div>
+          <div class="metric-sub">
+            <span data-en="Workspace" data-vi="Workspace">Workspace</span>
+            <span class="metric-sub-val">1</span>
+            <span data-en="Member" data-vi="Thành viên">Member</span>
+            <span class="metric-sub-val">2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card" tabindex="0" role="button">
+        <div class="metric-icon blue">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="metric-info">
+          <div class="metric-label" data-en="Assets" data-vi="Tài sản">Assets</div>
+          <div class="metric-row">
+            <div class="metric-value">19</div>
+            <div class="metric-change up">↑ 8.3%</div>
+          </div>
+          <div class="metric-sub">
+            <span data-en="IPs" data-vi="IPs">IPs</span>
+            <span class="metric-sub-val">5</span>
+            <span data-en="Domains" data-vi="Tên miền">Domains</span>
+            <span class="metric-sub-val">14</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card" tabindex="0" role="button">
+        <div class="metric-icon amber">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="metric-info">
+          <div class="metric-label" data-en="Services" data-vi="Dịch vụ">Services</div>
+          <div class="metric-row">
+            <div class="metric-value">50</div>
+            <div class="metric-change down">↓ 3.3%</div>
+          </div>
+          <div class="metric-sub">
+            <span data-en="Unavailable" data-vi="Không khả dụng">Unavailable</span>
+            <span class="metric-sub-val">10</span>
+            <span data-en="Available" data-vi="Khả dụng">Available</span>
+            <span class="metric-sub-val">40</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card" tabindex="0" role="button">
+        <div class="metric-icon violet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/></svg>
+        </div>
+        <div class="metric-info">
+          <div class="metric-label" data-en="Discovered Hosts" data-vi="Host đã phát hiện">Discovered Hosts</div>
+          <div class="metric-row">
+            <div class="metric-value">125</div>
+            <div class="metric-change up">↑ 8.3%</div>
+          </div>
+          <div class="metric-sub">
+            <span data-en="IPs" data-vi="IPs">IPs</span>
+            <span class="metric-sub-val">2</span>
+            <span data-en="Domains" data-vi="Tên miền">Domains</span>
+            <span class="metric-sub-val">123</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Score -->
+      <div class="metric-card risk-card" tabindex="0" role="button">
+        <div class="risk-ring-wrap">
+          <svg viewBox="0 0 64 64">
+            <circle class="risk-ring-bg" cx="32" cy="32" r="26"/>
+            <circle class="risk-ring-fill" cx="32" cy="32" r="26"/>
+          </svg>
+          <div class="risk-ring-label">
+            <div class="risk-ring-value">80</div>
+            <div class="risk-ring-unit">/ 100</div>
+          </div>
+        </div>
+        <div class="risk-info">
+          <h3 data-en="Risk Score" data-vi="Điểm rủi ro">Risk Score</h3>
+          <p data-en="Moderate — 18 critical issues need attention" data-vi="Trung bình — 18 vấn đề nghiêm trọng cần xử lý">Moderate — 18 critical issues need attention</p>
+          <div class="risk-badge" data-en="MEDIUM" data-vi="TRUNG BÌNH">MEDIUM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Layout -->
+    <div class="columns">
+      <!-- Left Column -->
+      <div class="col-wide">
+
+        <!-- Attack Surface -->
+        <div class="card anim-in" style="animation-delay: 0.1s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot teal"></span>
+              <span data-en="Attack Surface Summary" data-vi="Tổng quan bề mặt tấn công">Attack Surface Summary</span>
+            </div>
+            <div class="card-badge teal" data-en="7 categories" data-vi="7 danh mục">7 categories</div>
+          </div>
+          <div class="surface-bars">
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="DNS Records" data-vi="Bản ghi DNS">DNS Records</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill teal" data-width="100"></div></div>
+              <div class="surface-value">4,218</div>
+              <div class="surface-change up">+3</div>
+            </div>
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="Subdomains" data-vi="Subdomain">Subdomains</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill blue" data-width="45"></div></div>
+              <div class="surface-value">1,893</div>
+              <div class="surface-change up">+7</div>
+            </div>
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="API Endpoints" data-vi="Điểm cuối API">API Endpoints</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill amber" data-width="56"></div></div>
+              <div class="surface-value">2,341</div>
+              <div class="surface-change up">+89</div>
+            </div>
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="Cloud Assets" data-vi="Tài sản cloud">Cloud Assets</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill green" data-width="27"></div></div>
+              <div class="surface-value">1,126</div>
+              <div class="surface-change up">+12</div>
+            </div>
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="Web Apps" data-vi="Ứng dụng Web">Web Apps</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill coral" data-width="20"></div></div>
+              <div class="surface-value">847</div>
+              <div class="surface-change up">+23</div>
+            </div>
+            <div class="surface-row" tabindex="0" role="button">
+              <div class="surface-label" data-en="Certificates" data-vi="Chứng chỉ">Certificates</div>
+              <div class="surface-bar-wrap"><div class="surface-bar-fill violet" data-width="7"></div></div>
+              <div class="surface-value">312</div>
+              <div class="surface-change down" data-en="8 expiring" data-vi="8 sắp hết hạn">8 expiring</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Matrix -->
+        <div class="card anim-in" style="animation-delay: 0.15s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot coral"></span>
+              <span data-en="Risk Matrix" data-vi="Ma trận rủi ro">Risk Matrix</span>
+            </div>
+            <div class="card-link" data-en="View details →" data-vi="Xem chi tiết →">View details →</div>
+          </div>
+          <div class="risk-matrix">
+            <div class="matrix-y-label" data-en="LIKELIHOOD" data-vi="KHẢ NĂNG">LIKELIHOOD</div>
+            <div class="matrix-cell cell-critical">
+              <span>2</span>
+              <span class="cell-label" data-en="Crit" data-vi="NC">Crit</span>
+            </div>
+            <div class="matrix-cell cell-high">
+              <span>5</span>
+              <span class="cell-label" data-en="High" data-vi="Cao">High</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>8</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>3</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+            <div class="matrix-cell cell-info">
+              <span>1</span>
+              <span class="cell-label" data-en="Info" data-vi="TT">Info</span>
+            </div>
+
+            <div style="grid-column: 2 / -1; height: 3px;"></div>
+
+            <div class="matrix-cell cell-high">
+              <span>4</span>
+              <span class="cell-label" data-en="High" data-vi="Cao">High</span>
+            </div>
+            <div class="matrix-cell cell-critical">
+              <span>7</span>
+              <span class="cell-label" data-en="Crit" data-vi="NC">Crit</span>
+            </div>
+            <div class="matrix-cell cell-high">
+              <span>3</span>
+              <span class="cell-label" data-en="High" data-vi="Cao">High</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>6</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>2</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+
+            <div style="grid-column: 2 / -1; height: 3px;"></div>
+
+            <div class="matrix-cell cell-medium">
+              <span>1</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-high">
+              <span>4</span>
+              <span class="cell-label" data-en="High" data-vi="Cao">High</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>12</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-high">
+              <span>5</span>
+              <span class="cell-label" data-en="High" data-vi="Cao">High</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>3</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+
+            <div style="grid-column: 2 / -1; height: 3px;"></div>
+
+            <div class="matrix-cell cell-low">
+              <span>2</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>3</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>7</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+            <div class="matrix-cell cell-medium">
+              <span>4</span>
+              <span class="cell-label" data-en="Med" data-vi="TB">Med</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>9</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+
+            <div style="grid-column: 2 / -1; height: 3px;"></div>
+
+            <div class="matrix-cell cell-info">
+              <span>0</span>
+              <span class="cell-label" data-en="Info" data-vi="TT">Info</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>1</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+            <div class="matrix-cell cell-info">
+              <span>3</span>
+              <span class="cell-label" data-en="Info" data-vi="TT">Info</span>
+            </div>
+            <div class="matrix-cell cell-low">
+              <span>5</span>
+              <span class="cell-label" data-en="Low" data-vi="Thấp">Low</span>
+            </div>
+            <div class="matrix-cell cell-info">
+              <span>2</span>
+              <span class="cell-label" data-en="Info" data-vi="TT">Info</span>
+            </div>
+          </div>
+          <div class="matrix-axis-x">
+            <div class="matrix-x-label" data-en="Rare" data-vi="Hiếm">Rare</div>
+            <div class="matrix-x-label" data-en="Unlikely" data-vi="Ít xảy ra">Unlikely</div>
+            <div class="matrix-x-label" data-en="Possible" data-vi="Có thể">Possible</div>
+            <div class="matrix-x-label" data-en="Likely" data-vi="Có khả năng">Likely</div>
+            <div class="matrix-x-label" data-en="Almost Certain" data-vi="Gần chắc chắn">Almost Certain</div>
+          </div>
+        </div>
+
+        <!-- Remediation Pipeline -->
+        <div class="card anim-in" style="animation-delay: 0.2s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot green"></span>
+              <span data-en="Remediation Pipeline" data-vi="Pipeline khắc phục">Remediation Pipeline</span>
+            </div>
+            <div class="card-link" data-en="Last 30 days" data-vi="30 ngày gần đây">Last 30 days</div>
+          </div>
+          <div class="pipeline">
+            <div class="pipeline-stage new">
+              <div class="pipeline-count">217</div>
+              <div class="pipeline-name" data-en="Open" data-vi="Mở">Open</div>
+            </div>
+            <div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+            <div class="pipeline-stage progress">
+              <div class="pipeline-count">31</div>
+              <div class="pipeline-name" data-en="In Progress" data-vi="Đang xử lý">In Progress</div>
+            </div>
+            <div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+            <div class="pipeline-stage fixed">
+              <div class="pipeline-count">95</div>
+              <div class="pipeline-name" data-en="Remediated" data-vi="Đã xử lý">Remediated</div>
+            </div>
+            <div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+            <div class="pipeline-stage verified">
+              <div class="pipeline-count">312</div>
+              <div class="pipeline-name" data-en="Total Scanned" data-vi="Tổng quét">Total Scanned</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-narrow">
+
+        <!-- Vulnerability Severity -->
+        <div class="card anim-in" style="animation-delay: 0.12s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot coral"></span>
+              <span data-en="Product Weakness by Severity" data-vi="Điểm yếu sản phẩm theo mức độ">Product Weakness by Severity</span>
+            </div>
+            <div class="card-badge" data-en="817" data-vi="817">817</div>
+          </div>
+          <div class="severity-list">
+            <div class="severity-row" tabindex="0" role="button">
+              <span class="severity-dot critical"></span>
+              <span class="severity-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</span>
+              <span class="severity-count">12</span>
+              <div class="severity-bar"><div class="severity-bar-fill critical" data-width="1"></div></div>
+              <span class="severity-pct">1.5%</span>
+            </div>
+            <div class="severity-row" tabindex="0" role="button">
+              <span class="severity-dot high"></span>
+              <span class="severity-label" data-en="High" data-vi="Cao">High</span>
+              <span class="severity-count">611</span>
+              <div class="severity-bar"><div class="severity-bar-fill high" data-width="75"></div></div>
+              <span class="severity-pct">74.8%</span>
+            </div>
+            <div class="severity-row" tabindex="0" role="button">
+              <span class="severity-dot medium"></span>
+              <span class="severity-label" data-en="Medium" data-vi="Trung bình">Medium</span>
+              <span class="severity-count">188</span>
+              <div class="severity-bar"><div class="severity-bar-fill medium" data-width="23"></div></div>
+              <span class="severity-pct">23%</span>
+            </div>
+            <div class="severity-row" tabindex="0" role="button">
+              <span class="severity-dot low"></span>
+              <span class="severity-label" data-en="Low" data-vi="Thấp">Low</span>
+              <span class="severity-count">6</span>
+              <div class="severity-bar"><div class="severity-bar-fill low" data-width="1"></div></div>
+              <span class="severity-pct">0.7%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Categories -->
+        <div class="card anim-in" style="animation-delay: 0.17s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot blue"></span>
+              <span data-en="Issue Categories" data-vi="Danh mục sự cố">Issue Categories</span>
+            </div>
+            <div class="card-link" data-en="All categories →" data-vi="Tất cả danh mục →">All categories →</div>
+          </div>
+          <div class="category-grid">
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon teal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Uptime Monitoring" data-vi="Giám sát uptime">Uptime Monitoring</div>
+                <div class="category-count">38 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</div>
+                <div class="category-count">38 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon coral">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Vulnerability Mgmt" data-vi="Quản lý lỗ hổng">Vulnerability Mgmt</div>
+                <div class="category-count">64 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon violet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</div>
+                <div class="category-count">31 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Data Breach" data-vi="Rò rỉ dữ liệu">Data Breach Monitoring</div>
+                <div class="category-count">28 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Botnet Detection" data-vi="Phát hiện Botnet">Botnet Detection</div>
+                <div class="category-count">12 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+            <div class="category-item" tabindex="0" role="button">
+              <div class="category-icon coral">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="category-info">
+                <div class="category-name" data-en="Threat Investigation" data-vi="Điều tra mối đe dọa">Threat Investigation</div>
+                <div class="category-count">6 <span data-en="issues" data-vi="sự cố">issues</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Detections -->
+        <div class="card anim-in" style="animation-delay: 0.22s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot amber"></span>
+              <span data-en="Recent Detections" data-vi="Phát hiện gần đây">Recent Detections</span>
+            </div>
+            <div class="card-link" data-en="View all →" data-vi="Xem tất cả →">View all →</div>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item" tabindex="0" role="button">
+              <div class="timeline-dot critical"></div>
+              <div class="timeline-content">
+                <div class="timeline-title" data-en="Brute force attempt on admin portal" data-vi="Tấn công brute force vào cổng admin">Brute force attempt on admin portal</div>
+                <div class="timeline-desc" data-en="47 failed login attempts from 12 IPs in 8 min — admin.gskywatch.io" data-vi="47 lần đăng nhập thất bại từ 12 IP trong 8 phút — admin.gskywatch.io">47 failed login attempts from 12 IPs in 8 min — admin.gskywatch.io</div>
+              </div>
+              <div class="timeline-time">09:38</div>
+            </div>
+            <div class="timeline-item" tabindex="0" role="button">
+              <div class="timeline-dot high"></div>
+              <div class="timeline-content">
+                <div class="timeline-title" data-en="SQL injection probe detected" data-vi="Phát hiện probe SQL injection">SQL injection probe detected</div>
+                <div class="timeline-desc" data-en="Automated scanner targeting /api/v2/search — blocked by WAF" data-vi="Scanner tự động nhắm vào /api/v2/search — đã bị WAF chặn">Automated scanner targeting /api/v2/search — blocked by WAF</div>
+              </div>
+              <div class="timeline-time">09:12</div>
+            </div>
+            <div class="timeline-item" tabindex="0" role="button">
+              <div class="timeline-dot high"></div>
+              <div class="timeline-content">
+                <div class="timeline-title" data-en="Unusual data transfer spike" data-vi="Đột biến truyền dữ liệu bất thường">Unusual data transfer spike</div>
+                <div class="timeline-desc" data-en="Outbound traffic to unknown IP — 2.3 GB in 15 min from worker-04" data-vi="Lưu lượng outbound tới IP lạ — 2.3 GB trong 15 phút từ worker-04">Outbound traffic to unknown IP — 2.3 GB in 15 min from worker-04</div>
+              </div>
+              <div class="timeline-time">08:47</div>
+            </div>
+            <div class="timeline-item" tabindex="0" role="button">
+              <div class="timeline-dot info"></div>
+              <div class="timeline-content">
+                <div class="timeline-title" data-en="New subdomain discovered" data-vi="Phát hiện subdomain mới">New subdomain discovered</div>
+                <div class="timeline-desc" data-en="staging-api.gskywatch.io — DNS record created, not in asset inventory" data-vi="staging-api.gskywatch.io — Bản ghi DNS được tạo, chưa có trong danh mục tài sản">staging-api.gskywatch.io — DNS record created, not in asset inventory</div>
+              </div>
+              <div class="timeline-time">08:20</div>
+            </div>
+            <div class="timeline-item" tabindex="0" role="button">
+              <div class="timeline-dot ok"></div>
+              <div class="timeline-content">
+                <div class="timeline-title" data-en="Certificate renewed successfully" data-vi="Chứng chỉ đã gia hạn thành công">Certificate renewed successfully</div>
+                <div class="timeline-desc" data-en="api.gskywatch.io — Let's Encrypt auto-renewal completed" data-vi="api.gskywatch.io — Gia hạn tự động Let's Encrypt hoàn tất">api.gskywatch.io — Let's Encrypt auto-renewal completed</div>
+              </div>
+              <div class="timeline-time">07:55</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open Issues -->
+        <div class="card anim-in" style="animation-delay: 0.25s">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot coral"></span>
+              <span data-en="Open Issues" data-vi="Sự cố đang mở">Open Issues</span>
+            </div>
+            <div class="card-badge" data-en="217 total" data-vi="217 tổng">217 total</div>
+          </div>
+          <div class="issue-summary">
+            <div class="issue-stat">
+              <div class="issue-stat-val">217</div>
+              <div class="issue-stat-label" data-en="Total" data-vi="Tổng">Total</div>
+            </div>
+            <div class="issue-stat critical">
+              <div class="issue-stat-val">18</div>
+              <div class="issue-stat-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+            </div>
+            <div class="issue-stat high">
+              <div class="issue-stat-val">64</div>
+              <div class="issue-stat-label" data-en="High" data-vi="Cao">High</div>
+            </div>
+            <div class="issue-stat medium">
+              <div class="issue-stat-val">91</div>
+              <div class="issue-stat-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+            </div>
+            <div class="issue-stat low">
+              <div class="issue-stat-val">38</div>
+              <div class="issue-stat-label" data-en="Low" data-vi="Thấp">Low</div>
+            </div>
+            <div class="issue-stat">
+              <div class="issue-stat-val">6</div>
+              <div class="issue-stat-label" data-en="Unknown" data-vi="Không rõ">Unknown</div>
+            </div>
+          </div>
+          <div class="issue-list">
+            <div class="issue-row" tabindex="0" role="button">
+              <div class="issue-dot critical"></div>
+              <div class="issue-content">
+                <div class="issue-title">
+                  <span data-en="ICMP Timestamp Request Remote Date Disclosure" data-vi="ICMP Timestamp Request Remote Date Disclosure">ICMP Timestamp Request Remote Date Disclosure</span>
+                  <span class="issue-tag critical" data-en="CRITICAL" data-vi="NC">CRITICAL</span>
+                </div>
+                <div class="issue-meta">
+                  <span data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">Vulnerability Management</span>
+                  <span>Dec 24, 2025</span>
+                </div>
+              </div>
+            </div>
+            <div class="issue-row" tabindex="0" role="button">
+              <div class="issue-dot high"></div>
+              <div class="issue-content">
+                <div class="issue-title">
+                  <span data-en="Potential Brand Impersonation Exposure" data-vi="Tiềm năng giả mạo thương hiệu">Potential Brand Impersonation Exposure</span>
+                  <span class="issue-tag high" data-en="HIGH" data-vi="CAO">HIGH</span>
+                </div>
+                <div class="issue-meta">
+                  <span data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</span>
+                  <span>Dec 24, 2025</span>
+                </div>
+              </div>
+            </div>
+            <div class="issue-row" tabindex="0" role="button">
+              <div class="issue-dot medium"></div>
+              <div class="issue-content">
+                <div class="issue-title">
+                  <span data-en="Service Availability Issue Detected" data-vi="Phát hiện vấn đề khả dụng dịch vụ">Service Availability Issue Detected</span>
+                  <span class="issue-tag medium" data-en="MEDIUM" data-vi="TB">MEDIUM</span>
+                </div>
+                <div class="issue-meta">
+                  <span data-en="Uptime Monitoring" data-vi="Giám sát uptime">Uptime Monitoring</span>
+                  <span>Dec 23, 2025</span>
+                </div>
+              </div>
+            </div>
+            <div class="issue-row" tabindex="0" role="button">
+              <div class="issue-dot low"></div>
+              <div class="issue-content">
+                <div class="issue-title">
+                  <span data-en="Product with Known CVEs Detected" data-vi="Phát hiện sản phẩm có CVE đã biết">Product with Known CVEs Detected</span>
+                  <span class="issue-tag low" data-en="LOW" data-vi="THẤP">LOW</span>
+                </div>
+                <div class="issue-meta">
+                  <span data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</span>
+                  <span>Dec 23, 2025</span>
+                </div>
+              </div>
+            </div>
+            <div class="issue-row" tabindex="0" role="button">
+              <div class="issue-dot low"></div>
+              <div class="issue-content">
+                <div class="issue-title">
+                  <span data-en="Suspicious Network Behavior Related to Botnet" data-vi="Hành vi mạng lưới đáng ngờ liên quan Botnet">Suspicious Network Behavior Related to Botnet</span>
+                  <span class="issue-tag low" data-en="LOW" data-vi="THẤP">LOW</span>
+                </div>
+                <div class="issue-meta">
+                  <span data-en="Botnet Detection" data-vi="Phát hiện Botnet">Botnet Detection</span>
+                  <span>Dec 22, 2025</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain Exposure (full width) -->
+    <div class="card anim-in" style="animation-delay: 0.28s">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="dot teal"></span>
+          <span data-en="Asset Exposure by Domain" data-vi="Phân bổ theo tên miền">Asset Exposure by Domain</span>
+        </div>
+        <div class="card-link" data-en="View all domains →" data-vi="Xem tất cả tên miền →">View all domains →</div>
+      </div>
+      <div class="domain-list">
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="100"></div></div>
+          <div class="domain-value">1,247</div>
+        </div>
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">api.gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="71"></div></div>
+          <div class="domain-value">892</div>
+        </div>
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">admin.gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="47"></div></div>
+          <div class="domain-value">584</div>
+        </div>
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">staging.gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="34"></div></div>
+          <div class="domain-value">428</div>
+        </div>
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">cdn.gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="20"></div></div>
+          <div class="domain-value">246</div>
+        </div>
+        <div class="domain-row" tabindex="0" role="button">
+          <div class="domain-label">dev.gskywatch.io</div>
+          <div class="domain-bar-wrap"><div class="domain-bar-fill" data-width="13"></div></div>
+          <div class="domain-value">167</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span class="footer-brand">G-SKYWATCH</span>
+    <span data-en="Attack Surface Management Platform" data-vi="Nền tảng Quản lý Bề mặt Tấn công">Attack Surface Management Platform</span>
+    <span>·</span>
+    <span data-en="Data retention: 90 days" data-vi="Lưu trữ: 90 ngày">Data retention: 90 days</span>
+    <span>·</span>
+    <span data-en="Scan engine v4.2.1" data-vi="Scan engine v4.2.1">Scan engine v4.2.1</span>
+    <span>·</span>
+    <span class="footer-status" data-en="API status: Operational" data-vi="API: Đang hoạt động">API status: Operational</span>
+  </footer>
+
+  <script>
+    // ── Language Toggle ─────────────────────────────────────
+    (function() {
+      const STORAGE_KEY = 'gskywatch:lang';
+      const langBtns = document.querySelectorAll('.lang-btn');
+      const translatables = document.querySelectorAll('[data-en][data-vi]');
+      let currentLang = localStorage.getItem(STORAGE_KEY) || 'en';
+
+      function applyLang(lang) {
+        currentLang = lang;
+        translatables.forEach(el => {
+          const text = el.getAttribute('data-' + lang);
+          if (text) el.textContent = text;
+        });
+        langBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+        document.documentElement.lang = lang === 'vi' ? 'vi' : 'en';
+        localStorage.setItem(STORAGE_KEY, lang);
+      }
+
+      langBtns.forEach(btn => {
+        btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+      });
+
+      applyLang(currentLang);
+    })();
+
+    // ── Nav Tab Switching ───────────────────────────────────
+    document.querySelectorAll('.header-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.header-nav-btn').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+      });
+    });
+
+    // ── Bar Animations ─────────────────────────────────────
+    function animateBars() {
+      document.querySelectorAll('[data-width]').forEach(el => {
+        const w = el.getAttribute('data-width');
+        setTimeout(() => { el.style.width = w + '%'; }, 100);
+      });
+    }
+
+    // ── Keyboard Support ───────────────────────────────────
+    document.querySelectorAll('[tabindex="0"][role="button"]').forEach(el => {
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
+
+    // ── Init ───────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', animateBars);
+    if (document.readyState !== 'loading') animateBars();
+  </script>
+</body>
+</html>

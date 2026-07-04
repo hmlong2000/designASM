@@ -1,0 +1,3272 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G-SKYWATCH — Threat Actor Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f2f7;
+      --surface: #ffffff;
+      --surface-alt: #f6f8fc;
+      --surface-dark: #111827;
+      --fg: #0f1629;
+      --fg-secondary: #4a5068;
+      --muted: #7c829a;
+      --border: #dfe2ec;
+      --border-subtle: #eceef5;
+      --accent: #0167FF;
+      --accent-soft: #e4edff;
+      --accent-hover: #0052cc;
+      --critical: #c53030;
+      --critical-soft: #fde8e8;
+      --high: #c05621;
+      --high-soft: #fef0e4;
+      --amber: #D4870E;
+      --amber-soft: #fdf4e4;
+      --low: #276749;
+      --low-soft: #e6f7ef;
+      --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(15,22,41,0.04), 0 1px 2px rgba(15,22,41,0.03);
+      --shadow-md: 0 4px 12px rgba(15,22,41,0.06), 0 1px 3px rgba(15,22,41,0.04);
+      --shadow-lg: 0 8px 24px rgba(15,22,41,0.08), 0 2px 6px rgba(15,22,41,0.04);
+      --transition-fast: 120ms ease;
+      --transition-base: 200ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--fg); line-height: 1.5; }
+
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; animation: fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .reveal-delay-1 { animation-delay: 0.06s; }
+    .reveal-delay-2 { animation-delay: 0.12s; }
+    /* ── Single-Column Vertical Sidebar ────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border-subtle);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 16px 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sidebar-brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    .sidebar-brand-text span { color: var(--accent); }
+
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-toggle-btn:hover { background: var(--surface-alt); color: var(--fg); border-color: var(--accent); }
+    .sidebar.collapsed .sidebar-toggle-btn { right: 8px; }
+    .sidebar.collapsed .sidebar-toggle-btn svg { transform: rotate(180deg); }
+
+    /* Quick Search */
+    .sidebar-search {
+      padding: 4px 12px;
+      flex-shrink: 0;
+    }
+    .sidebar-search-input {
+      width: 100%;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+    .sidebar-search-input:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .sidebar-search-input::placeholder { color: var(--muted); }
+    .sidebar-search-wrap {
+      position: relative;
+    }
+    .sidebar-search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .sidebar.collapsed .sidebar-search {
+      padding: 0;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-icon {
+      margin: 0;
+    }
+    .sidebar.collapsed .sidebar-search-text,
+    .sidebar.collapsed .sidebar-search-input {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-search-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-wrap svg {
+      position: static;
+      transform: none;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+    }
+    .sidebar.collapsed .sidebar-search { cursor: pointer; }
+
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 0 8px;
+      flex: 1;
+    }
+
+    .sidebar-tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      text-align: left;
+      width: 100%;
+    }
+    .sidebar-tab svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+    .sidebar-tab:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-tab:hover svg { opacity: 0.85; }
+    .sidebar-tab.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+    .sidebar-tab.active svg { opacity: 1; color: var(--accent); }
+
+    .sidebar-tab .sidebar-badge {
+      margin-left: auto;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--critical-soft);
+      color: var(--critical);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .sidebar-nav > .sidebar-divider {
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .sidebar-divider--full {
+      margin: 4px 0;
+    }
+
+    .nav-section-label {
+      padding: 12px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    .sidebar.collapsed .nav-section-label { display: none; }
+
+    .sidebar-spacer { flex: 1; }
+    .sidebar-upgrade {
+      margin: 8px 12px 4px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .sidebar-upgrade-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-icon svg { width: 16px; height: 16px; color: #fff; }
+    .sidebar-upgrade-label {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .sidebar-upgrade-label strong {
+      display: block;
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .sidebar-upgrade-desc {
+      font-size: 11px;
+      color: var(--fg-secondary);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .sidebar-upgrade-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .sidebar-upgrade-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .sidebar-upgrade-btn svg { width: 14px; height: 14px; }
+    .sidebar.collapsed .sidebar-upgrade { padding: 8px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .sidebar.collapsed .sidebar-upgrade-header { justify-content: center; }
+    .sidebar.collapsed .sidebar-upgrade-icon { margin: 0; width: 40px; height: 40px; background: var(--accent); border: 2.5px solid #dbeafe; border-radius: 50%; }
+    .sidebar.collapsed .sidebar-upgrade-icon svg { color: #fff; width: 18px; height: 18px; }
+    .sidebar.collapsed .sidebar-upgrade-label,
+    .sidebar.collapsed .sidebar-upgrade-desc,
+    .sidebar.collapsed .sidebar-upgrade-btn { display: none; }
+
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 34px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: var(--font-body);
+      font-weight: 450;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+      text-decoration: none;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .sidebar-bottom-item svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+    .sidebar-bottom-item:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-bottom-item:hover svg { opacity: 0.8; }
+
+    .sidebar-lang {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      overflow: hidden;
+      margin: 6px 8px 8px;
+    }
+    .sidebar-lang .lang-btn {
+      flex: 1;
+      padding: 5px 0;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-display);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .sidebar-lang .lang-btn.active { background: var(--accent); color: #fff; }
+    .sidebar-lang .lang-btn:hover:not(.active) { color: var(--fg); }
+
+    /* Language switching */
+    .lang-vi { display: none; }
+    body.lang-vi-active .lang-vi { display: block; }
+    body.lang-vi-active .category-name-vi { display: block; }
+    body:not(.lang-vi-active) .category-name-vi { display: none; }
+
+    
+    /* Theme toggle */
+    .sidebar-theme-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+    }
+    .sidebar-theme-toggle.active { background: var(--accent); }
+    .sidebar-theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .sidebar-theme-toggle.active::after { transform: translateX(16px); }
+
+    /* Language pills */
+    .sidebar-lang-pills {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .sidebar-lang-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sidebar-lang-pill.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Avatar */
+    .sidebar-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .sidebar-avatar-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .sidebar-avatar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-avatar-role {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    /* ── Main Container ────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      width: calc(100% - 240px);
+      padding: 20px 40px 40px;
+      transition: margin-left 0.22s cubic-bezier(0.16, 1, 0.3, 1), width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── Page Header ────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+    .page-header-left { flex: 1; min-width: 0; }
+    .page-header-left h1 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.03em;
+      margin-bottom: 2px;
+    }
+    .page-header-left p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .page-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .header-btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header-btn-secondary {
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .header-btn-secondary:hover { background: var(--surface-alt); border-color: var(--accent); }
+    .header-btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+    .header-btn-primary:hover { background: var(--accent-hover); }
+
+    /* ── Summary Cards (3-col gradient) ─────────────────── */
+    .actor-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .actor-card {
+      background: linear-gradient(135deg, var(--accent), #0a4fd4);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .actor-card::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .actor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(1,103,255,0.3);
+    }
+    .actor-card--events { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+    .actor-card--events:hover { box-shadow: 0 8px 24px rgba(56,189,248,0.3); }
+    .actor-card--iocs { background: linear-gradient(135deg, #818cf8, #6366f1); }
+    .actor-card--iocs:hover { box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+    .actor-card-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .actor-card-icon svg { color: #fff; }
+    .actor-card-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .actor-card-label {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+    .actor-card-meta {
+      margin-left: auto;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .actor-card-meta-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .actor-card-meta-label {
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    /* ── Charts Section ─────────────────────────────────── */
+    .ta-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .ta-chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+    }
+    .ta-chart-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .ta-chart-title svg { color: var(--muted); opacity: 0.6; }
+    .ta-chart-trend {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+    }
+    .ta-chart-trend strong { color: var(--success, #16a34a); }
+
+    /* Donut chart */
+    .ta-donut-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .ta-donut-segment {
+      transition: filter var(--transition-fast);
+      cursor: pointer;
+    }
+    .ta-donut-segment:hover { filter: brightness(1.15) drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
+    .ta-donut-center {
+      position: absolute;
+      text-align: center;
+    }
+    .ta-donut-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+    .ta-donut-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ta-donut-tooltip {
+      position: absolute;
+      background: var(--surface-dark);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: var(--radius-xs);
+      font-size: 11px;
+      font-weight: 600;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    /* Bar chart */
+    .ta-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ta-bar-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 40px;
+      align-items: center;
+      gap: 10px;
+    }
+    .ta-bar-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg);
+    }
+    .ta-bar-track {
+      height: 8px;
+      background: var(--surface-alt);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .ta-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ta-bar-fill--usa { width: 92%; background: var(--accent); }
+    .ta-bar-fill--germany { width: 68%; background: #3b82f6; }
+    .ta-bar-fill--china { width: 54%; background: #60a5fa; }
+    .ta-bar-fill--france { width: 42%; background: #93c5fd; }
+    .ta-bar-fill--other { width: 28%; background: #bfdbfe; }
+    .ta-bar-pct {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg-secondary);
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+
+
+    /* ── Search Bar ──────────────────────────────────────── */
+    .ta-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      margin: 20px 0;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .ta-search:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.1);
+    }
+    .ta-search svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+    .ta-search input {
+      flex: 1; border: none; background: none;
+      font-family: var(--font-body); font-size: 13px; color: var(--fg); outline: none;
+    }
+    .ta-search input::placeholder { color: var(--muted); }
+    .ta-search-clear {
+      display: none; width: 20px; height: 20px; border-radius: 50%; border: none;
+      background: var(--surface-alt); color: var(--muted); font-size: 14px; line-height: 1;
+      cursor: pointer; align-items: center; justify-content: center;
+    }
+    .ta-search-clear.visible { display: flex; }
+
+    /* ── Actor Grid (4-col cards) ───────────────────────── */
+    .actor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    /* ── Threat Actor Card ──────────────────────────────── */
+    .ta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .ta-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .ta-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ta-avatar { flex-shrink: 0; }
+    .ta-avatar-placeholder {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #b91c1c, #991b1b);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+    }
+    .ta-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+    .ta-rank {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      color: var(--amber);
+      font-weight: 600;
+    }
+    .ta-rank svg { color: var(--amber); }
+
+    /* Stats row */
+    .ta-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 0;
+    }
+    .ta-stat { text-align: center; }
+    .ta-stat:first-child { border-right: 1px solid var(--border-subtle); }
+    .ta-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .ta-stat-value {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+
+    /* Sections */
+    .ta-section { display: flex; flex-direction: column; gap: 8px; }
+    .ta-description {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .ta-section-title {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--fg-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .ta-section-title svg { color: var(--muted); opacity: 0.6; }
+
+    /* Tags */
+    .ta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .ta-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      background: var(--surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+    }
+    .ta-tag-more {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: transparent;
+      cursor: default;
+    }
+
+    /* Victims */
+    .ta-victims {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .ta-victim {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      background: var(--surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+    }
+    .ta-victim-flag { font-size: 13px; }
+
+
+
+    .ta-detail-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg-secondary);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-top: auto;
+    }
+    .ta-detail-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .ta-detail-btn svg { width: 14px; height: 14px; }
+
+
+
+    /* Sidebar collapsed — only 60px visible */
+    .sidebar.collapsed {
+      width: 60px;
+    }
+    .sidebar.collapsed ~ .main {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .sidebar-tab span:not(.sidebar-badge),
+    .sidebar.collapsed .sidebar-tab span[data-en],
+    .sidebar.collapsed .sidebar-tab span[data-vi],
+    .sidebar.collapsed .sidebar-bottom-item span,
+    .sidebar.collapsed .sidebar-bottom-item .bottom-right,
+    .sidebar.collapsed .sidebar-avatar-info,
+    .sidebar.collapsed .sidebar-lang,
+        .sidebar.collapsed .sidebar-spacer,
+    .sidebar.collapsed .sidebar-search {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-tab {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-bottom-item {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding: 16px 0 14px;
+    }
+    @media (max-width: 1200px) {
+      .main { margin-left: 240px; width: calc(100% - 240px); padding: 16px 20px 32px; }
+      .actor-summary { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .actor-card { padding: 18px 20px; gap: 14px; }
+      .actor-card-value { font-size: 28px; }
+      .actor-grid { grid-template-columns: repeat(3, 1fr); }
+      .page-header-right { flex-shrink: 0; }
+      .ta-chart-card { padding: 16px 20px; }
+      .ta-donut-wrap svg { width: 160px; height: 160px; }
+      .ta-donut-value { font-size: 24px; }
+      .ta-bar-row { grid-template-columns: 70px 1fr 36px; gap: 8px; }
+    }
+                @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+      }
+      .sidebar .sidebar-brand-text,
+      .sidebar .sidebar-tab span:not(.sidebar-badge),
+      .sidebar .sidebar-tab span[data-en],
+      .sidebar .sidebar-tab span[data-vi],
+      .sidebar .sidebar-bottom-item span,
+      .sidebar .sidebar-lang,
+      
+      .sidebar .sidebar-spacer {
+        display: none;
+      }
+      .sidebar .sidebar-tab {
+        justify-content: center;
+        padding: 0;
+      }
+      .sidebar .sidebar-bottom-item {
+        justify-content: center;
+        padding: 0;
+      }
+      .sidebar .sidebar-brand {
+        justify-content: center;
+        padding: 16px 0 14px;
+      }
+
+      .sidebar .sidebar-toggle-btn { display: none; }
+      .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .main { padding: 12px 12px 32px; }
+      .actor-card { padding: 16px; gap: 12px; }
+      .actor-card-value { font-size: 24px; }
+      .actor-card-icon { width: 44px; height: 44px; }
+      .ta-header { gap: 10px; }
+      .ta-avatar-placeholder { width: 44px; height: 44px; font-size: 14px; }
+      .ta-name { font-size: 15px; }
+      .ta-stat-value { font-size: 18px; }
+      .ta-bar-row { grid-template-columns: 60px 1fr 40px; gap: 8px; }
+      .ta-chart-card { padding: 16px; }
+      .ta-donut-wrap svg { width: 140px; height: 140px; }
+      .ta-donut-value { font-size: 22px; }
+      .actor-grid { grid-template-columns: repeat(2, 1fr); }
+
+    }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+        .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 95%; max-width: 1200px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: #e0f2fe; color: #0369a1; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(4) .pricing-badge { background: #fef3c7; color: #92400e; }
+    .pricing-card:nth-child(5) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 32px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
+    .severity-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .severity-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .severity-badge.high { background: var(--high-soft); color: var(--high); }
+    .severity-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .severity-badge.low { background: var(--low-soft); color: var(--low); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Threat Actor Detail Screen
+       ═══════════════════════════════════════════════════════════════ */
+    .ta-detail-screen { display: none; }
+    .ta-detail-screen.active { display: block; }
+    .ta-detail-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; margin-bottom: 16px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xs);
+      color: var(--fg-secondary); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .ta-detail-back:hover { background: var(--surface-alt); color: var(--accent); border-color: var(--accent); }
+    #actor-grid-screen.hidden { display: none; }
+
+    .ta-detail-header {
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(220, 38, 38, 0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(153, 27, 27, 0.4) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(239, 68, 68, 0.2) 0%, transparent 70%),
+        linear-gradient(135deg, #1a0505 0%, #450a0a 25%, #dc2626 50%, #ef4444 75%, #1a0505 100%);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ta-detail-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle 1.5px at center, rgba(255,255,255,0.12) 0%, transparent 100%);
+      background-size: 28px 28px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .ta-detail-header::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+      right: -80px;
+      top: -80px;
+      filter: blur(40px);
+    }
+    .ta-detail-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 32px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(153, 27, 27, 0.5));
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.25);
+    }
+    .ta-detail-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.4), 0 0 60px rgba(153, 27, 27, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    .ta-detail-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .ta-detail-name {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .ta-detail-rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255,255,255,0.18);
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+
+
+    .ta-timeline-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .ta-timeline-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ta-timeline-title svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+    .ta-timeline-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .ta-timeline-canvas-wrap {
+      width: 100%;
+      height: 180px;
+      position: relative;
+    }
+    .ta-timeline-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .ta-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+    .ta-detail-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .ta-detail-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ta-detail-card-title svg { width: 14px; height: 14px; color: var(--accent); }
+    .ta-detail-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--fg-secondary);
+    }
+    .ta-detail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .ta-detail-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+      background: var(--surface-alt);
+      color: var(--fg-secondary);
+      border: 1px solid var(--border);
+    }
+    .ta-detail-victims {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .ta-detail-victim {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--fg-secondary);
+    }
+    .ta-detail-victim-flag { font-size: 16px; }
+
+    /* IoC Table — white theme */
+    .ta-ioc-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .ta-ioc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ta-ioc-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ta-ioc-title span { color: var(--muted); font-weight: 400; }
+    .ta-ioc-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      padding: 5px 10px;
+    }
+    .ta-ioc-search svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+    .ta-ioc-search input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--fg);
+      font-size: 12px;
+      width: 160px;
+    }
+    .ta-ioc-search input::placeholder { color: var(--muted); }
+    .ta-ioc-table-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 140px;
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+    .ta-ioc-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 140px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--fg);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .ta-ioc-row:hover { background: var(--surface-alt); }
+    .ta-ioc-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .ta-ioc-type {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .ta-ioc-type--url { background: #dcfce7; color: #16a34a; }
+    .ta-ioc-type--ip { background: #ede9fe; color: #7c3aed; }
+    .ta-ioc-type--domain { background: #dbeafe; color: #2563eb; }
+    .ta-ioc-type--md5 { background: #fef9c3; color: #ca8a04; }
+    .ta-ioc-type--sha { background: #fee2e2; color: #dc2626; }
+    .ta-ioc-type--file { background: #ffedd5; color: #ea580c; }
+    .ta-ioc-date { color: var(--muted); font-size: 12px; }
+    .ta-ioc-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ta-ioc-page-btns { display: flex; gap: 4px; }
+    .ta-ioc-page-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.15s;
+    }
+    .ta-ioc-page-btn:hover { background: var(--surface-alt); color: var(--fg); }
+    .ta-ioc-page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .ta-detail-header { flex-direction: column; align-items: center; }
+      .ta-detail-stats { margin-left: 0; }
+      .ta-ioc-table-header,
+      .ta-ioc-row { grid-template-columns: 1.5fr 1fr 100px; }
+      .ta-ioc-table-header > div:nth-child(3),
+      .ta-ioc-row > div:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.getElementById("sidebar").classList.add("collapsed")}</script>
+
+  <!-- TOP NAV -->
+  <nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">GS</div>
+    <div class="sidebar-brand-text">G-SKY<span>WATCH</span></div>
+    <button class="sidebar-toggle-btn" onclick="var sb=document.getElementById('sidebar'); sb.classList.toggle('collapsed'); localStorage.setItem('gs-sidebar-v2', sb.classList.contains('collapsed') ? '1' : '0');" title="Toggle sidebar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+
+  <!-- Quick Search -->
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-search">
+    <div class="sidebar-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="sidebar-search-input" placeholder="Quick search" data-vi-placeholder="Tìm kiếm nhanh">
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-nav">
+    <a href="index-v2.html" class="sidebar-tab" data-en="Overview" data-vi="Tổng quan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span data-en="Overview" data-vi="Tổng quan">Overview <span class="sidebar-badge">23</span></span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Assets" data-vi="Tài sản">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span data-en="Assets" data-vi="Tài sản">Assets</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Sky Assistant" data-vi="Trợ lý Sky">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span data-en="Sky Assistant" data-vi="Trợ lý Sky">Sky Assistant</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Report" data-vi="Báo cáo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span data-en="Report" data-vi="Báo cáo">Report</span>
+    </a>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="nav-section-label" data-en="Features" data-vi="Tính năng">Features</div>
+
+    <a href="#" class="sidebar-tab" data-en="Threat Map" data-vi="Bản đồ đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span data-en="Threat Map" data-vi="Bản đồ đe dọa">Threat Map</span>
+    </a>
+    <a href="feature-uptime-monitoring.html" class="sidebar-tab" data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">Uptime Monitoring</span>
+    </a>
+    <a href="feature-brand-protection.html" class="sidebar-tab" data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</span>
+    </a>
+    <a href="feature-vulnerability-management.html" class="sidebar-tab" data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">Vulnerability Management</span>
+    </a>
+    <a href="feature-product-weakness.html" class="sidebar-tab" data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</span>
+    </a>
+    <a href="feature-threat-investigation.html" class="sidebar-tab" data-en="Threat Investigation" data-vi="Điều tra đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span data-en="Threat Investigation" data-vi="Điều tra đe dọa">Threat Investigation</span>
+    </a>
+    <a href="feature-data-breach-monitoring.html" class="sidebar-tab" data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">Data Breach Monitoring</span>
+    </a>
+    <a href="feature-botnet-detection.html" class="sidebar-tab" data-en="Botnet Detection" data-vi="Phát hiện Botnet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span data-en="Botnet Detection" data-vi="Phát hiện Botnet">Botnet Detection</span>
+    </a>
+    <a href="feature-threat-intel-feeds.html" class="sidebar-tab" data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+      <span data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">Threat Intel Feeds</span>
+    </a>
+    <a href="feature-threat-actor-intelligence.html" class="sidebar-tab active" data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">Threat Actor Intelligence</span>
+    </a>
+    <a href="feature-malware-intelligence.html" class="sidebar-tab" data-en="Malware Intelligence" data-vi="Tình báo mã độc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Malware Intelligence" data-vi="Tình báo mã độc">Malware Intelligence</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <!-- Upgrade Card -->
+  <div class="sidebar-upgrade">
+    <div class="sidebar-upgrade-header">
+      <div class="sidebar-upgrade-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </div>
+      <div class="sidebar-upgrade-label">
+        <span data-en="Current plan:" data-vi="Gói hiện tại:">Current plan:</span>
+        <strong data-en="Pro trial" data-vi="Dùng thử Pro">Pro trial</strong>
+      </div>
+    </div>
+    <div class="sidebar-upgrade-desc" data-en="Upgrade to Pro to get the latest and exclusive features" data-vi="Nâng cấp Pro để nhận các tính năng mới nhất và độc quyền">Upgrade to Pro to get the latest and exclusive features</div>
+    <a href="#" class="sidebar-upgrade-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span data-en="Upgrade to Pro" data-vi="Nâng cấp Pro">Upgrade to Pro</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <div class="sidebar-bottom">
+    <a href="settings.html" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span data-en="Settings" data-vi="Cài đặt">Settings</span>
+    </a>
+    <a href="#" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span data-en="Help" data-vi="Trợ giúp">Help</span>
+    </a>
+    <div class="sidebar-bottom-item" onclick="document.body.classList.toggle('dark-mode')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span data-en="Theme" data-vi="Giao diện">Theme</span>
+      <div class="bottom-right" style="display:flex;align-items:center;gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </div>
+    </div>
+    <div class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      <span data-en="Language" data-vi="Ngôn ngữ">Language</span>
+      <div class="bottom-right">
+        <div class="sidebar-lang-pills">
+          <button class="sidebar-lang-pill active" data-lang="en">EN</button>
+          <button class="sidebar-lang-pill" data-lang="vi">VI</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-divider sidebar-divider--full"></div>
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
+      <div class="sidebar-avatar">B</div>
+      <div class="sidebar-avatar-info">
+        <div class="sidebar-avatar-name">Brooklyn</div>
+        <div class="sidebar-avatar-role">Admin</div>
+      </div>
+    </a>
+  </div>
+</nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Page Header -->
+    <div class="page-header reveal">
+      <div class="page-header-left">
+        <h1 data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân mối đe dọa">Threat Actor Intelligence</h1>
+        <p data-en="Track and profile known threat actors, their campaigns, and associated indicators" data-vi="Theo dõi và lập hồ sơ các tác nhân mối đe dọa_known, chiến dịch và chỉ báo liên quan">Track and profile known threat actors, their campaigns, and associated indicators</p>
+      </div>
+
+    </div>
+
+    <div id="actor-grid-screen">
+    <!-- Summary Cards -->
+    <div class="actor-summary reveal reveal-delay-1">
+      <div class="actor-card actor-card--actor">
+        <div class="actor-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div>
+          <div class="actor-card-value">186</div>
+          <div class="actor-card-label" data-en="Threat Actors" data-vi="Tác nhân mối đe dọa">Threat Actors</div>
+        </div>
+        <div class="actor-card-meta">
+          <div class="actor-card-meta-value">+12</div>
+          <div class="actor-card-meta-label" data-en="Last 24 hours" data-vi="24 giờ qua">Last 24 hours</div>
+        </div>
+      </div>
+      <div class="actor-card actor-card--events">
+        <div class="actor-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div>
+          <div class="actor-card-value">2,847</div>
+          <div class="actor-card-label" data-en="Events" data-vi="Sự kiện">Events</div>
+        </div>
+        <div class="actor-card-meta">
+          <div class="actor-card-meta-value">+156</div>
+          <div class="actor-card-meta-label" data-en="Last 24 hours" data-vi="24 giờ qua">Last 24 hours</div>
+        </div>
+      </div>
+      <div class="actor-card actor-card--iocs">
+        <div class="actor-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        </div>
+        <div>
+          <div class="actor-card-value">4,291</div>
+          <div class="actor-card-label" data-en="IoCs" data-vi="Chỉ báo">IoCs</div>
+        </div>
+        <div class="actor-card-meta">
+          <div class="actor-card-meta-value">+312</div>
+          <div class="actor-card-meta-label" data-en="Last 24 hours" data-vi="24 giờ qua">Last 24 hours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="ta-charts reveal reveal-delay-1">
+      <!-- Events Donut -->
+      <div class="ta-chart-card">
+        <div class="ta-chart-title">
+          <span data-en="Events" data-vi="Sự kiện">Events</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        </div>
+        <div class="ta-donut-wrap">
+          <svg width="200" height="200" viewBox="0 0 200 200" id="ta-donut-svg">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="var(--surface-alt)" stroke-width="28"/>
+            <circle class="ta-donut-segment" cx="100" cy="100" r="80" fill="none" stroke="#0167FF" stroke-width="28" stroke-dasharray="150.8 351.86" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 100 100)" data-label="Critical" data-value="32"/>
+            <circle class="ta-donut-segment" cx="100" cy="100" r="80" fill="none" stroke="#3b82f6" stroke-width="28" stroke-dasharray="100.53 402.13" stroke-dashoffset="-150.8" stroke-linecap="round" transform="rotate(-90 100 100)" data-label="High" data-value="48"/>
+            <circle class="ta-donut-segment" cx="100" cy="100" r="80" fill="none" stroke="#60a5fa" stroke-width="28" stroke-dasharray="80.42 422.24" stroke-dashoffset="-251.33" stroke-linecap="round" transform="rotate(-90 100 100)" data-label="Medium" data-value="35"/>
+            <circle class="ta-donut-segment" cx="100" cy="100" r="80" fill="none" stroke="#93c5fd" stroke-width="28" stroke-dasharray="50.27 452.39" stroke-dashoffset="-331.75" stroke-linecap="round" transform="rotate(-90 100 100)" data-label="Low" data-value="15"/>
+            <circle class="ta-donut-segment" cx="100" cy="100" r="80" fill="none" stroke="#bfdbfe" stroke-width="28" stroke-dasharray="20.11 482.55" stroke-dashoffset="-382.02" stroke-linecap="round" transform="rotate(-90 100 100)" data-label="Info" data-value="7"/>
+          </svg>
+          <div class="ta-donut-center">
+            <div class="ta-donut-value">137</div>
+            <div class="ta-donut-label" data-en="Events" data-vi="Sự kiện">Events</div>
+          </div>
+          <div class="ta-donut-tooltip" id="donut-tooltip"></div>
+        </div>
+        <div class="ta-chart-trend" data-en="Trending up by <strong>5.2%</strong> this month" data-vi="Tăng <strong>5.2%</strong> tháng này">Trending up by <strong>5.2%</strong> this month</div>
+      </div>
+
+      <!-- Top Suspected Victims -->
+      <div class="ta-chart-card">
+        <div class="ta-chart-title">
+          <span data-en="Top Suspected Victims" data-vi="Nạn nhân nghi ngờ hàng đầu">Top Suspected Victims</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        </div>
+        <div class="ta-bar-list">
+          <div class="ta-bar-row">
+            <div class="ta-bar-name">USA</div>
+            <div class="ta-bar-track"><div class="ta-bar-fill ta-bar-fill--usa"></div></div>
+            <div class="ta-bar-pct">92%</div>
+          </div>
+          <div class="ta-bar-row">
+            <div class="ta-bar-name">Germany</div>
+            <div class="ta-bar-track"><div class="ta-bar-fill ta-bar-fill--germany"></div></div>
+            <div class="ta-bar-pct">68%</div>
+          </div>
+          <div class="ta-bar-row">
+            <div class="ta-bar-name">China</div>
+            <div class="ta-bar-track"><div class="ta-bar-fill ta-bar-fill--china"></div></div>
+            <div class="ta-bar-pct">54%</div>
+          </div>
+          <div class="ta-bar-row">
+            <div class="ta-bar-name">France</div>
+            <div class="ta-bar-track"><div class="ta-bar-fill ta-bar-fill--france"></div></div>
+            <div class="ta-bar-pct">42%</div>
+          </div>
+          <div class="ta-bar-row">
+            <div class="ta-bar-name">Other</div>
+            <div class="ta-bar-track"><div class="ta-bar-fill ta-bar-fill--other"></div></div>
+            <div class="ta-bar-pct">28%</div>
+          </div>
+        </div>
+        <div class="ta-chart-trend" data-en="Trending up by <strong>5.2%</strong> this month" data-vi="Tăng <strong>5.2%</strong> tháng này">Trending up by <strong>5.2%</strong> this month</div>
+      </div>
+    </div>
+
+    <div class="ta-search reveal reveal-delay-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+      <input type="text" id="taSearchInput" placeholder="Search threat actors..." data-placeholder-en="Search threat actors..." data-placeholder-vi="Tìm kiếm threat actors...">
+      <button class="ta-search-clear" id="taSearchClear">&times;</button>
+    </div>
+
+    <div class="actor-grid reveal reveal-delay-2" id="actorGrid">
+
+      <!-- TA505 -->
+      <div class="ta-card" data-name="TA505" data-rank="1" data-events="8" data-iocs="89" data-desc="Russian-speaking cybercriminal group known for deploying Dridex, Locky ransomware, and Clop ransomware via phishing campaigns. Active since 2014, targeting financial institutions and healthcare sectors globally." data-synonyms="SectorJ04|SectorJ04 Group|GRACFUL SPIDER|Dudear|Hive0065|DEV-0504|TA505 Gang|Indrik Spider|Silence Group|Gold Drake|MalDoc|FIN7 Subgroup|Andromeda|TrickBot Affiliate|Evil Corp Associate|LockBit Affiliate" data-victims="🇦🇺 Australia|🇨🇦 Canada|🇨🇿 Czech Republic|🇩🇪 Germany|🇺🇸 United States|🇬🇧 United Kingdom|🇫🇷 France|🇯🇵 Japan|🇮🇹 Italy|🇪🇸 Spain|🇧🇷 Brazil|🇮🇳 India|🇰🇷 South Korea|🇳🇱 Netherlands|🇸🇪 Sweden" data-bg="linear-gradient(135deg, #dc2626, #991b1b)" data-initials="TA">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder">TA</div>
+          </div>
+          <div>
+            <div class="ta-name">TA505</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 1</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">8</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">89</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Known aliases and alternative names used by this threat actor across different threat intelligence platforms and security vendor reports.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">SectorJ04</span>
+            <span class="ta-tag">SectorJ04 Group</span>
+            <span class="ta-tag">GRACFUL SPIDER</span>
+            <span class="ta-tag">Dudear</span>
+            <span class="ta-tag ta-tag-more">+12</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇦🇺</span> Australia</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇦</span> Canada</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇿</span> Czech Republic</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+34</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Muddy Water -->
+      <div class="ta-card" data-rank="2" data-events="6" data-iocs="41" data-desc="Iranian state-sponsored APT group linked to the Ministry of Intelligence and Security (MOIS). Active since 2014, targeting government, defense, telecom, and energy sectors across Middle East, Europe, and North America." data-synonyms="TEMP.Zagros|Statick Kitten|Seedworm|MERCURY|APT34 Subgroup|OilRig Associate|Charming Kitten Ally|Phosphorus Group|COBALT GYPSY|MAGIC HOUND|Helix Kitten|Darkhydrus|Chafer APT|Remexi|Calypso APT" data-victims="🇮🇱 Israel|🇸🇦 Saudi Arabia|🇦🇪 UAE|🇶🇦 Qatar|🇰🇼 Kuwait|🇧🇭 Bahrain|🇮🇶 Iraq|🇯🇴 Jordan|🇱🇧 Lebanon|🇺🇸 United States|🇬🇧 United Kingdom|🇩🇪 Germany|🇫🇷 France|🇨🇦 Canada|🇦🇺 Australia" data-bg="linear-gradient(135deg, #b45309, #92400e)" data-initials="MW">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #b45309, #92400e);">MW</div>
+          </div>
+          <div>
+            <div class="ta-name">Muddy Water</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 2</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">6</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">41</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Associated aliases attributed to this actor by various threat intelligence vendors and government advisories.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">TEMP.Zagros</span>
+            <span class="ta-tag">Statick Kitten</span>
+            <span class="ta-tag">Seedworm</span>
+            <span class="ta-tag">MERCURY</span>
+            <span class="ta-tag ta-tag-more">+12</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇦🇺</span> Australia</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇦</span> Canada</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇿</span> Czech Republic</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+34</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Callisto -->
+      <div class="ta-card" data-rank="3" data-events="3" data-iocs="81" data-desc="State-sponsored group operating primarily against government and military targets in Eastern Europe and Central Asia. Known for sophisticated spear-phishing campaigns exploiting zero-day vulnerabilities in popular software." data-synonyms="COLD RIVER|SEABORGIUM|TA446|IRON FRONTIER| COLDRIVER|BlueCharlie|Callisto Group|Ghostwriter|UNC4057|Storm-0558|Volt Typhoon Ally|BlueDelta|CHROMIUM|Static Kitten Copy" data-victims="🇺🇦 Ukraine|🇬🇪 Georgia|🇰🇿 Kazakhstan|🇰🇬 Kyrgyzstan|🇺🇿 Uzbekistan|🇱🇹 Lithuania|🇱🇻 Latvia|🇪🇪 Estonia|🇵🇱 Poland|🇫🇮 Finland|🇸🇪 Sweden|🇳🇴 Norway|🇩🇰 Denmark|🇨🇿 Czech Republic|🇷🇴 Romania" data-bg="linear-gradient(135deg, #0369a1, #075985)" data-initials="CA">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #7c3aed, #5b21b6);">CA</div>
+          </div>
+          <div>
+            <div class="ta-name">Callisto</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 3</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">3</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">81</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Multiple names used across platforms — this actor is tracked under several overlapping designations.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">COLD RIVER</span>
+            <span class="ta-tag">SEABORGIUM</span>
+            <span class="ta-tag">TA446</span>
+            <span class="ta-tag">IRON FRONTIER</span>
+            <span class="ta-tag ta-tag-more">+12</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇦🇺</span> Australia</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇦</span> Canada</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇨🇿</span> Czech Republic</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+34</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Lazarus Group -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #dc2626, #991b1b);">LG</div>
+          </div>
+          <div>
+            <div class="ta-name">Lazarus Group</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 4</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">24</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">312</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">North Korean state-sponsored group tracked under multiple names by security vendors globally.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">APT38</span>
+            <span class="ta-tag">ZINC</span>
+            <span class="ta-tag">OFFICE MONKEY</span>
+            <span class="ta-tag">BYZANTINE HADES</span>
+            <span class="ta-tag ta-tag-more">+18</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇰🇷</span> South Korea</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇯🇵</span> Japan</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+28</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Sandworm -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #0891b2, #0e7490);">SW</div>
+          </div>
+          <div>
+            <div class="ta-name">Sandworm</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 5</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">18</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">196</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Russian military intelligence-linked group responsible for destructive cyber operations and wiper attacks.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Voodoo Bear</span>
+            <span class="ta-tag">IRIDIUM</span>
+            <span class="ta-tag">SEDESTROYER</span>
+            <span class="ta-tag ta-tag-more">+8</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇦</span> Ukraine</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇪</span> Georgia</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇫🇷</span> France</span>
+            <span class="ta-tag ta-tag-more">+14</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- APT29 -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #1d4ed8, #1e40af);">29</div>
+          </div>
+          <div>
+            <div class="ta-name">APT29</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 6</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">14</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">178</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Russian foreign intelligence-linked group known for sophisticated supply chain and credential harvesting attacks.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Cozy Bear</span>
+            <span class="ta-tag">The Dukes</span>
+            <span class="ta-tag">NOBELIUM</span>
+            <span class="ta-tag">Dark Halo</span>
+            <span class="ta-tag ta-tag-more">+15</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇧</span> United Kingdom</span>
+            <span class="ta-tag ta-tag-more">+22</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- APT41 -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #ea580c, #c2410c);">41</div>
+          </div>
+          <div>
+            <div class="ta-name">APT41</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 7</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">21</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">267</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Dual-motivated group conducting both state-sponsored espionage and financially motivated cybercrime operations.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Winnti</span>
+            <span class="ta-tag">Double Dragon</span>
+            <span class="ta-tag">Jolly Roger</span>
+            <span class="ta-tag ta-tag-more">+9</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇮🇳</span> India</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇯🇵</span> Japan</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇧🇷</span> Brazil</span>
+            <span class="ta-tag ta-tag-more">+19</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Turla -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #7c2d12, #5c1d0e);">TU</div>
+          </div>
+          <div>
+            <div class="ta-name">Turla</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 8</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">11</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">143</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Highly sophisticated espionage group leveraging custom malware frameworks and satellite-based C2 channels.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Snake</span>
+            <span class="ta-tag">Waterbug</span>
+            <span class="ta-tag">Venomous Bear</span>
+            <span class="ta-tag">Krypton Monkey</span>
+            <span class="ta-tag ta-tag-more">+11</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇧</span> United Kingdom</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+17</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- OceanLotus -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #059669, #047857);">OL</div>
+          </div>
+          <div>
+            <div class="ta-name">OceanLotus</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 9</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">9</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">102</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Vietnamese-linked APT group targeting government and media organizations across Southeast Asia.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">APT32</span>
+            <span class="ta-tag">Cobalt Kitty</span>
+            <span class="ta-tag">SeaLotus</span>
+            <span class="ta-tag ta-tag-more">+5</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇹🇼</span> Taiwan</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇵🇭</span> Philippines</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇮🇩</span> Indonesia</span>
+            <span class="ta-tag ta-tag-more">+6</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Carbanak -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #a21caf, #86198f);">CB</div>
+          </div>
+          <div>
+            <div class="ta-name">Carbanak</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 10</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">16</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">204</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Financially motivated cybercrime group primarily targeting banking institutions and payment systems worldwide.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">FIN7</span>
+            <span class="ta-tag">Cobalt Group</span>
+            <span class="ta-tag">Anunak</span>
+            <span class="ta-tag ta-tag-more">+7</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇪🇸</span> Spain</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇮🇹</span> Italy</span>
+            <span class="ta-tag ta-tag-more">+31</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- DarkSide -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #1f2937, #111827);">DS</div>
+          </div>
+          <div>
+            <div class="ta-name">DarkSide</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 11</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">13</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">156</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Ransomware-as-a-service operation responsible for critical infrastructure attacks including Colonial Pipeline.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">PHOBOS</span>
+            <span class="ta-tag">Carbon Spider</span>
+            <span class="ta-tag ta-tag-more">+3</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇫🇷</span> France</span>
+            <span class="ta-tag ta-tag-more">+8</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- FIN7 -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #b45309, #92400e);">F7</div>
+          </div>
+          <div>
+            <div class="ta-name">FIN7</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 12</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">7</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">89</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Cybercrime syndicate specializing in point-of-sale malware and targeted ransomware campaigns against retailers.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Navigator Group</span>
+            <span class="ta-tag">ITG14</span>
+            <span class="ta-tag ta-tag-more">+2</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇧</span> United Kingdom</span>
+            <span class="ta-tag ta-tag-more">+12</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Volt Typhoon -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">VT</div>
+          </div>
+          <div>
+            <div class="ta-name">Volt Typhoon</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 13</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">15</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">187</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Chinese state-sponsored group conducting living-off-the-land attacks against US critical infrastructure.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Insidious Taurus</span>
+            <span class="ta-tag">Bronze Butler</span>
+            <span class="ta-tag">BRONZE BUTLER</span>
+            <span class="ta-tag ta-tag-more">+4</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇺</span> Guam</span>
+            <span class="ta-tag ta-tag-more">+5</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Scattered Spider -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">SS</div>
+          </div>
+          <div>
+            <div class="ta-name">Scattered Spider</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 14</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">19</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">231</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Young English-speaking hackers using social engineering and SIM swapping to breach major corporations.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">0ktapus</span>
+            <span class="ta-tag">Octo Tempest</span>
+            <span class="ta-tag ta-tag-more">+3</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇧</span> United Kingdom</span>
+            <span class="ta-tag ta-tag-more">+9</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Wizard Spider -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #be123c, #9f1239);">WS</div>
+          </div>
+          <div>
+            <div class="ta-name">Wizard Spider</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 15</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">10</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">118</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Russia-based cybercrime group operating Conti and TrickBot ransomware against healthcare and government targets.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">UNC1878</span>
+            <span class="ta-tag">TRICKBOT</span>
+            <span class="ta-tag">TEMP.MixMaster</span>
+            <span class="ta-tag ta-tag-more">+5</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇮🇪</span> Ireland</span>
+            <span class="ta-tag ta-tag-more">+14</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- APT33 -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #d97706, #b45309);">33</div>
+          </div>
+          <div>
+            <div class="ta-name">APT33</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 16</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">8</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">95</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Iranian-linked group targeting aviation and energy sectors with wiper malware and credential theft.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Elfin</span>
+            <span class="ta-tag">Rockets Kitten</span>
+            <span class="ta-tag">APT33</span>
+            <span class="ta-tag ta-tag-more">+3</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇸🇦</span> Saudi Arabia</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+4</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Charming Kitten -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">CK</div>
+          </div>
+          <div>
+            <div class="ta-name">Charming Kitten</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 17</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">12</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">134</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Iranian APT group conducting credential harvesting and surveillance operations against dissidents and journalists.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">APT35</span>
+            <span class="ta-tag">Phosphorus</span>
+            <span class="ta-tag">Newscaster</span>
+            <span class="ta-tag ta-tag-more">+4</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇬🇧</span> United Kingdom</span>
+            <span class="ta-tag ta-tag-more">+11</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+      <!-- Pawn Storm -->
+      <div class="ta-card">
+        <div class="ta-header">
+          <div class="ta-avatar">
+            <div class="ta-avatar-placeholder" style="background: linear-gradient(135deg, #059669, #047857);">PS</div>
+          </div>
+          <div>
+            <div class="ta-name">Pawn Storm</div>
+            <div class="ta-rank"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Rank: 18</div>
+          </div>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-stat-label">Events</div>
+            <div class="ta-stat-value">22</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-stat-label">IoCs</div>
+            <div class="ta-stat-value">278</div>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-description">Russian-linked group known for large-scale credential harvesting and espionage campaigns against government agencies.</div>
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Synonyms
+          </div>
+          <div class="ta-tags">
+            <span class="ta-tag">Fancy Bear</span>
+            <span class="ta-tag">APT28</span>
+            <span class="ta-tag">Sofacy</span>
+            <span class="ta-tag ta-tag-more">+6</span>
+          </div>
+        </div>
+        <div class="ta-section">
+          <div class="ta-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-victims">
+            <span class="ta-victim"><span class="ta-victim-flag">🇩🇪</span> Germany</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇫🇷</span> France</span>
+            <span class="ta-victim"><span class="ta-victim-flag">🇺🇸</span> United States</span>
+            <span class="ta-tag ta-tag-more">+26</span>
+          </div>
+        </div>
+        <button class="ta-detail-btn">See Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </div>
+
+    </div>
+
+
+
+    </div><!-- end actor-grid-screen -->
+
+    <!-- ═══ TA505 Detail Screen ═══ -->
+    <div id="ta-detail-screen" class="ta-detail-screen">
+      <div class="ta-detail-back" onclick="showTaGrid()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Threat Actors
+      </div>
+      <div class="ta-detail-header">
+        <div class="ta-detail-avatar" id="detailAvatar"><img src="ta505-avatar.png" alt="TA505"></div>
+        <div class="ta-detail-info">
+          <div class="ta-detail-name" id="detailName">TA505</div>
+          <div class="ta-detail-rank-badge" id="detailRank">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Rank: 1
+          </div>
+        </div>
+      </div>
+
+      <div class="ta-detail-body">
+        <div class="ta-detail-card">
+          <div class="ta-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            Description
+          </div>
+          <div class="ta-detail-desc" id="detailDesc">Russian-speaking cybercriminal group known for deploying Dridex, Locky ransomware, and Clop ransomware via phishing campaigns. Active since 2014, targeting financial institutions and healthcare sectors globally.</div>
+        </div>
+
+        <div class="ta-detail-card">
+          <div class="ta-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Synonyms
+          </div>
+          <div class="ta-detail-tags" id="detailSynonyms">
+            <span class="ta-detail-tag">SectorJ04</span>
+            <span class="ta-detail-tag">SectorJ04 Group</span>
+            <span class="ta-detail-tag">GRACFUL SPIDER</span>
+            <span class="ta-detail-tag">Dudear</span>
+            <span class="ta-detail-tag">Hive0065</span>
+            <span class="ta-detail-tag">DEV-0504</span>
+            <span class="ta-detail-tag">Indrik Spider</span>
+            <span class="ta-detail-tag">Silence Group</span>
+          </div>
+        </div>
+
+        <div class="ta-detail-card">
+          <div class="ta-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Suspected Victims
+          </div>
+          <div class="ta-detail-victims" id="detailVictims">
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇦🇺</span> Australia</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇨🇦</span> Canada</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇨🇿</span> Czech Republic</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇩🇪</span> Germany</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇺🇸</span> United States</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇬🇧</span> United Kingdom</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇫🇷</span> France</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇯🇵</span> Japan</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇮🇹</span> Italy</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇪🇸</span> Spain</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇧🇷</span> Brazil</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇮🇳</span> India</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇰🇷</span> South Korea</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇳🇱</span> Netherlands</div>
+            <div class="ta-detail-victim"><span class="ta-detail-victim-flag">🇸🇪</span> Sweden</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Line Chart -->
+      <div class="ta-timeline-section">
+        <div class="ta-timeline-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Activity Timeline
+        </div>
+        <div class="ta-timeline-subtitle">IoC activity over the past 12 months</div>
+        <div class="ta-timeline-canvas-wrap">
+          <canvas id="timelineCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- IoC Table -->
+      <div class="ta-ioc-section">
+        <div class="ta-ioc-header">
+          <div class="ta-ioc-title">IoCs <span>(89 indicators)</span></div>
+          <div class="ta-ioc-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="Search IoCs..." id="iocSearchInput">
+          </div>
+        </div>
+        <div class="ta-ioc-table-header">
+          <div>IoC</div>
+          <div>Category</div>
+          <div>Type</div>
+          <div>Last Update</div>
+        </div>
+        <div id="iocTableBody"></div>
+        <div class="ta-ioc-pagination">
+          <span id="iocPageInfo">Showing 1-10 of 89</span>
+          <div class="ta-ioc-page-btns" id="iocPageBtns"></div>
+        </div>
+      </div>
+    </div><!-- end ta-detail-screen -->
+
+  </main>
+
+  <script>
+    // Donut chart hover tooltip
+    var donutTooltip = document.getElementById('donut-tooltip');
+    var donutSvg = document.getElementById('ta-donut-svg');
+    var donutWrap = donutSvg ? donutSvg.closest('.ta-donut-wrap') : null;
+    if (donutSvg && donutTooltip && donutWrap) {
+      var segments = donutSvg.querySelectorAll('.ta-donut-segment');
+      segments.forEach(function(seg) {
+        seg.addEventListener('mouseenter', function(e) {
+          var label = this.getAttribute('data-label');
+          var value = this.getAttribute('data-value');
+          donutTooltip.textContent = label + ': ' + value;
+          donutTooltip.style.opacity = '1';
+        });
+        seg.addEventListener('mousemove', function(e) {
+          var rect = donutWrap.getBoundingClientRect();
+          donutTooltip.style.left = (e.clientX - rect.left - donutTooltip.offsetWidth / 2) + 'px';
+          donutTooltip.style.top = (e.clientY - rect.top - 36) + 'px';
+        });
+        seg.addEventListener('mouseleave', function() {
+          donutTooltip.style.opacity = '0';
+        });
+      });
+    }
+
+    // Language toggle
+    var langBtns = document.querySelectorAll('.lang-btn');
+    langBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        langBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        var lang = this.getAttribute('data-lang');
+        document.querySelectorAll('[data-en][data-vi]').forEach(function(el) {
+          var text = lang === 'vi' ? el.getAttribute('data-vi') : el.getAttribute('data-en');
+          if (text) el.textContent = text;
+        });
+        document.querySelectorAll('[data-en-placeholder][data-vi-placeholder]').forEach(function(el) {
+          el.placeholder = lang === 'vi' ? el.getAttribute('data-vi-placeholder') : el.getAttribute('data-en-placeholder');
+        });
+        try { localStorage.setItem('gs-lang', lang); } catch(e) {}
+      });
+    });
+    // Restore language
+    try {
+      var saved = localStorage.getItem('gs-lang');
+      if (saved === 'vi') {
+        langBtns.forEach(function(b) { b.classList.remove('active'); });
+        document.querySelector('.lang-btn[data-lang="vi"]').classList.add('active');
+        document.querySelectorAll('[data-en][data-vi]').forEach(function(el) {
+          var text = el.getAttribute('data-vi');
+          if (text) el.textContent = text;
+        });
+        document.querySelectorAll('[data-en-placeholder][data-vi-placeholder]').forEach(function(el) {
+          el.placeholder = el.getAttribute('data-vi-placeholder');
+        });
+      }
+    } catch(e) {}
+  
+    // ── Threat Actor Search ──────────────────
+    var taSearchInput = document.getElementById('taSearchInput');
+    var taSearchClear = document.getElementById('taSearchClear');
+    var actorGrid = document.getElementById('actorGrid');
+    if (taSearchInput && actorGrid) {
+      taSearchInput.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        if (taSearchClear) taSearchClear.classList.toggle('visible', q.length > 0);
+        actorGrid.querySelectorAll('.ta-card').forEach(function(card) {
+          var name = (card.querySelector('.ta-name') || {}).textContent || '';
+          card.style.display = name.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
+    }
+    if (taSearchClear) {
+      taSearchClear.addEventListener('click', function() {
+        taSearchInput.value = '';
+        taSearchInput.dispatchEvent(new Event('input'));
+        taSearchInput.focus();
+      });
+    }
+
+    // ── Timeline Line Chart ──────────────────────
+    function drawTimeline() {
+      var canvas = document.getElementById('timelineCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      var w = rect.width, h = rect.height;
+      var pad = { top: 16, right: 20, bottom: 30, left: 40 };
+      var chartW = w - pad.left - pad.right;
+      var chartH = h - pad.top - pad.bottom;
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var data = [12, 19, 8, 24, 31, 18, 42, 35, 28, 56, 44, 62];
+      var maxVal = Math.max.apply(null, data) * 1.15;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid lines
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      for (var i = 0; i <= 4; i++) {
+        var y = pad.top + (chartH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(w - pad.right, y);
+        ctx.stroke();
+      }
+
+      // Y-axis labels
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '11px -apple-system, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (var i = 0; i <= 4; i++) {
+        var val = Math.round(maxVal - (maxVal / 4) * i);
+        var y = pad.top + (chartH / 4) * i;
+        ctx.fillText(val, pad.left - 8, y);
+      }
+
+      // X-axis labels
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (var i = 0; i < months.length; i++) {
+        var x = pad.left + (chartW / (months.length - 1)) * i;
+        ctx.fillText(months[i], x, h - pad.bottom + 10);
+      }
+
+      // Area fill
+      var gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+      gradient.addColorStop(0, 'rgba(1, 103, 255, 0.15)');
+      gradient.addColorStop(1, 'rgba(1, 103, 255, 0.01)');
+      ctx.beginPath();
+      ctx.moveTo(pad.left, pad.top + chartH);
+      for (var i = 0; i < data.length; i++) {
+        var x = pad.left + (chartW / (data.length - 1)) * i;
+        var y = pad.top + chartH - (data[i] / maxVal) * chartH;
+        if (i === 0) ctx.lineTo(x, y);
+        else {
+          var prevX = pad.left + (chartW / (data.length - 1)) * (i - 1);
+          var prevY = pad.top + chartH - (data[i - 1] / maxVal) * chartH;
+          var cpX = (prevX + x) / 2;
+          ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+        }
+      }
+      ctx.lineTo(pad.left + chartW, pad.top + chartH);
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Line
+      ctx.beginPath();
+      ctx.strokeStyle = '#0167FF';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      for (var i = 0; i < data.length; i++) {
+        var x = pad.left + (chartW / (data.length - 1)) * i;
+        var y = pad.top + chartH - (data[i] / maxVal) * chartH;
+        if (i === 0) ctx.moveTo(x, y);
+        else {
+          var prevX = pad.left + (chartW / (data.length - 1)) * (i - 1);
+          var prevY = pad.top + chartH - (data[i - 1] / maxVal) * chartH;
+          var cpX = (prevX + x) / 2;
+          ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+        }
+      }
+      ctx.stroke();
+
+      // Dots
+      for (var i = 0; i < data.length; i++) {
+        var x = pad.left + (chartW / (data.length - 1)) * i;
+        var y = pad.top + chartH - (data[i] / maxVal) * chartH;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#0167FF';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+    }
+
+    // ── Threat Actor Detail Screen ──────────────
+    var iocData = [
+      { ioc: '185.220.100.252', cat: 'Network activity', type: 'ip-dst', date: '22/06/2026 14:23:11' },
+      { ioc: '194.26.29.120', cat: 'Network activity', type: 'ip-dst', date: '22/06/2026 13:45:02' },
+      { ioc: '45.77.65.211', cat: 'Network activity', type: 'ip-dst', date: '21/06/2026 09:12:33' },
+      { ioc: '192.168.1.105', cat: 'Network activity', type: 'ip-dst', date: '21/06/2026 08:55:47' },
+      { ioc: 'evil-domain.xyz', cat: 'Network activity', type: 'domain', date: '20/06/2026 22:18:09' },
+      { ioc: 'phish-login.xyz/account', cat: 'Network activity', type: 'url', date: '20/06/2026 21:03:55' },
+      { ioc: 'c2-panel.xyz/api/v2', cat: 'Network activity', type: 'url', date: '20/06/2026 19:47:21' },
+      { ioc: 'malware-drop.xyz/payload.exe', cat: 'Network activity', type: 'url', date: '19/06/2026 16:33:14' },
+      { ioc: 'a1b2c3d4e5f6789012345678abcdef01', cat: 'Payload delivery', type: 'md5', date: '19/06/2026 14:22:08' },
+      { ioc: 'b2c3d4e5f6a1789012345678abcdef0123456789', cat: 'Payload delivery', type: 'sha1', date: '19/06/2026 12:11:45' },
+      { ioc: 'c3d4e5f6a1b2789012345678abcdef0123456789abcdef0123456789abcdef01', cat: 'Payload delivery', type: 'sha256', date: '18/06/2026 23:58:33' },
+      { ioc: 'dropper_installer.exe', cat: 'Payload delivery', type: 'filename', date: '18/06/2026 18:44:12' },
+      { ioc: '103.28.36.14', cat: 'Network activity', type: 'ip-dst', date: '18/06/2026 15:29:07' },
+      { ioc: 'stolen-data.xyz/upload', cat: 'Network activity', type: 'url', date: '18/06/2026 11:16:54' },
+      { ioc: 'exfil-server.xyz:8443', cat: 'Network activity', type: 'domain', date: '17/06/2026 20:03:28' },
+      { ioc: '77.88.55.119', cat: 'Network activity', type: 'ip-dst', date: '17/06/2026 17:49:16' },
+      { ioc: 'ransom-note.hta', cat: 'Payload delivery', type: 'filename', date: '17/06/2026 14:35:02' },
+      { ioc: 'd4e5f6a1b2c3789012345678abcdef01', cat: 'Payload delivery', type: 'md5', date: '16/06/2026 22:21:48' },
+      { ioc: 'backup-c2.xyz:443', cat: 'Network activity', type: 'domain', date: '16/06/2026 19:07:35' },
+      { ioc: '203.0.113.42', cat: 'Network activity', type: 'ip-dst', date: '16/06/2026 15:53:21' },
+      { ioc: '198.51.100.78', cat: 'Network activity', type: 'ip-dst', date: '15/06/2026 21:39:09' },
+      { ioc: 'exploit-kit.xyz/landing', cat: 'Network activity', type: 'url', date: '15/06/2026 18:24:56' },
+      { ioc: 'credential-harvest.xyz/login', cat: 'Network activity', type: 'url', date: '15/06/2026 14:10:43' },
+      { ioc: 'e5f6a1b2c3d4789012345678abcdef0123456789', cat: 'Payload delivery', type: 'sha1', date: '14/06/2026 20:56:30' },
+      { ioc: '172.16.0.100', cat: 'Network activity', type: 'ip-dst', date: '14/06/2026 16:42:17' },
+      { ioc: 'keylogger_dump.zip', cat: 'Payload delivery', type: 'filename', date: '14/06/2026 12:28:04' },
+      { ioc: 'f6a1b2c3d4e5789012345678abcdef0123456789abcdef0123456789abcdef01', cat: 'Payload delivery', type: 'sha256', date: '13/06/2026 19:13:51' },
+      { ioc: 'botnet-node.xyz:9090', cat: 'Network activity', type: 'domain', date: '13/06/2026 15:59:38' },
+      { ioc: '10.0.0.55', cat: 'Network activity', type: 'ip-dst', date: '13/06/2026 11:45:25' },
+      { ioc: 'staging-backdoor.aspx', cat: 'Payload delivery', type: 'filename', date: '12/06/2026 18:31:12' }
+    ];
+    var iocPerPage = 10;
+    var iocCurPage = 1;
+    var iocFiltered = iocData.slice();
+
+    function renderIoCTable() {
+      var body = document.getElementById('iocTableBody');
+      if (!body) return;
+      var start = (iocCurPage - 1) * iocPerPage;
+      var end = Math.min(start + iocPerPage, iocFiltered.length);
+      var rows = '';
+      for (var i = start; i < end; i++) {
+        var d = iocFiltered[i];
+        var typeClass = 'ta-ioc-type--ip';
+        if (d.type === 'url') typeClass = 'ta-ioc-type--url';
+        else if (d.type === 'domain') typeClass = 'ta-ioc-type--domain';
+        else if (d.type === 'md5') typeClass = 'ta-ioc-type--md5';
+        else if (d.type === 'sha1' || d.type === 'sha256') typeClass = 'ta-ioc-type--sha';
+        else if (d.type === 'filename') typeClass = 'ta-ioc-type--file';
+        rows += '<div class="ta-ioc-row">' +
+          '<div class="ta-ioc-value">' + d.ioc + '</div>' +
+          '<div>' + d.cat + '</div>' +
+          '<div><span class="ta-ioc-type ' + typeClass + '">' + d.type + '</span></div>' +
+          '<div class="ta-ioc-date">' + d.date + '</div>' +
+          '</div>';
+      }
+      body.innerHTML = rows;
+      var info = document.getElementById('iocPageInfo');
+      if (info) info.textContent = 'Showing ' + (start + 1) + '-' + end + ' of ' + iocFiltered.length;
+      renderIoCPagination();
+    }
+
+    function renderIoCPagination() {
+      var container = document.getElementById('iocPageBtns');
+      if (!container) return;
+      var totalPages = Math.ceil(iocFiltered.length / iocPerPage);
+      var html = '';
+      for (var p = 1; p <= totalPages; p++) {
+        html += '<button class="ta-ioc-page-btn' + (p === iocCurPage ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+      }
+      container.innerHTML = html;
+      container.querySelectorAll('.ta-ioc-page-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          iocCurPage = parseInt(this.getAttribute('data-page'));
+          renderIoCTable();
+        });
+      });
+    }
+
+    function showTaDetail(card) {
+      var name = card.getAttribute('data-name') || (card.querySelector('.ta-name') || {}).textContent || '';
+      var rank = card.getAttribute('data-rank') || '1';
+      var events = card.getAttribute('data-events') || '0';
+      var iocs = card.getAttribute('data-iocs') || '0';
+      var desc = card.getAttribute('data-desc') || '';
+      var synonyms = (card.getAttribute('data-synonyms') || '').split('|');
+      var victims = (card.getAttribute('data-victims') || '').split('|');
+      var bg = card.getAttribute('data-bg') || 'linear-gradient(135deg, #dc2626, #991b1b)';
+      var initials = card.getAttribute('data-initials') || name.substring(0, 2);
+
+      var avatarEl = document.getElementById('detailAvatar');
+      var imgEl = avatarEl.querySelector('img');
+      if (imgEl) { imgEl.src = 'ta505-avatar.png'; }
+      else { avatarEl.textContent = initials; avatarEl.style.background = bg; }
+      document.getElementById('detailName').textContent = name;
+      document.getElementById('detailRank').innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Rank: ' + rank;
+
+      document.getElementById('detailDesc').textContent = desc;
+
+      var synHtml = '';
+      synonyms.forEach(function(s) { if (s.trim()) synHtml += '<span class="ta-detail-tag">' + s.trim() + '</span>'; });
+      document.getElementById('detailSynonyms').innerHTML = synHtml;
+
+      var vicHtml = '';
+      victims.forEach(function(v) {
+        if (!v.trim()) return;
+        var parts = v.trim().split(' ');
+        var flag = parts[0];
+        var country = parts.slice(1).join(' ');
+        vicHtml += '<div class="ta-detail-victim"><span class="ta-detail-victim-flag">' + flag + '</span> ' + country + '</div>';
+      });
+      document.getElementById('detailVictims').innerHTML = vicHtml;
+
+      document.querySelector('.ta-ioc-title').innerHTML = 'IoCs <span>(' + iocs + ' indicators)</span>';
+      iocFiltered = iocData.slice();
+      iocCurPage = 1;
+      var searchInput = document.getElementById('iocSearchInput');
+      if (searchInput) searchInput.value = '';
+      renderIoCTable();
+
+      document.querySelector('.page-header').style.display = 'none';
+      document.getElementById('actor-grid-screen').classList.add('hidden');
+      document.getElementById('ta-detail-screen').classList.add('active');
+      document.querySelector('.main').scrollTop = 0;
+      setTimeout(drawTimeline, 100);
+    }
+
+    function showTaGrid() {
+      document.getElementById('ta-detail-screen').classList.remove('active');
+      document.getElementById('actor-grid-screen').classList.remove('hidden');
+      document.querySelector('.page-header').style.display = '';
+      document.querySelector('.main').scrollTop = 0;
+    }
+
+    document.querySelectorAll('.ta-detail-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var card = this.closest('.ta-card');
+        if (card) showTaDetail(card);
+      });
+    });
+
+    var iocSearchInput = document.getElementById('iocSearchInput');
+    if (iocSearchInput) {
+      iocSearchInput.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        iocFiltered = iocData.filter(function(d) {
+          return d.ioc.toLowerCase().includes(q) || d.cat.toLowerCase().includes(q) || d.type.toLowerCase().includes(q);
+        });
+        iocCurPage = 1;
+        renderIoCTable();
+      });
+    }
+
+    // ── Sidebar Collapse Toggle ──────────────
+  var sidebar = document.getElementById("sidebar");
+  var panelCollapse = document.getElementById("panelCollapse");
+  if (panelCollapse && sidebar) {
+    panelCollapse.addEventListener("click", function() {
+      sidebar.classList.toggle("collapsed");
+      try { localStorage.setItem("gs-sidebar-v2", sidebar.classList.contains("collapsed") ? "1" : "0"); } catch(e) {}
+    });
+  }
+  // Restore collapsed state
+  try {
+    if (localStorage.getItem("gs-sidebar-v2") === "1" && sidebar) {
+      sidebar.classList.add("collapsed");
+    }
+  } catch(e) {}
+
+  // Quick Search: expand sidebar on click when collapsed
+  var sidebarSearch = document.querySelector('.sidebar-search');
+  if (sidebarSearch) {
+    sidebarSearch.addEventListener('click', function() {
+      var sb = document.getElementById('sidebar');
+      if (sb && sb.classList.contains('collapsed')) {
+        sb.classList.remove('collapsed');
+        localStorage.setItem('gs-sidebar-v2', '0');
+        setTimeout(function() {
+          var input = sidebarSearch.querySelector('.sidebar-search-input');
+          if (input) input.focus();
+        }, 250);
+      }
+    });
+  }
+
+</script>
+
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Free</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span></div>
+          <div class="pricing-desc">For individuals & trial users</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>1 Domain</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> </li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>3-month trial</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Get started</button>
+        </div>
+      </div>
+      <!-- Basic -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">1,999</span></div>
+          <div class="pricing-desc">For small & medium businesses</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Domains / 5 IPs / 30 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Premium -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Premium</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">3,999</span></div>
+          <div class="pricing-desc">For companies & government agencies</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>10 Domains / 10 IPs / 50 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary">Contact us</button>
+        </div>
+      </div>
+      <!-- Professional -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Professional</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">7,999</span></div>
+          <div class="pricing-desc">For enterprises & conglomerates</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>20 Domains / 20 IPs / 80 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Advanced</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:24px;">Contact us</span></div>
+          <div class="pricing-desc">For specialized systems needing custom config</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Custom scope &amp; duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>IoC intelligence feed</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+    // Redraw timeline on resize
+    window.addEventListener('resize', function() {
+      if (document.getElementById('ta-detail-screen').classList.contains('active')) {
+        drawTimeline();
+      }
+    });
+})();
+</script>
+
+</body></html>

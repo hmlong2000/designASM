@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "backup/g-skywatch-assets-metrics.html",
+  "entry": "backup/g-skywatch-assets-metrics.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-03T08:31:20.466Z",
+  "updatedAt": "2026-07-03T08:31:20.466Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "backup/feature-threat-intel-feeds.html",
+  "entry": "backup/feature-threat-intel-feeds.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-03T08:31:15.759Z",
+  "updatedAt": "2026-07-03T08:31:15.759Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
