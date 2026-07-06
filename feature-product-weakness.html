@@ -711,6 +711,211 @@
     .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
     .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
 
+    /* ── Search Bar (outside card) ──────────────────────────── */
+    .pw-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+    .pw-search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      flex: 1;
+      transition: all var(--transition-fast);
+    }
+    .pw-search-input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.08);
+    }
+    .pw-search-input-wrap svg { color: var(--muted); flex-shrink: 0; }
+    .pw-search-input-wrap input {
+      border: none; background: transparent; font-size: 13px;
+      color: var(--fg); font-family: var(--font-body); outline: none; width: 100%;
+    }
+    .pw-search-input-wrap input::placeholder { color: var(--muted); }
+    .pw-search-clear {
+      display: flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%; border: none;
+      background: var(--border); color: var(--fg-secondary); cursor: pointer;
+      flex-shrink: 0;
+    }
+    .pw-filter-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); font-size: 13px; font-weight: 500;
+      color: var(--fg-secondary); cursor: pointer; transition: all var(--transition-fast);
+      font-family: var(--font-body); white-space: nowrap;
+    }
+    .pw-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pw-filter-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .pw-filter-btn svg { width: 14px; height: 14px; }
+    .pw-filter-badge {
+      display: none; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+      align-items: center; justify-content: center; line-height: 1;
+    }
+    .pw-filter-badge.show { display: inline-flex; }
+
+    /* ── Filter Popup ──────────────────────────────────────── */
+    .pw-filter-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,22,41,0.45);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: none; align-items: flex-start; justify-content: flex-end;
+      opacity: 0; transition: opacity 0.2s ease;
+    }
+    .pw-filter-popup-overlay.active { display: flex; opacity: 1; }
+    .pw-filter-popup {
+      position: absolute; top: 0; right: 0;
+      width: 380px; max-width: 92vw; height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 32px rgba(15,22,41,0.12);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .pw-filter-popup-overlay.active .pw-filter-popup { transform: translateX(0); }
+    .pw-filter-popup-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border-subtle);
+    }
+    .pw-filter-popup-title {
+      font: 700 18px/1.2 var(--font-display); color: var(--fg); letter-spacing: -0.02em;
+    }
+    .pw-filter-popup-close {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface-alt);
+      display: grid; place-items: center; cursor: pointer;
+      color: var(--muted); transition: all var(--transition-fast);
+    }
+    .pw-filter-popup-close:hover { background: var(--border); color: var(--fg); }
+    .pw-filter-popup-close svg { width: 16px; height: 16px; }
+    .pw-filter-popup-body {
+      flex: 1; overflow-y: auto; padding: 20px 24px;
+    }
+    .pw-filter-field { margin-bottom: 24px; }
+    .pw-filter-field:last-child { margin-bottom: 0; }
+    .pw-filter-label {
+      font: 600 13px/1.3 var(--font-body); color: var(--fg);
+      margin-bottom: 8px; display: block;
+    }
+    .pw-filter-select {
+      width: 100%; padding: 9px 36px 9px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font: 400 13px/1.4 var(--font-body); color: var(--fg);
+      background: var(--surface);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      cursor: pointer; outline: none; transition: all var(--transition-fast);
+    }
+    .pw-filter-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(1,103,255,0.08); }
+
+    /* Date Picker */
+    .pw-date-input {
+      width: 100%; padding: 9px 36px 9px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font: 400 13px/1.4 var(--font-body); color: var(--fg);
+      background: var(--surface); outline: none; cursor: pointer;
+      transition: all var(--transition-fast);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    .pw-date-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(1,103,255,0.08); }
+    .pw-date-input::placeholder { color: var(--muted); }
+    .pw-calendar-dropdown {
+      display: none; margin-top: 6px; padding: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+    }
+    .pw-calendar-dropdown.open { display: block; }
+    .pw-calendar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .pw-calendar-title {
+      font: 600 13px/1 var(--font-display); color: var(--fg);
+    }
+    .pw-calendar-nav {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); display: grid; place-items: center;
+      cursor: pointer; color: var(--muted); transition: all var(--transition-fast);
+    }
+    .pw-calendar-nav:hover { background: var(--surface-alt); color: var(--fg); }
+    .pw-calendar-nav svg { width: 14px; height: 14px; }
+    .pw-calendar-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 4px;
+    }
+    .pw-calendar-weekdays span {
+      text-align: center; font: 600 11px/1 var(--font-body);
+      color: var(--muted); padding: 4px 0; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .pw-calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .pw-calendar-day {
+      text-align: center; padding: 6px 0; font: 400 13px/1 var(--font-body);
+      color: var(--fg); border-radius: 6px; cursor: pointer;
+      transition: all var(--transition-fast); border: none; background: transparent;
+    }
+    .pw-calendar-day:hover { background: var(--surface-alt); }
+    .pw-calendar-day.today { font-weight: 600; color: var(--accent); }
+    .pw-calendar-day.selected { background: var(--accent); color: #fff; }
+    .pw-calendar-day.other-month { color: var(--muted); opacity: 0.4; }
+    .pw-calendar-day.disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+    .pw-date-range-display {
+      font: 400 13px/1 var(--font-body); color: var(--fg);
+      padding: 8px 12px; background: var(--surface-alt);
+      border-radius: var(--radius-sm); margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+    .pw-date-range-display.empty { color: var(--muted); }
+    .pw-date-quick-options {
+      display: flex; gap: 6px; margin-top: 10px;
+    }
+    .pw-date-quick-btn {
+      padding: 6px 12px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--surface);
+      font: 500 12px/1 var(--font-body); color: var(--fg-secondary);
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .pw-date-quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pw-date-quick-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+    .pw-filter-popup-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      padding: 16px 24px; border-top: 1px solid var(--border-subtle);
+    }
+    .pw-filter-popup-btn {
+      padding: 9px 18px; border-radius: var(--radius-sm);
+      font: 500 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all var(--transition-fast);
+    }
+    .pw-filter-popup-btn.secondary {
+      background: var(--surface-alt); color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .pw-filter-popup-btn.secondary:hover { background: var(--border); }
+    .pw-filter-popup-btn.primary {
+      background: var(--accent); color: #fff;
+    }
+    .pw-filter-popup-btn.primary:hover { background: var(--accent-hover); }
+
+    .pw-filter-empty {
+      display: none; text-align: center; padding: 48px 24px;
+      color: var(--muted); font-size: 13px;
+    }
+    .pw-filter-empty.show { display: block; }
+    .pw-calendar-day.in-range { background: rgba(1,103,255,0.1); color: var(--fg); }
+
     /* ── Pagination ────────────────────────────────────────── */
     .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-top: 1px solid var(--border-subtle); }
     .pagination-info { font-size: 12px; color: var(--muted); }
@@ -1419,6 +1624,247 @@
       body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
       body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
       body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon { color: #93c5fd; }
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon { color: #5eead4; }
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon { color: #c4b5fd; }
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #f9a8d4; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+      /* ── Contact Us Modal ─────────────────────────────────── */
+      .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .contact-modal-overlay.active { opacity: 1; pointer-events: auto; }
+      .contact-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-modal-overlay.active .contact-modal { transform: translateY(0) scale(1); }
+      .contact-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-alt);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .contact-modal-close:hover { background: var(--border); }
+      .contact-modal-close svg { width: 16px; height: 16px; color: var(--muted); }
+      .contact-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        margin-bottom: 16px;
+      }
+      .contact-modal-icon.mail { background: var(--accent-soft); color: var(--accent); }
+      .contact-modal-icon svg { width: 24px; height: 24px; }
+      .contact-modal-title {
+        font: 700 22px/1.2 var(--font-display);
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-desc {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .contact-modal-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .contact-modal-plan-label {
+        font: 500 12px/1 var(--font-body);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .contact-modal-plan-tag {
+        font: 600 13px/1 var(--font-display);
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(1,103,255,0.15);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+      .contact-modal-field { margin-bottom: 14px; }
+      .contact-modal-label {
+        display: block;
+        font: 500 12px/1.4 var(--font-body);
+        color: var(--fg-secondary);
+        margin-bottom: 5px;
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-input,
+      .contact-modal-select,
+      .contact-modal-textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font: 400 14px/1.4 var(--font-body);
+        color: var(--fg);
+        background: var(--surface);
+        transition: all var(--transition-fast);
+        outline: none;
+      }
+      .contact-modal-input:focus,
+      .contact-modal-select:focus,
+      .contact-modal-textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .contact-modal-input::placeholder,
+      .contact-modal-textarea::placeholder { color: var(--muted); }
+      .contact-modal-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+      }
+      .contact-modal-textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 160px;
+      }
+      .contact-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .contact-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .contact-modal-btn {
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        font: 500 13px/1 var(--font-body);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .contact-modal-btn-primary:hover { background: var(--accent-hover); }
+      .contact-modal-btn-secondary {
+        background: var(--surface-alt);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .contact-modal-btn-secondary:hover { background: var(--border); }
+      .contact-modal-success {
+        display: none;
+        text-align: center;
+        padding: 20px 0 8px;
+      }
+      .contact-modal-success.active { display: block; }
+      .contact-modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(22,163,74,0.1);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 14px;
+      }
+      .contact-modal-success-icon svg { width: 28px; height: 28px; color: #16a34a; }
+      .contact-modal-success h3 {
+        font: 700 18px/1.3 var(--font-display);
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-success p {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+      }
+      body.dark-mode .contact-modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .contact-modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .contact-modal-input,
+      body.dark-mode .contact-modal-select,
+      body.dark-mode .contact-modal-textarea { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .contact-modal-input:focus,
+      body.dark-mode .contact-modal-select:focus,
+      body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
+      body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+      /* ── Filter Popup Dark Mode ──────────────────────────── */
+      body.dark-mode .pw-search-input-wrap { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-search-input-wrap:focus-within { background: var(--bg); }
+      body.dark-mode .pw-filter-btn { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+      body.dark-mode .pw-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+      body.dark-mode .pw-filter-popup { background: var(--surface); border-left-color: var(--border); }
+      body.dark-mode .pw-filter-popup-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-filter-select { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-filter-select:focus { background: var(--bg); }
+      body.dark-mode .pw-date-input { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-date-input:focus { background: var(--bg); }
+      body.dark-mode .pw-calendar-dropdown { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .pw-calendar-nav { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-calendar-day:hover { background: rgba(255,255,255,0.06); }
+      body.dark-mode .pw-date-range-display { background: var(--surface-alt); border-color: var(--border-subtle); color: var(--fg); }
+      body.dark-mode .pw-date-quick-btn { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+      body.dark-mode .pw-filter-popup-btn.secondary { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-filter-popup-overlay { background: rgba(0,0,0,0.6); }
+      body.dark-mode .pw-filter-empty { color: var(--muted); }
+      body.dark-mode .pw-calendar-day.in-range { background: rgba(1,103,255,0.2); }
+
   </style>
 </head>
 <body>
@@ -1639,19 +2085,28 @@
       </div>
     </div>
 
+    <!-- SEARCH BAR -->
+    <div class="pw-search-bar reveal reveal-delay-3">
+      <div class="pw-search-input-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="productSearchInput" placeholder="Search products..." data-en-placeholder="Search products..." data-vi-placeholder="Tìm sản phẩm...">
+        <button class="pw-search-clear" id="productSearchClear" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="pw-filter-btn" id="pwFilterBtn" onclick="document.getElementById('pwFilterOverlay').classList.add('active')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+        <span data-en="Filter" data-vi="Lọc">Filter</span>
+        <span class="pw-filter-badge" id="pwFilterBadge">0</span>
+      </button>
+    </div>
+
     <!-- PRODUCT TABLE -->
     <div class="product-list-section reveal reveal-delay-3">
       <div class="product-list-header">
         <div class="product-list-header-left">
           <h3 data-en="Product Weaknesses" data-vi="Điểm yếu sản phẩm">Product Weaknesses</h3>
-          <span class="product-list-count">96 <span data-en="products" data-vi="sản phẩm">products</span></span>
-        </div>
-        <div class="product-search">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="productSearchInput" placeholder="Search products..." data-en-placeholder="Search products..." data-vi-placeholder="Tìm sản phẩm...">
-          <button class="product-search-clear" id="productSearchClear" style="display:none;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+          <span class="product-list-count" id="pwProductCount">96 <span data-en="products" data-vi="sản phẩm">products</span></span>
         </div>
       </div>
       <div class="product-table-header">
@@ -1663,7 +2118,8 @@
         <span data-en="Monitoring" data-vi="Giám sát">Monitoring</span>
       </div>
 
-      <div class="product-row" data-searchable="205_firmware qualcomm">
+      <div id="pw-product-rows">
+      <div class="product-row" data-searchable="205_firmware qualcomm" data-vendor="qualcomm" data-date="2026-06-12">
         <div class="product-name"><div class="product-text">205_firmware</div></div>
         <div class="product-vendor">qualcomm</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1672,7 +2128,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="205 qualcomm">
+      <div class="product-row" data-searchable="205 qualcomm" data-vendor="qualcomm" data-date="2026-06-12">
         <div class="product-name"><div class="product-text">205</div></div>
         <div class="product-vendor">qualcomm</div>
         <div class="product-cve-count" style="color:var(--high);">2</div>
@@ -1681,7 +2137,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="canon">
+      <div class="product-row" data-searchable="canon" data-vendor="canon" data-date="2026-06-09">
         <div class="product-name"><div class="product-text">canon</div></div>
         <div class="product-vendor">canon</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1690,7 +2146,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="qualcomm">
+      <div class="product-row" data-searchable="qualcomm" data-vendor="qualcomm" data-date="2026-06-08">
         <div class="product-name"><div class="product-text">qualcomm</div></div>
         <div class="product-vendor">qualcomm</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1699,7 +2155,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="intel">
+      <div class="product-row" data-searchable="intel" data-vendor="intel" data-date="2026-06-08">
         <div class="product-name"><div class="product-text">*</div></div>
         <div class="product-vendor">intel</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1708,7 +2164,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="zimbra_desktop vmware">
+      <div class="product-row" data-searchable="zimbra_desktop vmware" data-vendor="vmware" data-date="2025-09-16">
         <div class="product-name"><div class="product-text">zimbra_desktop</div></div>
         <div class="product-vendor">vmware</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1717,7 +2173,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="zimbra_collaboration_suite synacor">
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synacor" data-vendor="synacor" data-date="2025-09-16">
         <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
         <div class="product-vendor">synacor</div>
         <div class="product-cve-count" style="color:var(--critical);">8</div>
@@ -1726,7 +2182,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="zimbra_collaboration_suite zimbra">
+      <div class="product-row" data-searchable="zimbra_collaboration_suite zimbra" data-vendor="zimbra" data-date="2025-09-16">
         <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
         <div class="product-vendor">zimbra</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1735,7 +2191,7 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="zimbra_collaboration_suite synocor">
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synocor" data-vendor="synocor" data-date="2025-09-16">
         <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
         <div class="product-vendor">synocor</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
@@ -1744,13 +2200,19 @@
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
       </div>
 
-      <div class="product-row" data-searchable="zimbra_collaboration_server synacor">
+      <div class="product-row" data-searchable="zimbra_collaboration_server synacor" data-vendor="synacor" data-date="2025-09-16">
         <div class="product-name"><div class="product-text">zimbra_collaboration_server</div></div>
         <div class="product-vendor">synacor</div>
         <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
         <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
         <div class="product-updated">16/09/2025 23:27:53</div>
         <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      </div>
+
+      <div class="pw-filter-empty" id="pwFilterEmpty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        <p data-en="No products match this filter" data-vi="Không sản phẩm nào khớp bộ lọc">No products match this filter</p>
       </div>
 
       <div class="pagination">
@@ -2168,26 +2630,214 @@
       sw.addEventListener('click', function(e) { e.stopPropagation(); });
     });
 
-    // Product Search
+    // Product Search + Filter
     var searchInput = document.getElementById('productSearchInput');
     var searchClear = document.getElementById('productSearchClear');
+    var filterOverlay = document.getElementById('pwFilterOverlay');
+    var filterBadge = document.getElementById('pwFilterBadge');
+    var filterBtn = document.getElementById('pwFilterBtn');
+    var vendorSelect = document.getElementById('pwFilterVendor');
+    var dateInput = document.getElementById('pwFilterDateInput');
+    var calendarDropdown = document.getElementById('pwCalendarDropdown');
+    var dateRangeDisplay = document.getElementById('pwDateRangeDisplay');
+    var calDays = document.getElementById('pwCalDays');
+    var calTitle = document.getElementById('pwCalTitle');
+    var productCount = document.getElementById('pwProductCount');
+
+    var activeVendor = '';
+    var dateStart = null;
+    var dateEnd = null;
+    var calYear = 2026, calMonth = 6; // July 2026 (0-indexed)
+
+    function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+    function applyFilters() {
+      var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      var rows = document.querySelectorAll('#pw-product-rows .product-row');
+      var visibleCount = 0;
+      rows.forEach(function(row) {
+        var text = (row.getAttribute('data-searchable') || '') + ' ' + row.textContent.toLowerCase();
+        var matchSearch = !query || text.indexOf(query) !== -1;
+        var matchVendor = !activeVendor || row.getAttribute('data-vendor') === activeVendor;
+        var matchDate = true;
+        if (dateStart || dateEnd) {
+          var rowDate = row.getAttribute('data-date');
+          if (rowDate) {
+            var d = new Date(rowDate);
+            if (dateStart && d < dateStart) matchDate = false;
+            if (dateEnd && d > dateEnd) matchDate = false;
+          }
+        }
+        var show = matchSearch && matchVendor && matchDate;
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+      if (productCount) {
+        productCount.innerHTML = visibleCount + ' <span data-en="products" data-vi="s\u1ea3n ph\u1ea9m">' + (isVI() ? 'sản phẩm' : 'products') + '</span>';
+      }
+      // Update filter badge
+      var filterCount = 0;
+      if (activeVendor) filterCount++;
+      if (dateStart || dateEnd) filterCount++;
+      if (filterBadge) {
+        filterBadge.textContent = filterCount;
+        filterBadge.classList.toggle('show', filterCount > 0);
+      }
+      if (filterBtn) filterBtn.classList.toggle('active', filterCount > 0);
+    }
+
     if (searchInput) {
       searchInput.addEventListener('input', function() {
-        var query = this.value.toLowerCase().trim();
-        searchClear.style.display = query ? 'flex' : 'none';
-        document.querySelectorAll('.product-row').forEach(function(row) {
-          var text = (row.getAttribute('data-searchable') || '') + ' ' + row.textContent.toLowerCase();
-          row.style.display = (!query || text.indexOf(query) !== -1) ? '' : 'none';
-        });
+        if (searchClear) searchClear.style.display = this.value ? 'flex' : 'none';
+        applyFilters();
       });
       if (searchClear) {
         searchClear.addEventListener('click', function() {
           searchInput.value = '';
-          searchInput.dispatchEvent(new Event('input'));
+          searchClear.style.display = 'none';
+          applyFilters();
           searchInput.focus();
         });
       }
     }
+
+    // Filter popup close
+    document.getElementById('pwFilterClose').addEventListener('click', function() {
+      filterOverlay.classList.remove('active');
+    });
+    filterOverlay.addEventListener('click', function(e) {
+      if (e.target === filterOverlay) filterOverlay.classList.remove('active');
+    });
+
+    // Calendar rendering
+    function renderCalendar() {
+      var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var monthNamesVI = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+      calTitle.textContent = (isVI() ? monthNamesVI[calMonth] : monthNames[calMonth]) + ' ' + calYear;
+      var firstDay = new Date(calYear, calMonth, 1).getDay();
+      var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+      var today = new Date();
+      var html = '';
+      // Previous month days
+      for (var i = firstDay - 1; i >= 0; i--) {
+        html += '<button class="pw-calendar-day other-month" disabled>' + (daysInPrev - i) + '</button>';
+      }
+      // Current month days
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dateObj = new Date(calYear, calMonth, d);
+        var classes = 'pw-calendar-day';
+        if (dateObj.toDateString() === today.toDateString()) classes += ' today';
+        if (dateStart && dateEnd && dateObj >= dateStart && dateObj <= dateEnd) classes += ' selected';
+        else if (dateStart && !dateEnd && dateObj.toDateString() === dateStart.toDateString()) classes += ' selected';
+        html += '<button class="' + classes + '" data-date="' + calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0') + '">' + d + '</button>';
+      }
+      // Next month days
+      var totalCells = firstDay + daysInMonth;
+      var remaining = (7 - (totalCells % 7)) % 7;
+      for (var n = 1; n <= remaining; n++) {
+        html += '<button class="pw-calendar-day other-month" disabled>' + n + '</button>';
+      }
+      calDays.innerHTML = html;
+      // Bind click handlers
+      calDays.querySelectorAll('.pw-calendar-day:not(.other-month)').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var parts = this.getAttribute('data-date').split('-');
+          var clicked = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          if (!dateStart || (dateStart && dateEnd)) {
+            dateStart = clicked;
+            dateEnd = null;
+          } else if (clicked < dateStart) {
+            dateEnd = dateStart;
+            dateStart = clicked;
+          } else {
+            dateEnd = clicked;
+          }
+          updateDateDisplay();
+          renderCalendar();
+        });
+      });
+    }
+
+    function updateDateDisplay() {
+      if (!dateRangeDisplay) return;
+      if (dateStart && dateEnd) {
+        var opts = { year: 'numeric', month: 'short', day: 'numeric' };
+        dateRangeDisplay.textContent = dateStart.toLocaleDateString('en-US', opts) + ' — ' + dateEnd.toLocaleDateString('en-US', opts);
+        dateRangeDisplay.classList.remove('empty');
+      } else if (dateStart) {
+        var opts = { year: 'numeric', month: 'short', day: 'numeric' };
+        dateRangeDisplay.textContent = dateStart.toLocaleDateString('en-US', opts) + ' —';
+        dateRangeDisplay.classList.remove('empty');
+      } else {
+        dateRangeDisplay.textContent = isVI() ? 'Chưa chọn ngày' : 'No date selected';
+        dateRangeDisplay.classList.add('empty');
+      }
+    }
+
+    if (dateInput) {
+      dateInput.addEventListener('click', function() {
+        calendarDropdown.classList.toggle('open');
+      });
+    }
+
+    document.getElementById('pwCalPrev').addEventListener('click', function() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+    document.getElementById('pwCalNext').addEventListener('click', function() {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+
+    // Quick date options
+    document.querySelectorAll('.pw-date-quick-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var range = this.getAttribute('data-range');
+        var today = new Date();
+        today.setHours(0,0,0,0);
+        if (range === 'today') {
+          dateStart = new Date(today);
+          dateEnd = new Date(today);
+        } else if (range === 'yesterday') {
+          dateStart = new Date(today);
+          dateStart.setDate(dateStart.getDate() - 1);
+          dateEnd = new Date(dateStart);
+        } else if (range === '7days') {
+          dateEnd = new Date(today);
+          dateStart = new Date(today);
+          dateStart.setDate(dateStart.getDate() - 7);
+        }
+        updateDateDisplay();
+        renderCalendar();
+        document.querySelectorAll('.pw-date-quick-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // Apply filter
+    document.getElementById('pwFilterApply').addEventListener('click', function() {
+      activeVendor = vendorSelect.value;
+      applyFilters();
+      filterOverlay.classList.remove('active');
+    });
+
+    // Clear filter
+    document.getElementById('pwFilterClear').addEventListener('click', function() {
+      vendorSelect.value = '';
+      dateStart = null;
+      dateEnd = null;
+      activeVendor = '';
+      updateDateDisplay();
+      renderCalendar();
+      document.querySelectorAll('.pw-date-quick-btn').forEach(function(b) { b.classList.remove('active'); });
+      applyFilters();
+    });
+
+    // Initialize calendar
+    renderCalendar();
 
     // Animate severity bars
     setTimeout(function() {
@@ -2478,7 +3128,59 @@
       </div>
     </div>
   </div>
-</div>
+
+  <!-- Filter Popup -->
+  <div class="pw-filter-popup-overlay" id="pwFilterOverlay">
+    <div class="pw-filter-popup">
+      <div class="pw-filter-popup-header">
+        <div class="pw-filter-popup-title" data-en="Filter" data-vi="Lọc">Filter</div>
+        <button class="pw-filter-popup-close" id="pwFilterClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pw-filter-popup-body">
+        <div class="pw-filter-field">
+          <label class="pw-filter-label" data-en="Vendor" data-vi="Nhà cung cấp">Vendor</label>
+          <select class="pw-filter-select" id="pwFilterVendor">
+            <option value="" data-en="Select vendor" data-vi="Chọn nhà cung cấp">Select vendor</option>
+            <option value="canon">canon</option>
+            <option value="intel">intel</option>
+            <option value="qualcomm">qualcomm</option>
+            <option value="synacor">synacor</option>
+            <option value="synocor">synocor</option>
+            <option value="vmware">vmware</option>
+            <option value="zimbra">zimbra</option>
+          </select>
+        </div>
+        <div class="pw-filter-field">
+          <label class="pw-filter-label" data-en="Last update" data-vi="Cập nhật lần cuối">Last update</label>
+          <input type="text" class="pw-date-input" id="pwFilterDateInput" placeholder="Pick a date range" readonly data-en-placeholder="Pick a date range" data-vi-placeholder="Chọn khoảng ngày">
+          <div class="pw-calendar-dropdown" id="pwCalendarDropdown">
+            <div class="pw-date-range-display empty" id="pwDateRangeDisplay" data-en="No date selected" data-vi="Chưa chọn ngày">No date selected</div>
+            <div class="pw-calendar-header">
+              <button class="pw-calendar-nav" id="pwCalPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <span class="pw-calendar-title" id="pwCalTitle">July 2026</span>
+              <button class="pw-calendar-nav" id="pwCalNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+            </div>
+            <div class="pw-calendar-weekdays">
+              <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div class="pw-calendar-days" id="pwCalDays"></div>
+            <div class="pw-date-quick-options">
+              <button class="pw-date-quick-btn" data-range="today" data-en="Today" data-vi="Hôm nay">Today</button>
+              <button class="pw-date-quick-btn" data-range="yesterday" data-en="Yesterday" data-vi="Hôm qua">Yesterday</button>
+              <button class="pw-date-quick-btn" data-range="7days" data-en="Last 7 Days" data-vi="7 ngày qua">Last 7 Days</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pw-filter-popup-footer">
+        <button class="pw-filter-popup-btn secondary" id="pwFilterClear" data-en="Clear" data-vi="Xóa">Clear</button>
+        <button class="pw-filter-popup-btn primary" id="pwFilterApply" data-en="Apply" data-vi="Áp dụng">Apply</button>
+      </div>
+    </div>
+  </div>
+
 <script>
 (function(){
   var overlay = document.getElementById('scanModal');
@@ -2599,6 +3301,380 @@
   document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
     btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
   });
+})();
+</script>
+
+  <!-- Contact Us Modal -->
+  <div class="contact-modal-overlay" id="contactUsModal">
+    <div class="contact-modal">
+      <button class="contact-modal-close" id="contactUsClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="contactUsForm">
+        <div class="contact-modal-icon mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        </div>
+        <h3 class="contact-modal-title" data-en="Contact Sales" data-vi="Liên hệ bán hàng">Contact Sales</h3>
+        <p class="contact-modal-desc" data-en="Tell us about your needs and we'll get back to you within 24 hours." data-vi="Cho chúng tôi biết nhu cầu của bạn và chúng tôi sẽ phản hồi trong vòng 24 giờ.">Tell us about your needs and we'll get back to you within 24 hours.</p>
+        <div class="contact-modal-plan-row">
+          <span class="contact-modal-plan-label" data-en="Selected plan:" data-vi="Gói đã chọn:">Selected plan:</span>
+          <span class="contact-modal-plan-tag" id="contactPlanTag">Premium</span>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Full Name" data-vi="Họ và tên">Full Name</label>
+            <input class="contact-modal-input" type="text" id="contactName" placeholder="e.g. Brooklyn Nguyen">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Work Email" data-vi="Email công việc">Work Email</label>
+            <input class="contact-modal-input" type="email" id="contactEmail" placeholder="e.g. brooklyn@company.com">
+          </div>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Company" data-vi="Công ty">Company</label>
+            <input class="contact-modal-input" type="text" id="contactCompany" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
+            <input class="contact-modal-input" type="tel" id="contactPhone" placeholder="e.g. +84 901 234 567">
+          </div>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Company Size" data-vi="Quy mô công ty">Company Size</label>
+          <select class="contact-modal-select" id="contactSize">
+            <option value="" data-en="Select company size" data-vi="Chọn quy mô công ty">Select company size</option>
+            <option value="1-50">1–50 employees</option>
+            <option value="51-200">51–200 employees</option>
+            <option value="201-1000">201–1,000 employees</option>
+            <option value="1000+">1,000+ employees</option>
+          </select>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Message" data-vi="Tin nhắn">Message</label>
+          <textarea class="contact-modal-textarea" id="contactMessage" rows="3" placeholder="Tell us about your security monitoring needs..."></textarea>
+        </div>
+        <div class="contact-modal-actions">
+          <button class="contact-modal-btn contact-modal-btn-secondary" id="contactUsCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+          <button class="contact-modal-btn contact-modal-btn-primary" id="contactUsSubmit" data-en="Send Message" data-vi="Gửi tin nhắn">Send Message</button>
+        </div>
+      </div>
+      <div class="contact-modal-success" id="contactUsSuccess">
+        <div class="contact-modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 data-en="Message Sent!" data-vi="Đã gửi tin nhắn!">Message Sent!</h3>
+        <p data-en="Our sales team will contact you within 24 hours." data-vi="Đội ngũ bán hàng sẽ liên hệ bạn trong vòng 24 giờ.">Our sales team will contact you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var contactOverlay = document.getElementById('contactUsModal');
+  var contactForm = document.getElementById('contactUsForm');
+  var contactSuccess = document.getElementById('contactUsSuccess');
+  var planTag = document.getElementById('contactPlanTag');
+  if (!contactOverlay) return;
+  function closeContact() {
+    contactOverlay.classList.remove('active');
+    setTimeout(function(){
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactCompany').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactSize').value = '';
+      document.getElementById('contactMessage').value = '';
+    }, 300);
+  }
+  contactOverlay.addEventListener('click', function(e){ if(e.target===contactOverlay) closeContact(); });
+  document.getElementById('contactUsClose').addEventListener('click', closeContact);
+  document.getElementById('contactUsCancel').addEventListener('click', closeContact);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && contactOverlay.classList.contains('active')) closeContact();
+  });
+  var pricingOverlay = document.getElementById('pricingModal');
+  document.querySelectorAll('.pricing-btn').forEach(function(btn){
+    if (btn.textContent.trim() !== 'Contact us') return;
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.pricing-card');
+      var badge = card ? card.querySelector('.pricing-badge') : null;
+      var planName = badge ? badge.textContent.trim() : 'Custom';
+      planTag.textContent = planName;
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      if (pricingOverlay) pricingOverlay.classList.remove('active');
+      contactOverlay.classList.add('active');
+    });
+  });
+  document.getElementById('contactUsSubmit').addEventListener('click', function(){
+    var name = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) {
+      if (!name) document.getElementById('contactName').focus();
+      else document.getElementById('contactEmail').focus();
+      return;
+    }
+    contactForm.style.display = 'none';
+    contactSuccess.classList.add('active');
+    setTimeout(closeContact, 2500);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var overlay = document.getElementById('pwFilterOverlay');
+  var popup = overlay ? overlay.querySelector('.pw-filter-popup') : null;
+  var closeBtn = document.getElementById('pwFilterClose');
+  var clearBtn = document.getElementById('pwFilterClear');
+  var applyBtn = document.getElementById('pwFilterApply');
+  var vendorSelect = document.getElementById('pwFilterVendor');
+  var dateInput = document.getElementById('pwFilterDateInput');
+  var calendarDropdown = document.getElementById('pwCalendarDropdown');
+  var calDays = document.getElementById('pwCalDays');
+  var calTitle = document.getElementById('pwCalTitle');
+  var calPrev = document.getElementById('pwCalPrev');
+  var calNext = document.getElementById('pwCalNext');
+  var dateRangeDisplay = document.getElementById('pwDateRangeDisplay');
+  var badge = document.getElementById('pwFilterBadge');
+  var filterBtn = document.getElementById('pwFilterBtn');
+  var searchInput = document.getElementById('productSearchInput');
+  var searchClear = document.getElementById('productSearchClear');
+  var productCount = document.getElementById('pwProductCount');
+  var rowsContainer = document.getElementById('pw-product-rows');
+
+  if (!overlay) return;
+
+  var calYear = 2026, calMonth = 6;
+  var dateStart = null, dateEnd = null;
+  var activeFilter = { vendor: '', dateStart: null, dateEnd: null };
+  var quickBtns = document.querySelectorAll('.pw-date-quick-btn');
+
+  function closePopup() {
+    overlay.classList.remove('active');
+    calendarDropdown.classList.remove('open');
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closePopup();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closePopup();
+  });
+
+  dateInput.addEventListener('click', function() {
+    calendarDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!calendarDropdown.contains(e.target) && e.target !== dateInput) {
+      calendarDropdown.classList.remove('open');
+    }
+  });
+
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function renderCalendar() {
+    calTitle.textContent = months[calMonth] + ' ' + calYear;
+    var firstDay = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+    var today = new Date();
+    var html = '';
+
+    for (var i = firstDay - 1; i >= 0; i--) {
+      html += '<button class="pw-calendar-day other-month" disabled>' + (daysInPrev - i) + '</button>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dt = new Date(calYear, calMonth, d);
+      var cls = 'pw-calendar-day';
+      if (dt.toDateString() === today.toDateString()) cls += ' today';
+      if (dateStart && dt.getTime() === dateStart.getTime()) cls += ' selected';
+      if (dateEnd && dt.getTime() === dateEnd.getTime()) cls += ' selected';
+      if (dateStart && dateEnd && dt > dateStart && dt < dateEnd) cls += ' in-range';
+      html += '<button class="' + cls + '" data-day="' + d + '">' + d + '</button>';
+    }
+    var totalCells = firstDay + daysInMonth;
+    var remaining = (7 - (totalCells % 7)) % 7;
+    for (var r = 1; r <= remaining; r++) {
+      html += '<button class="pw-calendar-day other-month" disabled>' + r + '</button>';
+    }
+    calDays.innerHTML = html;
+
+    calDays.querySelectorAll('.pw-calendar-day:not(.other-month):not(.disabled)').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var day = parseInt(btn.dataset.day);
+        var clicked = new Date(calYear, calMonth, day);
+        if (!dateStart || (dateStart && dateEnd)) {
+          dateStart = clicked;
+          dateEnd = null;
+        } else if (clicked < dateStart) {
+          dateEnd = dateStart;
+          dateStart = clicked;
+        } else {
+          dateEnd = clicked;
+        }
+        updateDateDisplay();
+        renderCalendar();
+      });
+    });
+  }
+
+  function updateDateDisplay() {
+    if (dateStart && dateEnd) {
+      dateRangeDisplay.textContent = formatDate(dateStart) + ' — ' + formatDate(dateEnd);
+      dateRangeDisplay.classList.remove('empty');
+      dateInput.value = formatDate(dateStart) + ' — ' + formatDate(dateEnd);
+    } else if (dateStart) {
+      dateRangeDisplay.textContent = formatDate(dateStart);
+      dateRangeDisplay.classList.remove('empty');
+      dateInput.value = formatDate(dateStart);
+    } else {
+      dateRangeDisplay.textContent = isVI() ? 'Chưa chọn ngày' : 'No date selected';
+      dateRangeDisplay.classList.add('empty');
+      dateInput.value = '';
+    }
+  }
+
+  function formatDate(dt) {
+    var d = dt.getDate();
+    var m = dt.getMonth() + 1;
+    var y = dt.getFullYear();
+    return (d < 10 ? '0' : '') + d + '/' + (m < 10 ? '0' : '') + m + '/' + y;
+  }
+
+  calPrev.addEventListener('click', function() {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  calNext.addEventListener('click', function() {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  quickBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var range = btn.dataset.range;
+      var today = new Date();
+      today.setHours(0,0,0,0);
+      quickBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      if (range === 'today') {
+        dateStart = today;
+        dateEnd = today;
+      } else if (range === 'yesterday') {
+        var y = new Date(today);
+        y.setDate(y.getDate() - 1);
+        dateStart = y;
+        dateEnd = y;
+      } else if (range === '7days') {
+        var s = new Date(today);
+        s.setDate(s.getDate() - 6);
+        dateStart = s;
+        dateEnd = today;
+      }
+      updateDateDisplay();
+      renderCalendar();
+    });
+  });
+
+  clearBtn.addEventListener('click', function() {
+    vendorSelect.value = '';
+    dateStart = null;
+    dateEnd = null;
+    dateInput.value = '';
+    updateDateDisplay();
+    renderCalendar();
+    quickBtns.forEach(function(b) { b.classList.remove('active'); });
+  });
+
+  applyBtn.addEventListener('click', function() {
+    activeFilter.vendor = vendorSelect.value;
+    activeFilter.dateStart = dateStart;
+    activeFilter.dateEnd = dateEnd;
+    updateBadge();
+    filterProducts();
+    closePopup();
+  });
+
+  function updateBadge() {
+    var count = 0;
+    if (activeFilter.vendor) count++;
+    if (activeFilter.dateStart) count++;
+    badge.textContent = count;
+    if (count > 0) {
+      badge.classList.add('show');
+      filterBtn.classList.add('active');
+    } else {
+      badge.classList.remove('show');
+      filterBtn.classList.remove('active');
+    }
+  }
+
+  function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+  function filterProducts() {
+    var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    var rows = rowsContainer ? rowsContainer.querySelectorAll('.product-row') : [];
+    var visibleCount = 0;
+
+    rows.forEach(function(row) {
+      var vendor = row.dataset.vendor || '';
+      var dateStr = row.dataset.date || '';
+      var text = (row.dataset.searchable || '').toLowerCase();
+
+      var matchSearch = !query || text.indexOf(query) !== -1;
+      var matchVendor = !activeFilter.vendor || vendor === activeFilter.vendor;
+      var matchDate = true;
+      if (activeFilter.dateStart && dateStr) {
+        var rowDate = new Date(dateStr);
+        rowDate.setHours(0,0,0,0);
+        matchDate = rowDate >= activeFilter.dateStart;
+        if (activeFilter.dateEnd) {
+          matchDate = rowDate >= activeFilter.dateStart && rowDate <= activeFilter.dateEnd;
+        }
+      }
+
+      if (matchSearch && matchVendor && matchDate) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (productCount) {
+      productCount.innerHTML = visibleCount + ' <span data-en="products" data-vi="sản phẩm">products</span>';
+    }
+
+    var emptyEl = document.getElementById('pwFilterEmpty');
+    if (emptyEl) {
+      emptyEl.classList.toggle('show', visibleCount === 0);
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      searchClear.style.display = searchInput.value ? 'flex' : 'none';
+      filterProducts();
+    });
+  }
+  if (searchClear) {
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      searchClear.style.display = 'none';
+      filterProducts();
+    });
+  }
+
+  renderCalendar();
+  updateDateDisplay();
 })();
 </script>
 

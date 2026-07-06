@@ -517,6 +517,16 @@
       body.dark-mode .profile-modal-input { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
       body.dark-mode .profile-modal-input:focus { background: var(--bg); }
       body.dark-mode .profile-modal-input[readonly] { background: var(--border-subtle); }
+      body.dark-mode .profile-modal-input.input-error { border-color: #f87171; }
+      body.dark-mode .profile-modal-input.input-success { border-color: #4ade80; }
+      body.dark-mode .pw-req.met { color: #4ade80; }
+      body.dark-mode .pw-req.unmet { color: #f87171; }
+      body.dark-mode .pw-error-msg { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.2); color: #f87171; }
+      body.dark-mode .pw-strength-bar { background: rgba(255,255,255,0.08); }
+      body.dark-mode .pw-strength-fill.strength-weak { background: #f87171; }
+      body.dark-mode .pw-strength-fill.strength-fair { background: #fbbf24; }
+      body.dark-mode .pw-strength-fill.strength-good { background: #34d399; }
+      body.dark-mode .pw-strength-fill.strength-strong { background: #22c55e; }
       body.dark-mode .profile-modal-close { background: var(--surface-alt); border-color: var(--border); }
       body.dark-mode .profile-modal-toggle { background: var(--border); }
       body.dark-mode .profile-modal-toggle.active { background: var(--accent); }
@@ -531,6 +541,61 @@
       body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
       body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
       body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon,
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon,
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon,
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #fff !important; }
+      body.dark-mode .metric-strip-icon svg { fill: #fff !important; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+
+    /* Pricing buttons dark mode */
+    body.dark-mode .pricing-btn-primary { background: var(--accent); color: #fff; }
+    body.dark-mode .pricing-btn-primary:hover { background: oklch(52% 0.16 255); }
+    body.dark-mode .pricing-btn-secondary { background: rgba(255,255,255,0.06); color: var(--fg); border-color: rgba(255,255,255,0.12); }
+    body.dark-mode .pricing-btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    /* Pricing badges dark mode */
+    body.dark-mode .pricing-card:nth-child(2) .pricing-badge { background: rgba(3,105,161,0.2); color: #7dd3fc; }
+    body.dark-mode .pricing-card:nth-child(4) .pricing-badge { background: rgba(146,64,14,0.2); color: #fcd34d; }
+    /* Report detail modal dark mode */
+    body.dark-mode .report-detail-overlay { background: rgba(0,0,0,0.7); }
+    body.dark-mode .report-detail-modal { background: var(--surface); border-color: var(--border); }
+    body.dark-mode .report-detail-close { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+    body.dark-mode .report-detail-section { background: var(--surface-alt); border-color: var(--border); }
+    body.dark-mode .report-detail-asset { background: var(--bg); border-color: var(--border); }
+    body.dark-mode .report-detail-remediation-step { background: var(--bg); border-color: var(--border); }
+    body.dark-mode .report-detail-export-btn { background: var(--accent); color: #fff; }
+    /* Export toast dark mode */
+    body.dark-mode .export-toast { background: var(--surface); border-color: var(--border); color: var(--fg); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    /* Calendar popup dark mode */
+    body.dark-mode .date-popup { background: var(--surface); border-color: var(--border); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    body.dark-mode .date-cal-day:hover { background: rgba(255,255,255,0.08); }
+    body.dark-mode .date-cal-day.in-range { background: rgba(1,103,255,0.15); }
+    body.dark-mode .date-quick-btn { border-color: rgba(255,255,255,0.1); color: var(--muted); }
+    body.dark-mode .date-quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+    body.dark-mode .date-quick-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    body.dark-mode .date-range-box { background: var(--bg); border-color: var(--border); }
+    body.dark-mode .date-range-box-value { color: var(--fg); }
+    body.dark-mode .date-popup-close:hover { background: rgba(255,255,255,0.08); }
+    body.dark-mode .date-cal-nav-btn:hover { background: rgba(255,255,255,0.08); }
+    /* Refresh toast dark mode */
+    body.dark-mode .refresh-toast { background: var(--surface); border-color: var(--border); color: var(--fg); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 
     /* Language pills */
     .sidebar-lang-pills {
@@ -733,6 +798,153 @@
     }
 
     .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ── Date Range Picker Popup ──────────────────────────── */
+    .date-picker-wrap { position: relative; }
+    .date-popup-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      display: none;
+    }
+    .date-popup-overlay.active { display: block; }
+    .date-popup {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 14px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+      width: 320px; z-index: 10001;
+      opacity: 0; transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    .date-popup.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .date-popup-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .date-popup-title {
+      font-size: 13px; font-weight: 600; color: var(--fg);
+    }
+    .date-popup-close {
+      width: 24px; height: 24px; border-radius: 6px;
+      border: none; background: transparent; cursor: pointer;
+      display: grid; place-items: center; color: var(--muted);
+      transition: background var(--transition-fast);
+    }
+    .date-popup-close:hover { background: var(--surface-alt); color: var(--fg); }
+    .date-popup-quick {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .date-quick-btn {
+      padding: 5px 10px; border-radius: 6px;
+      border: 1px solid var(--border); background: transparent;
+      font-size: 11px; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .date-quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .date-quick-btn.active {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .date-cal-grid {
+      padding: 12px 16px;
+    }
+    .date-cal-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .date-cal-nav-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: none; background: transparent; cursor: pointer;
+      display: grid; place-items: center; color: var(--muted);
+      transition: background var(--transition-fast);
+    }
+    .date-cal-nav-btn:hover { background: var(--surface-alt); color: var(--fg); }
+    .date-cal-month {
+      font-size: 13px; font-weight: 600; color: var(--fg);
+    }
+    .date-cal-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 0; margin-bottom: 4px;
+    }
+    .date-cal-weekday {
+      text-align: center; font-size: 10px; font-weight: 600;
+      color: var(--muted); padding: 4px 0; text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .date-cal-days {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .date-cal-day {
+      text-align: center; padding: 6px 0; font-size: 12px;
+      border-radius: 6px; cursor: pointer; color: var(--fg);
+      transition: background var(--transition-fast);
+    }
+    .date-cal-day:hover { background: var(--surface-alt); }
+    .date-cal-day.other-month { color: var(--muted); opacity: 0.4; }
+    .date-cal-day.today { font-weight: 700; color: var(--accent); }
+    .date-cal-day.selected { background: var(--accent); color: #fff; }
+    .date-cal-day.in-range { background: rgba(1,103,255,0.08); border-radius: 0; }
+    .date-cal-day.range-start { border-radius: 6px 0 0 6px; }
+    .date-cal-day.range-end { border-radius: 0 6px 6px 0; }
+    .date-cal-day.range-start.range-end { border-radius: 6px; }
+    .date-popup-range {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-top: 1px solid var(--border);
+    }
+    .date-range-box {
+      flex: 1; display: flex; flex-direction: column; gap: 2px;
+      padding: 8px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface-alt);
+    }
+    .date-range-box-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted);
+    }
+    .date-range-box-value {
+      font-size: 13px; font-weight: 600; color: var(--fg);
+    }
+    .date-range-sep {
+      color: var(--muted); font-size: 16px; flex-shrink: 0;
+      display: flex; align-items: center;
+    }
+    .date-popup-footer {
+      display: flex; gap: 8px; padding: 10px 16px 14px;
+    }
+    .date-popup-btn {
+      flex: 1; padding: 8px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .date-popup-btn-cancel { color: var(--muted); }
+    .date-popup-btn-cancel:hover { border-color: var(--fg); color: var(--fg); }
+    .date-popup-btn-apply { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .date-popup-btn-apply:hover { opacity: 0.9; }
+
+    /* ── Refresh Toast ────────────────────────────────────── */
+    .refresh-toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 10001;
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px; border-radius: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      font-size: 13px; font-weight: 500; color: var(--fg);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .refresh-toast.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .refresh-toast-icon {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(34,197,94,0.12); color: #16a34a;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .refresh-toast-icon svg { width: 14px; height: 14px; }
 
     /* ── Executive Risk Summary ────────────────────────────── */
     .exec-row {
@@ -2679,6 +2891,28 @@
       color: var(--muted);
       cursor: not-allowed;
     }
+    .profile-modal-input.input-error { border-color: #ef4444; }
+    .profile-modal-input.input-success { border-color: #22c55e; }
+    .pw-requirements { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .pw-req {
+      display: flex; align-items: center; gap: 6px;
+      font: 400 12px/1.4 var(--font-body);
+      color: var(--muted); transition: color 0.2s;
+    }
+    .pw-req.met { color: #22c55e; }
+    .pw-req.unmet { color: #ef4444; }
+    .pw-req-icon { width: 14px; height: 14px; flex-shrink: 0; }
+    .pw-error-msg {
+      margin-top: 6px; padding: 6px 10px;
+      background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-sm);
+      font: 400 12px/1.4 var(--font-body); color: #ef4444;
+      display: none;
+    }
+    .pw-error-msg.visible { display: block; }
+    .pw-strength-bar { margin-top: 10px; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+    .pw-strength-fill { height: 100%; width: 0; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+    .pw-strength-label { margin-top: 4px; font: 400 11px/1 var(--font-body); color: var(--muted); }
     .profile-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .profile-modal-actions {
       display: flex; gap: 10px; justify-content: flex-end;
@@ -2979,7 +3213,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      flex: 1;
+      align-items: start;
     }
     .report-card {
       background: var(--surface);
@@ -3052,7 +3286,6 @@
     .report-card-severity.low { background: var(--low-soft); color: var(--low); }
     .report-card-body {
       padding: 14px 20px;
-      flex: 1;
     }
     .report-card-desc {
       font-size: 13px;
@@ -3107,10 +3340,10 @@
     .report-summary-card {
       border: none;
       border-radius: var(--radius-lg);
-      padding: 20px 18px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       box-shadow: 0 4px 16px rgba(1, 103, 255, 0.2);
       transition: box-shadow var(--transition-base), transform var(--transition-base);
       position: relative;
@@ -3120,8 +3353,8 @@
     .report-summary-card::after {
       content: '';
       position: absolute;
-      top: -20px; right: -20px;
-      width: 80px; height: 80px;
+      top: -14px; right: -14px;
+      width: 56px; height: 56px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       pointer-events: none;
@@ -3151,9 +3384,9 @@
     }
     .report-summary-card:nth-child(4):hover { box-shadow: 0 8px 28px rgba(13, 148, 136, 0.3); }
     .report-summary-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       display: grid;
       place-items: center;
       flex-shrink: 0;
@@ -3163,24 +3396,24 @@
     .report-summary-icon svg { width: 20px; height: 20px; }
     .report-summary-body { flex: 1; min-width: 0; }
     .report-summary-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: rgba(255, 255, 255, 0.75);
       line-height: 1.3;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .report-summary-value {
       font-family: var(--font-display);
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
       color: #fff;
       letter-spacing: -0.02em;
       line-height: 1.1;
     }
     .report-summary-change {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.18);
       color: #fff;
@@ -3199,6 +3432,255 @@
     }
     .report-empty svg { width: 48px; height: 48px; opacity: 0.4; }
 
+    /* Report Detail Modal */
+    .report-detail-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .report-detail-overlay.active { opacity: 1; pointer-events: auto; }
+    .report-detail-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 14px);
+      width: 680px;
+      max-width: 92vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+      transform: translateY(12px);
+      transition: transform 0.25s ease;
+    }
+    .report-detail-overlay.active .report-detail-modal { transform: translateY(0); }
+    .report-detail-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 24px 28px 0;
+    }
+    .report-detail-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md, 10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .report-detail-icon svg { width: 22px; height: 22px; }
+    .report-detail-icon.critical { background: var(--critical-soft); color: var(--critical); }
+    .report-detail-icon.high { background: var(--high-soft); color: var(--high); }
+    .report-detail-icon.medium { background: var(--medium-soft); color: var(--medium); }
+    .report-detail-icon.low, .report-detail-icon.info { background: var(--low-soft); color: var(--low); }
+    .report-detail-icon.teal { background: rgba(20,184,166,0.12); color: #14b8a6; }
+    .report-detail-title-area { flex: 1; min-width: 0; }
+    .report-detail-type {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .report-detail-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.3;
+    }
+    .report-detail-close {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-xs, 6px);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    .report-detail-close:hover { color: var(--fg); border-color: var(--fg-secondary); }
+    .report-detail-close svg { width: 16px; height: 16px; }
+    .report-detail-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 28px;
+      flex-wrap: wrap;
+    }
+    .report-detail-severity {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .report-detail-severity.critical { background: var(--critical-soft); color: var(--critical); }
+    .report-detail-severity.high { background: var(--high-soft); color: var(--high); }
+    .report-detail-severity.medium { background: var(--medium-soft); color: var(--medium); }
+    .report-detail-severity.low { background: var(--low-soft); color: var(--low); }
+    .report-detail-meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .report-detail-meta-chip svg { width: 13px; height: 13px; }
+    .report-detail-body { padding: 0 28px 20px; }
+    .report-detail-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--fg-secondary);
+      margin-bottom: 20px;
+    }
+    .report-detail-section {
+      background: var(--surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md, 10px);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .report-detail-section:last-child { margin-bottom: 0; }
+    .report-detail-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .report-detail-asset {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs, 6px);
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .report-detail-asset:last-child { margin-bottom: 0; }
+    .report-detail-asset-name { font-weight: 500; color: var(--fg); }
+    .report-detail-asset-type { color: var(--muted); font-size: 12px; margin-left: auto; }
+    .report-detail-remediation-step {
+      display: flex;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs, 6px);
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--fg-secondary);
+      line-height: 1.5;
+    }
+    .report-detail-remediation-step:last-child { margin-bottom: 0; }
+    .report-detail-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .report-detail-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 28px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .report-detail-cancel-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs, 6px);
+      font-size: 13px;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .report-detail-cancel-btn:hover { border-color: var(--fg-secondary); color: var(--fg); }
+    .report-detail-export-btn {
+      padding: 8px 16px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-xs, 6px);
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+    .report-detail-export-btn:hover { opacity: 0.9; }
+    .report-detail-export-btn svg { width: 14px; height: 14px; }
+
+    /* Export Toast */
+    .export-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md, 10px);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      z-index: 10001;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .export-toast.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .export-toast-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(22,163,74,0.12);
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .export-toast-icon svg { width: 14px; height: 14px; }
+
     @media (max-width: 1200px) {
       .report-grid { grid-template-columns: repeat(2, 1fr); }
       .report-summary { grid-template-columns: repeat(4, 1fr); }
@@ -3208,17 +3690,17 @@
     @media (max-width: 768px) {
       .report-grid { grid-template-columns: 1fr; }
       .report-summary { grid-template-columns: 1fr 1fr; }
-      .report-summary-card { padding: 16px 14px; gap: 12px; }
-      .report-summary-value { font-size: 22px; }
-      .report-summary-icon { width: 38px; height: 38px; }
-      .report-summary-icon svg { width: 18px; height: 18px; }
+      .report-summary-card { padding: 10px 12px; gap: 8px; }
+      .report-summary-value { font-size: 20px; }
+      .report-summary-icon { width: 32px; height: 32px; }
+      .report-summary-icon svg { width: 16px; height: 16px; }
       .assistant-msg { max-width: 88%; }
     }
     @media (max-width: 480px) {
       .report-summary { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .report-summary-card { padding: 14px 12px; gap: 10px; }
-      .report-summary-value { font-size: 20px; }
-      .report-summary-icon { width: 34px; height: 34px; }
+      .report-summary-card { padding: 10px 10px; gap: 8px; }
+      .report-summary-value { font-size: 18px; }
+      .report-summary-icon { width: 30px; height: 30px; }
       .report-summary-icon svg { width: 16px; height: 16px; }
       .report-summary-change { font-size: 11px; padding: 3px 8px; }
       .report-toolbar { flex-direction: column; align-items: stretch; }
@@ -3490,11 +3972,53 @@
       <p data-en="Last scan: 12 Jun 2026, 09:42 ICT &nbsp;·&nbsp; Next scheduled: 13 Jun 2026, 09:00 ICT" data-vi="Quét lần cuối: 12 Th06 2026, 09:42 ICT · Lịch tiếp theo: 13 Th06 2026, 09:00 ICT">Last scan: 12 Jun 2026, 09:42 ICT &nbsp;·&nbsp; Next scheduled: 13 Jun 2026, 09:00 ICT</p>
     </div>
     <div class="page-header-right">
-      <div class="date-picker">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-        <span>Jun 6 – Jun 12, 2026</span>
+      <div class="date-picker-wrap">
+        <div class="date-picker" id="datePickerBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span id="datePickerLabel">Jun 6 – Jun 12, 2026</span>
+        </div>
+        <div class="date-popup-overlay" id="datePopupOverlay">
+          <div class="date-popup" id="datePopup">
+            <div class="date-popup-header">
+              <span class="date-popup-title" data-en="Select Date Range" data-vi="Chọn khoảng ngày">Select Date Range</span>
+              <button class="date-popup-close" id="datePopupClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <div class="date-popup-quick">
+              <button class="date-quick-btn" data-range="today" data-en="Today" data-vi="Hôm nay">Today</button>
+              <button class="date-quick-btn active" data-range="7" data-en="Last 7 days" data-vi="7 ngày qua">Last 7 days</button>
+              <button class="date-quick-btn" data-range="30" data-en="Last 30 days" data-vi="30 ngày qua">Last 30 days</button>
+              <button class="date-quick-btn" data-range="90" data-en="Last 90 days" data-vi="90 ngày qua">Last 90 days</button>
+            </div>
+            <div class="date-cal-grid">
+              <div class="date-cal-nav">
+                <button class="date-cal-nav-btn" id="calPrev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <span class="date-cal-month" id="calMonth"></span>
+                <button class="date-cal-nav-btn" id="calNext"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+              </div>
+              <div class="date-cal-weekdays">
+                <div class="date-cal-weekday">Su</div><div class="date-cal-weekday">Mo</div><div class="date-cal-weekday">Tu</div><div class="date-cal-weekday">We</div><div class="date-cal-weekday">Th</div><div class="date-cal-weekday">Fr</div><div class="date-cal-weekday">Sa</div>
+              </div>
+              <div class="date-cal-days" id="calDays"></div>
+            </div>
+            <div class="date-popup-range">
+              <div class="date-range-box">
+                <span class="date-range-box-label" data-en="Start date" data-vi="Ngày bắt đầu">Start date</span>
+                <span class="date-range-box-value" id="dateRangeStart">—</span>
+              </div>
+              <span class="date-range-sep">→</span>
+              <div class="date-range-box">
+                <span class="date-range-box-label" data-en="End date" data-vi="Ngày kết thúc">End date</span>
+                <span class="date-range-box-value" id="dateRangeEnd">—</span>
+              </div>
+            </div>
+            <div class="date-popup-footer">
+              <button class="date-popup-btn date-popup-btn-cancel" id="datePopupCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+              <button class="date-popup-btn date-popup-btn-apply" id="datePopupApply" data-en="Apply" data-vi="Áp dụng">Apply</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="refresh-btn" title="Refresh scan data">
+      <div class="refresh-btn" id="refreshBtn" title="Refresh scan data">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
       </div>
     </div>
@@ -3891,10 +4415,55 @@
         <p data-en="All discovered assets across your attack surface" data-vi="Tất cả tài sản đã phát hiện trên bề mặt tấn công">All discovered assets across your attack surface</p>
       </div>
       <div class="page-header-right">
-        <div class="date-picker">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          <span>Jun 6 – Jun 12, 2026</span>
+        <div class="date-picker-wrap">
+          <div class="date-picker" id="assetsDatePickerBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span id="assetsDatePickerLabel">Jun 6 – Jun 12, 2026</span>
+          </div>
+          <div class="date-popup-overlay" id="assetsDatePopupOverlay">
+            <div class="date-popup" id="assetsDatePopup">
+              <div class="date-popup-header">
+                <span class="date-popup-title" data-en="Select Date Range" data-vi="Chọn khoảng ngày">Select Date Range</span>
+                <button class="date-popup-close" id="assetsDatePopupClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+              </div>
+              <div class="date-popup-quick">
+                <button class="date-quick-btn assets-date-quick" data-range="today" data-en="Today" data-vi="Hôm nay">Today</button>
+                <button class="date-quick-btn assets-date-quick active" data-range="7" data-en="Last 7 days" data-vi="7 ngày qua">Last 7 days</button>
+                <button class="date-quick-btn assets-date-quick" data-range="30" data-en="Last 30 days" data-vi="30 ngày qua">Last 30 days</button>
+                <button class="date-quick-btn assets-date-quick" data-range="90" data-en="Last 90 days" data-vi="90 ngày qua">Last 90 days</button>
+              </div>
+              <div class="date-cal-grid">
+                <div class="date-cal-nav">
+                  <button class="date-cal-nav-btn" id="assetsCalPrev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                  <span class="date-cal-month" id="assetsCalMonth"></span>
+                  <button class="date-cal-nav-btn" id="assetsCalNext"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                </div>
+                <div class="date-cal-weekdays">
+                  <div class="date-cal-weekday">Su</div><div class="date-cal-weekday">Mo</div><div class="date-cal-weekday">Tu</div><div class="date-cal-weekday">We</div><div class="date-cal-weekday">Th</div><div class="date-cal-weekday">Fr</div><div class="date-cal-weekday">Sa</div>
+                </div>
+                <div class="date-cal-days" id="assetsCalDays"></div>
+              </div>
+              <div class="date-popup-range">
+                <div class="date-range-box">
+                  <span class="date-range-box-label" data-en="Start date" data-vi="Ngày bắt đầu">Start date</span>
+                  <span class="date-range-box-value" id="assetsDateRangeStart">Jun 6, 2026</span>
+                </div>
+                <span class="date-range-sep">→</span>
+                <div class="date-range-box">
+                  <span class="date-range-box-label" data-en="End date" data-vi="Ngày kết thúc">End date</span>
+                  <span class="date-range-box-value" id="assetsDateRangeEnd">Jun 12, 2026</span>
+                </div>
+              </div>
+              <div class="date-popup-footer">
+                <button class="date-popup-btn date-popup-btn-cancel" id="assetsDatePopupCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+                <button class="date-popup-btn date-popup-btn-apply" id="assetsDatePopupApply" data-en="Apply" data-vi="Áp dụng">Apply</button>
+              </div>
+            </div>
+          </div>
         </div>
+        <button class="refresh-btn" id="assetsRefreshBtn" title="Refresh data">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        </button>
       </div>
     </div>
 
@@ -4695,8 +5264,81 @@
           </div>
         </div>
       </div>
+      <!-- Empty state (shown when filter has no matches) -->
+      <div class="report-empty" id="reportEmptyState" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <span data-en="No reports match this filter" data-vi="Không có báo cáo phù hợp bộ lọc này">No reports match this filter</span>
+      </div>
     </div>
   </div><!-- /report-screen -->
+
+  <!-- Report Detail Modal -->
+  <div class="report-detail-overlay" id="reportDetailOverlay">
+    <div class="report-detail-modal">
+      <div class="report-detail-header">
+        <div class="report-detail-icon" id="rdIcon"></div>
+        <div class="report-detail-title-area">
+          <div class="report-detail-type" id="rdType"></div>
+          <div class="report-detail-name" id="rdName"></div>
+        </div>
+        <button class="report-detail-close" id="rdClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="report-detail-meta-bar">
+        <span class="report-detail-severity" id="rdSeverity"></span>
+        <span class="report-detail-meta-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="rdTime"></span>
+        </span>
+        <span class="report-detail-meta-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+          <span id="rdTeam"></span>
+        </span>
+      </div>
+      <div class="report-detail-body">
+        <div class="report-detail-desc" id="rdDesc"></div>
+        <div class="report-detail-section">
+          <div class="report-detail-section-title" data-en="Affected Assets" data-vi="Tài sản bị ảnh hưởng">Affected Assets</div>
+          <div id="rdAssets"></div>
+        </div>
+        <div class="report-detail-section">
+          <div class="report-detail-section-title" data-en="Remediation Steps" data-vi="Các bước khắc phục">Remediation Steps</div>
+          <div id="rdRemediation"></div>
+        </div>
+      </div>
+      <div class="report-detail-footer">
+        <button class="report-detail-cancel-btn" id="rdCancel" data-en="Close" data-vi="Đóng">Close</button>
+        <button class="report-detail-export-btn" id="rdExport">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span data-en="Export PDF" data-vi="Xuất PDF">Export PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Toast -->
+  <div class="export-toast" id="exportToast">
+    <div class="export-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <span data-en="Report exported as PDF" data-vi="Báo cáo đã xuất dưới dạng PDF">Report exported as PDF</span>
+  </div>
+
+  <!-- Refresh Toast -->
+  <div class="refresh-toast" id="refreshToast">
+    <div class="refresh-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <span data-en="Scan data refreshed successfully" data-vi="Dữ liệu quét đã được làm mới">Scan data refreshed successfully</span>
+  </div>
+
+  <div class="refresh-toast" id="assetsRefreshToast">
+    <div class="refresh-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <span data-en="Asset data refreshed successfully" data-vi="Dữ liệu tài sản đã được làm mới">Asset data refreshed successfully</span>
+  </div>
 
   <!-- ═══════════ PROFILE SCREEN ═══════════ -->
   <div id="profile-screen" class="screen">
@@ -4823,21 +5465,25 @@
         <div class="profile-modal-row">
           <div class="profile-modal-field">
             <label class="profile-modal-label" data-en="First Name" data-vi="Tên">First Name</label>
-            <input class="profile-modal-input" type="text" value="Brooklyn">
+            <input class="profile-modal-input" id="epFirstName" type="text" value="Brooklyn">
+            <div class="pw-error-msg" id="epFirstNameErr"></div>
           </div>
           <div class="profile-modal-field">
             <label class="profile-modal-label" data-en="Last Name" data-vi="Họ">Last Name</label>
-            <input class="profile-modal-input" type="text" value="Nguyen">
+            <input class="profile-modal-input" id="epLastName" type="text" value="Nguyen">
+            <div class="pw-error-msg" id="epLastNameErr"></div>
           </div>
         </div>
         <div class="profile-modal-field">
           <label class="profile-modal-label" data-en="Email" data-vi="Email">Email</label>
-          <input class="profile-modal-input" type="email" value="brooklyn@gskywatch.io">
+          <input class="profile-modal-input" id="epEmail" type="email" value="brooklyn@gskywatch.io">
+          <div class="pw-error-msg" id="epEmailErr"></div>
         </div>
         <div class="profile-modal-row">
           <div class="profile-modal-field">
             <label class="profile-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
-            <input class="profile-modal-input" type="tel" value="+84 901 234 567">
+            <input class="profile-modal-input" id="epPhone" type="tel" value="+84 901 234 567">
+            <div class="pw-error-msg" id="epPhoneErr"></div>
           </div>
           <div class="profile-modal-field">
             <label class="profile-modal-label" data-en="Department" data-vi="Phòng ban">Department</label>
@@ -4895,11 +5541,22 @@
         </div>
         <div class="profile-modal-field">
           <label class="profile-modal-label" data-en="New Password" data-vi="Mật khẩu mới">New Password</label>
-          <input class="profile-modal-input" type="password" placeholder="Enter new password">
+          <input class="profile-modal-input" id="pwNew" type="password" placeholder="Enter new password">
+          <div class="pw-requirements" id="pwRequirements">
+            <div class="pw-req" data-rule="length"><span class="pw-req-icon">○</span> <span data-en="At least 8 characters" data-vi="Ít nhất 8 ký tự">At least 8 characters</span></div>
+            <div class="pw-req" data-rule="lower"><span class="pw-req-icon">○</span> <span data-en="One lowercase letter" data-vi="Ít nhất 1 chữ thường">One lowercase letter</span></div>
+            <div class="pw-req" data-rule="upper"><span class="pw-req-icon">○</span> <span data-en="One uppercase letter" data-vi="Ít nhất 1 chữ hoa">One uppercase letter</span></div>
+            <div class="pw-req" data-rule="number"><span class="pw-req-icon">○</span> <span data-en="One digit" data-vi="Ít nhất 1 chữ số">One digit</span></div>
+            <div class="pw-req" data-rule="special"><span class="pw-req-icon">○</span> <span data-en="One special character" data-vi="Ít nhất 1 ký tự đặc biệt">One special character</span></div>
+          </div>
+          <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwStrengthFill"></div></div>
+          <div class="pw-strength-label" id="pwStrengthLabel"></div>
+          <div class="pw-error-msg" id="pwErrorMsg"></div>
         </div>
         <div class="profile-modal-field">
           <label class="profile-modal-label" data-en="Confirm New Password" data-vi="Xác nhận mật khẩu mới">Confirm New Password</label>
-          <input class="profile-modal-input" type="password" placeholder="Confirm new password">
+          <input class="profile-modal-input" id="pwConfirm" type="password" placeholder="Confirm new password">
+          <div class="pw-error-msg" id="pwConfirmError"></div>
         </div>
         <div class="profile-modal-actions">
           <button class="profile-modal-btn profile-modal-btn-secondary" id="changePasswordCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
@@ -5194,15 +5851,542 @@
   });
 
   // ── Report Filter ──────────────────────────
+  var reportGrid = document.querySelector('#report-screen .report-grid');
+  var reportCards = reportGrid ? Array.from(reportGrid.querySelectorAll('.report-card')) : [];
+  var reportEmpty = document.getElementById('reportEmptyState');
+
+  function getCardSeverity(card) {
+    var sevEl = card.querySelector('.report-card-severity');
+    return sevEl ? sevEl.textContent.trim().toLowerCase() : '';
+  }
+
+  function isAllFilter(severity) {
+    return severity === 'all' || severity === 'all reports' || severity === 'tất cả báo cáo';
+  }
+
+  function filterReportCards(severity) {
+    var count = 0;
+    reportCards.forEach(function(card) {
+      var cardSev = getCardSeverity(card);
+      if (isAllFilter(severity) || cardSev === severity) {
+        card.style.display = '';
+        count++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    // show/hide empty state
+    if (reportEmpty) {
+      reportEmpty.style.display = count === 0 ? '' : 'none';
+    }
+    // update summary counts
+    var summaryCards = document.querySelectorAll('#report-screen .report-summary-card');
+    summaryCards.forEach(function(sc) {
+      var label = sc.querySelector('.report-summary-label');
+      if (label) {
+        var txt = (label.getAttribute('data-en') || label.textContent).toLowerCase();
+        var val = sc.querySelector('.report-summary-value');
+        if (val) {
+          var showCount = isAllFilter(severity);
+          if (txt.indexOf('critical') !== -1 && txt.indexOf('report') !== -1) {
+            val.textContent = showCount ? '12' : (severity === 'critical' ? String(count) : '0');
+          } else if (txt.indexOf('high') !== -1) {
+            val.textContent = showCount ? '34' : (severity === 'high' ? String(count) : '0');
+          } else if (txt.indexOf('total') !== -1) {
+            val.textContent = showCount ? '89' : String(count);
+          } else if (txt.indexOf('resolved') !== -1) {
+            val.textContent = showCount ? '67' : (severity === 'low' ? String(count) : '0');
+          }
+        }
+      }
+    });
+  }
+
   document.querySelectorAll('.report-filter-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
+      var label = (btn.getAttribute('data-en') || btn.textContent).trim();
+      if (label === 'Export PDF' || label === 'Xuất PDF') {
+        showExportToast();
+        return;
+      }
       var parent = btn.closest('.report-filters');
       if (parent) {
         parent.querySelectorAll('.report-filter-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
       }
+      filterReportCards(label.toLowerCase());
     });
   });
+
+  // ── Report Detail Modal (View / Export) ──────────────────────────
+  var reportData = [
+    {
+      type: 'VULNERABILITY', typeVi: 'LỖ HỔNG', name: 'Critical CVE Batch — Q2 2026', nameVi: 'Lô CVE nghiêm trọng — Q2 2026',
+      severity: 'critical', icon: 'critical', time: '2 hours ago', timeVi: 'Cách đây 2 giờ',
+      team: 'SOC Team', teamVi: 'Đội SOC',
+      desc: '12 critical vulnerabilities discovered across 3 assets. Includes Remote Code Execution on Apache Struts and SQL Injection on authentication endpoints. Immediate remediation required.',
+      descVi: '12 lỗ hổng nghiêm trọng được phát hiện trên 3 tài sản. Bao gồm Thực thi từ xa trên Apache Struts và SQL Injection trên các endpoint xác thực. Cần khắc phục ngay.',
+      assets: [
+        { name: 'web-app.gskywatch.io', type: 'Web Application' },
+        { name: 'api.gskywatch.io', type: 'API Endpoint' },
+        { name: 'auth.gskywatch.io', type: 'Auth Service' }
+      ],
+      steps: [
+        'Patch Apache Struts to version 6.4.0 or later immediately',
+        'Apply WAF rules to block SQL Injection patterns on /api/auth/*',
+        'Rotate all session tokens and force user re-authentication',
+        'Schedule vulnerability re-scan within 48 hours'
+      ]
+    },
+    {
+      type: 'EXPOSURE', typeVi: 'LỘ DIỆN', name: 'Subdomain Takeover Risk', nameVi: 'Rủi ro chiếm quyền subdomain',
+      severity: 'high', icon: 'high', time: '5 hours ago', timeVi: 'Cách đây 5 giờ',
+      team: 'Automated Scan', teamVi: 'Quét tự động',
+      desc: '3 subdomains with dangling DNS records detected. These can be taken over by malicious actors to serve phishing pages or steal cookies.',
+      descVi: '3 subdomain có bản ghi DNS treo được phát hiện. Chúng có thể bị chiếm quyền bởi các tác nhân xấu để hiển thị trang lừa đảo hoặc đánh cắp cookie.',
+      assets: [
+        { name: 'staging.gskywatch.io', type: 'Subdomain' },
+        { name: 'dev-api.gskywatch.io', type: 'Subdomain' },
+        { name: 'old-portal.gskywatch.io', type: 'Subdomain' }
+      ],
+      steps: [
+        'Remove or redirect dangling DNS CNAME records',
+        'Verify no active services depend on these subdomains',
+        'Add DNS monitoring to detect future dangling records',
+        'Document subdomain ownership in asset registry'
+      ]
+    },
+    {
+      type: 'UPTIME', typeVi: 'THỜI GIAN HOẠT ĐỘNG', name: 'Service Downtime Alert — API Gateway', nameVi: 'Cảnh báo ngừng dịch vụ — API Gateway',
+      severity: 'medium', icon: 'medium', time: '8 hours ago', timeVi: 'Cách đây 8 giờ',
+      team: 'Uptime Monitor', teamVi: 'Giám sát thời gian hoạt động',
+      desc: 'API Gateway experienced 14 minutes of downtime at 03:42 UTC. Root cause: upstream DNS resolution failure. Service restored automatically.',
+      descVi: 'API Gateway gặp sự cố ngừng hoạt động 14 phút lúc 03:42 UTC. Nguyên nhân: lỗi phân giải DNS upstream. Dịch vụ được khôi phục tự động.',
+      assets: [
+        { name: 'api-gateway.gskywatch.io', type: 'API Gateway' }
+      ],
+      steps: [
+        'Review upstream DNS provider SLA and failover configuration',
+        'Implement secondary DNS resolver for redundancy',
+        'Add alerting threshold for DNS resolution latency > 500ms',
+        'Update incident report with root cause analysis'
+      ]
+    },
+    {
+      type: 'BRAND', typeVi: 'THƯƠNG HIỆU', name: 'Phishing Domain Detected — g-skywatch.com', nameVi: 'Phát hiện tên miền lừa đảo — g-skywatch.com',
+      severity: 'high', icon: 'high', time: '1 day ago', timeVi: 'Cách đây 1 ngày',
+      team: 'Brand Protection', teamVi: 'Bảo vệ thương hiệu',
+      desc: 'A lookalike domain g-skywatch.com was registered 3 days ago. SSL certificate issued by Let\'s Encrypt. Currently serving a credential-harvesting page mimicking the login portal.',
+      descVi: 'Tên miền giống g-skywatch.com được đăng ký cách đây 3 ngày. Chứng chỉ SSL do Let\'s Encrypt cấp. Hiện đang hiển thị trang thu thập thông tin đăng nhập giả mạo cổng đăng nhập.',
+      assets: [
+        { name: 'g-skywatch.com', type: 'Lookalike Domain' }
+      ],
+      steps: [
+        'File abuse report with domain registrar',
+        'Request takedown via Let\'s Encrypt abuse channel',
+        'Add domain to internal blocklist and email gateway filter',
+        'Notify customers of potential phishing campaign'
+      ]
+    },
+    {
+      type: 'BOTNET', typeVi: 'MẠNG BOT', name: 'C2 Communication Detected — 3 Hosts', nameVi: 'Phát hiện liên lạc C2 — 3 Host',
+      severity: 'critical', icon: 'teal', time: '30 min ago', timeVi: 'Cách đây 30 phút',
+      team: 'Threat Intel', teamVi: 'Tình báo mối đe dọa',
+      desc: '3 internal hosts communicating with known Cobalt Strike C2 server (185.220.101.42). Traffic pattern indicates possible lateral movement. Immediate isolation recommended.',
+      descVi: '3 host nội bộ đang liên lạc với máy chủ C2 Cobalt Strike đã biết (185.220.101.42). Mẫu lưu lượng cho thấy có thể di chuyển ngang. Khuyến nghị cô lập ngay.',
+      assets: [
+        { name: 'WS-FIN-012', type: 'Workstation' },
+        { name: 'SRV-DB-003', type: 'Database Server' },
+        { name: 'WS-HR-007', type: 'Workstation' }
+      ],
+      steps: [
+        'Isolate affected hosts from network immediately',
+        'Collect forensic images of compromised systems',
+        'Block C2 IP 185.220.101.42 at perimeter firewall',
+        'Hunt for lateral movement artifacts across subnet'
+      ]
+    },
+    {
+      type: 'REMEDIATION', typeVi: 'KHẮC PHỤC', name: 'Weekly Remediation Summary — W25', nameVi: 'Tóm tắt khắc phục hàng tuần — W25',
+      severity: 'low', icon: 'low', time: 'Today 09:00', timeVi: 'Hôm nay 09:00',
+      team: 'Auto Report', teamVi: 'Báo cáo tự động',
+      desc: '67 of 89 open issues resolved this week. Average remediation time improved from 4.2 days to 2.8 days. 3 critical CVEs patched within SLA. 12 findings still pending owner assignment.',
+      descVi: '67 trong 89 vấn đề mở đã được giải quyết tuần này. Thời gian khắc phục trung bình cải thiện từ 4.2 ngày xuống 2.8 ngày. 3 CVE nghiêm trọng được vá trong SLA. 12 phát hiện vẫn chờ phân bổ chủ sở hữu.',
+      assets: [
+        { name: '89 total open issues', type: 'This Week' },
+        { name: '67 resolved (75%)', type: 'Completed' },
+        { name: '12 pending assignment', type: 'Action Needed' }
+      ],
+      steps: [
+        'Assign owners to 12 pending findings before next sprint',
+        'Review 3 critical CVE patches for regression',
+        'Update remediation SLA tracking dashboard',
+        'Schedule follow-up scan for resolved issues'
+      ]
+    }
+  ];
+
+  var rdOverlay = document.getElementById('reportDetailOverlay');
+  var exportToast = document.getElementById('exportToast');
+  var exportToastTimer = null;
+
+  function showExportToast() {
+    if (exportToastTimer) clearTimeout(exportToastTimer);
+    exportToast.classList.add('active');
+    exportToastTimer = setTimeout(function() { exportToast.classList.remove('active'); }, 2500);
+  }
+
+  function openReportDetail(idx) {
+    var d = reportData[idx];
+    if (!d || !rdOverlay) return;
+    var isEn = !document.body.classList.contains('vi');
+    document.getElementById('rdIcon').className = 'report-detail-icon ' + d.icon;
+    document.getElementById('rdIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
+    document.getElementById('rdType').textContent = isEn ? d.type : d.typeVi;
+    document.getElementById('rdName').textContent = isEn ? d.name : d.nameVi;
+    var sev = document.getElementById('rdSeverity');
+    sev.className = 'report-detail-severity ' + d.severity;
+    sev.textContent = d.severity.toUpperCase();
+    document.getElementById('rdTime').textContent = isEn ? d.time : d.timeVi;
+    document.getElementById('rdTeam').textContent = isEn ? d.team : d.teamVi;
+    document.getElementById('rdDesc').textContent = isEn ? d.desc : d.descVi;
+    var assetsHtml = '';
+    d.assets.forEach(function(a) {
+      assetsHtml += '<div class="report-detail-asset"><span class="report-detail-asset-name">' + a.name + '</span><span class="report-detail-asset-type">' + a.type + '</span></div>';
+    });
+    document.getElementById('rdAssets').innerHTML = assetsHtml;
+    var stepsHtml = '';
+    d.steps.forEach(function(s, i) {
+      stepsHtml += '<div class="report-detail-remediation-step"><span class="report-detail-step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
+    });
+    document.getElementById('rdRemediation').innerHTML = stepsHtml;
+    rdOverlay.classList.add('active');
+  }
+
+  function closeReportDetail() {
+    if (rdOverlay) rdOverlay.classList.remove('active');
+  }
+
+  // Bind View / Export buttons on report cards
+  document.querySelectorAll('.report-card').forEach(function(card, idx) {
+    var actions = card.querySelectorAll('.report-card-action');
+    actions.forEach(function(btn) {
+      var txt = btn.getAttribute('data-en') || btn.textContent;
+      if (txt === 'View') {
+        btn.addEventListener('click', function() { openReportDetail(idx); });
+      } else if (txt === 'Export') {
+        btn.addEventListener('click', function() { showExportToast(); });
+      }
+    });
+  });
+
+  // Modal close handlers
+  if (rdOverlay) {
+    rdOverlay.addEventListener('click', function(e) { if (e.target === rdOverlay) closeReportDetail(); });
+  }
+  var rdClose = document.getElementById('rdClose');
+  if (rdClose) rdClose.addEventListener('click', closeReportDetail);
+  var rdCancel = document.getElementById('rdCancel');
+  if (rdCancel) rdCancel.addEventListener('click', closeReportDetail);
+  var rdExport = document.getElementById('rdExport');
+  if (rdExport) rdExport.addEventListener('click', function() { closeReportDetail(); setTimeout(showExportToast, 300); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (assetsDatePopupOverlay && assetsDatePopupOverlay.classList.contains('active')) closeAssetsDatePicker();
+      else if (datePopupOverlay && datePopupOverlay.classList.contains('active')) closeDatePicker();
+      else if (rdOverlay && rdOverlay.classList.contains('active')) closeReportDetail();
+    }
+  });
+
+  // ── Date Range Picker ─────────────────────────────────
+  var datePickerBtn = document.getElementById('datePickerBtn');
+  var datePopupOverlay = document.getElementById('datePopupOverlay');
+  var datePopup = document.getElementById('datePopup');
+  var datePopupClose = document.getElementById('datePopupClose');
+  var datePopupCancel = document.getElementById('datePopupCancel');
+  var datePopupApply = document.getElementById('datePopupApply');
+  var calDays = document.getElementById('calDays');
+  var calMonth = document.getElementById('calMonth');
+  var calPrev = document.getElementById('calPrev');
+  var calNext = document.getElementById('calNext');
+  var dateRangeStart = document.getElementById('dateRangeStart');
+  var dateRangeEnd = document.getElementById('dateRangeEnd');
+  var datePickerLabel = document.getElementById('datePickerLabel');
+
+  var calViewDate = new Date(2026, 5, 1); // June 2026
+  var calStartDate = new Date(2026, 5, 6);
+  var calEndDate = new Date(2026, 5, 12);
+  var calSelecting = false; // false = picking start, true = picking end
+
+  function renderCalendar() {
+    var y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+    var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    calMonth.textContent = monthNames[m] + ' ' + y;
+    var firstDay = new Date(y, m, 1).getDay();
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var daysInPrev = new Date(y, m, 0).getDate();
+    var html = '';
+    // Previous month trailing days
+    for (var i = firstDay - 1; i >= 0; i--) {
+      html += '<div class="date-cal-day other-month">' + (daysInPrev - i) + '</div>';
+    }
+    // Current month days
+    var today = new Date(2026, 5, 12); // Simulated today
+    for (var d = 1; d <= daysInMonth; d++) {
+      var cls = 'date-cal-day';
+      var thisDate = new Date(y, m, d);
+      if (d === today.getDate() && m === today.getMonth() && y === today.getFullYear()) cls += ' today';
+      if (calStartDate && calEndDate) {
+        var startMs = calStartDate.getTime(), endMs = calEndDate.getTime(), thisMs = thisDate.getTime();
+        if (thisMs === startMs) cls += ' selected range-start';
+        if (thisMs === endMs) cls += ' selected range-end';
+        if (thisMs > startMs && thisMs < endMs) cls += ' in-range';
+      } else if (calStartDate && thisDate.getTime() === calStartDate.getTime()) {
+        cls += ' selected';
+      }
+      html += '<div class="' + cls + '" data-day="' + d + '">' + d + '</div>';
+    }
+    // Next month leading days
+    var totalCells = firstDay + daysInMonth;
+    var remaining = (7 - (totalCells % 7)) % 7;
+    for (var n = 1; n <= remaining; n++) {
+      html += '<div class="date-cal-day other-month">' + n + '</div>';
+    }
+    calDays.innerHTML = html;
+    // Update range display
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    if (calStartDate) {
+      dateRangeStart.textContent = months[calStartDate.getMonth()] + ' ' + calStartDate.getDate() + ', ' + calStartDate.getFullYear();
+    }
+    if (calEndDate) {
+      dateRangeEnd.textContent = months[calEndDate.getMonth()] + ' ' + calEndDate.getDate() + ', ' + calEndDate.getFullYear();
+    }
+    // Bind day clicks
+    calDays.querySelectorAll('.date-cal-day:not(.other-month)').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var day = parseInt(el.getAttribute('data-day'));
+        var clicked = new Date(y, m, day);
+        if (!calSelecting) {
+          calStartDate = clicked;
+          calEndDate = null;
+          calSelecting = true;
+        } else {
+          if (clicked.getTime() < calStartDate.getTime()) {
+            calEndDate = calStartDate;
+            calStartDate = clicked;
+          } else {
+            calEndDate = clicked;
+          }
+          calSelecting = false;
+        }
+        renderCalendar();
+      });
+    });
+  }
+
+  function openDatePicker() {
+    datePopupOverlay.classList.add('active');
+    datePopup.classList.add('active');
+    calSelecting = false;
+    renderCalendar();
+  }
+  function closeDatePicker() {
+    datePopupOverlay.classList.remove('active');
+    datePopup.classList.remove('active');
+  }
+
+  if (datePickerBtn) datePickerBtn.addEventListener('click', function(e) { e.stopPropagation(); openDatePicker(); });
+  if (datePopupOverlay) datePopupOverlay.addEventListener('click', closeDatePicker);
+  if (datePopupClose) datePopupClose.addEventListener('click', closeDatePicker);
+  if (datePopupCancel) datePopupCancel.addEventListener('click', closeDatePicker);
+  if (calPrev) calPrev.addEventListener('click', function() { calViewDate.setMonth(calViewDate.getMonth() - 1); renderCalendar(); });
+  if (calNext) calNext.addEventListener('click', function() { calViewDate.setMonth(calViewDate.getMonth() + 1); renderCalendar(); });
+
+  // Quick range buttons
+  document.querySelectorAll('.date-quick-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.date-quick-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var range = btn.getAttribute('data-range');
+      var today = new Date(2026, 5, 12);
+      calEndDate = new Date(today);
+      if (range === 'today') {
+        calStartDate = new Date(today);
+      } else {
+        calStartDate = new Date(today);
+        calStartDate.setDate(calStartDate.getDate() - parseInt(range));
+      }
+      calViewDate = new Date(calStartDate);
+      calSelecting = false;
+      renderCalendar();
+    });
+  });
+
+  if (datePopupApply) datePopupApply.addEventListener('click', function() {
+    if (calStartDate && calEndDate) {
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      datePickerLabel.textContent = months[calStartDate.getMonth()] + ' ' + calStartDate.getDate() + ' – ' + months[calEndDate.getMonth()] + ' ' + calEndDate.getDate() + ', ' + calEndDate.getFullYear();
+    }
+    closeDatePicker();
+  });
+
+  // ── Assets Date Range Picker ──────────────────────────
+  var assetsDatePickerBtn = document.getElementById('assetsDatePickerBtn');
+  var assetsDatePopupOverlay = document.getElementById('assetsDatePopupOverlay');
+  var assetsDatePopup = document.getElementById('assetsDatePopup');
+  var assetsDatePopupClose = document.getElementById('assetsDatePopupClose');
+  var assetsDatePopupCancel = document.getElementById('assetsDatePopupCancel');
+  var assetsDatePopupApply = document.getElementById('assetsDatePopupApply');
+  var assetsCalDays = document.getElementById('assetsCalDays');
+  var assetsCalMonth = document.getElementById('assetsCalMonth');
+  var assetsCalPrev = document.getElementById('assetsCalPrev');
+  var assetsCalNext = document.getElementById('assetsCalNext');
+  var assetsDateRangeStart = document.getElementById('assetsDateRangeStart');
+  var assetsDateRangeEnd = document.getElementById('assetsDateRangeEnd');
+  var assetsDatePickerLabel = document.getElementById('assetsDatePickerLabel');
+
+  var assetsCalViewDate = new Date(2026, 5, 1);
+  var assetsCalStartDate = new Date(2026, 5, 6);
+  var assetsCalEndDate = new Date(2026, 5, 12);
+  var assetsCalSelecting = false;
+
+  function renderAssetsCalendar() {
+    var y = assetsCalViewDate.getFullYear(), m = assetsCalViewDate.getMonth();
+    var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    assetsCalMonth.textContent = monthNames[m] + ' ' + y;
+    var firstDay = new Date(y, m, 1).getDay();
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var daysInPrev = new Date(y, m, 0).getDate();
+    var html = '';
+    for (var i = firstDay - 1; i >= 0; i--) {
+      html += '<div class="date-cal-day other-month">' + (daysInPrev - i) + '</div>';
+    }
+    var today = new Date(2026, 5, 12);
+    for (var d = 1; d <= daysInMonth; d++) {
+      var cls = 'date-cal-day';
+      var thisDate = new Date(y, m, d);
+      if (d === today.getDate() && m === today.getMonth() && y === today.getFullYear()) cls += ' today';
+      if (assetsCalStartDate && assetsCalEndDate) {
+        var startMs = assetsCalStartDate.getTime(), endMs = assetsCalEndDate.getTime(), thisMs = thisDate.getTime();
+        if (thisMs === startMs) cls += ' selected range-start';
+        if (thisMs === endMs) cls += ' selected range-end';
+        if (thisMs > startMs && thisMs < endMs) cls += ' in-range';
+      } else if (assetsCalStartDate && thisDate.getTime() === assetsCalStartDate.getTime()) {
+        cls += ' selected';
+      }
+      html += '<div class="' + cls + '" data-day="' + d + '">' + d + '</div>';
+    }
+    var totalCells = firstDay + daysInMonth;
+    var remaining = (7 - (totalCells % 7)) % 7;
+    for (var n = 1; n <= remaining; n++) {
+      html += '<div class="date-cal-day other-month">' + n + '</div>';
+    }
+    assetsCalDays.innerHTML = html;
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    if (assetsCalStartDate) assetsDateRangeStart.textContent = months[assetsCalStartDate.getMonth()] + ' ' + assetsCalStartDate.getDate() + ', ' + assetsCalStartDate.getFullYear();
+    if (assetsCalEndDate) assetsDateRangeEnd.textContent = months[assetsCalEndDate.getMonth()] + ' ' + assetsCalEndDate.getDate() + ', ' + assetsCalEndDate.getFullYear();
+    assetsCalDays.querySelectorAll('.date-cal-day:not(.other-month)').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var day = parseInt(el.getAttribute('data-day'));
+        var clicked = new Date(y, m, day);
+        if (!assetsCalSelecting) {
+          assetsCalStartDate = clicked;
+          assetsCalEndDate = null;
+          assetsCalSelecting = true;
+        } else {
+          if (clicked.getTime() < assetsCalStartDate.getTime()) {
+            assetsCalEndDate = assetsCalStartDate;
+            assetsCalStartDate = clicked;
+          } else {
+            assetsCalEndDate = clicked;
+          }
+          assetsCalSelecting = false;
+        }
+        renderAssetsCalendar();
+      });
+    });
+  }
+
+  function openAssetsDatePicker() {
+    assetsDatePopupOverlay.classList.add('active');
+    assetsDatePopup.classList.add('active');
+    assetsCalSelecting = false;
+    renderAssetsCalendar();
+  }
+  function closeAssetsDatePicker() {
+    assetsDatePopupOverlay.classList.remove('active');
+    assetsDatePopup.classList.remove('active');
+  }
+
+  if (assetsDatePickerBtn) assetsDatePickerBtn.addEventListener('click', function(e) { e.stopPropagation(); openAssetsDatePicker(); });
+  if (assetsDatePopupOverlay) assetsDatePopupOverlay.addEventListener('click', closeAssetsDatePicker);
+  if (assetsDatePopupClose) assetsDatePopupClose.addEventListener('click', closeAssetsDatePicker);
+  if (assetsDatePopupCancel) assetsDatePopupCancel.addEventListener('click', closeAssetsDatePicker);
+  if (assetsCalPrev) assetsCalPrev.addEventListener('click', function() { assetsCalViewDate.setMonth(assetsCalViewDate.getMonth() - 1); renderAssetsCalendar(); });
+  if (assetsCalNext) assetsCalNext.addEventListener('click', function() { assetsCalViewDate.setMonth(assetsCalViewDate.getMonth() + 1); renderAssetsCalendar(); });
+
+  document.querySelectorAll('.assets-date-quick').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.assets-date-quick').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var range = btn.getAttribute('data-range');
+      var today = new Date(2026, 5, 12);
+      assetsCalEndDate = new Date(today);
+      if (range === 'today') {
+        assetsCalStartDate = new Date(today);
+      } else {
+        assetsCalStartDate = new Date(today);
+        assetsCalStartDate.setDate(assetsCalStartDate.getDate() - parseInt(range));
+      }
+      assetsCalViewDate = new Date(assetsCalStartDate);
+      assetsCalSelecting = false;
+      renderAssetsCalendar();
+    });
+  });
+
+  if (assetsDatePopupApply) assetsDatePopupApply.addEventListener('click', function() {
+    if (assetsCalStartDate && assetsCalEndDate) {
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      assetsDatePickerLabel.textContent = months[assetsCalStartDate.getMonth()] + ' ' + assetsCalStartDate.getDate() + ' – ' + months[assetsCalEndDate.getMonth()] + ' ' + assetsCalEndDate.getDate() + ', ' + assetsCalEndDate.getFullYear();
+    }
+    closeAssetsDatePicker();
+  });
+
+  // ── Assets Refresh Button ─────────────────────────────
+  var assetsRefreshBtn = document.getElementById('assetsRefreshBtn');
+  var assetsRefreshToast = document.getElementById('assetsRefreshToast');
+  if (assetsRefreshBtn) {
+    assetsRefreshBtn.addEventListener('click', function() {
+      var icon = assetsRefreshBtn.querySelector('svg');
+      icon.style.transition = 'transform 1.2s ease';
+      icon.style.transform = 'rotate(360deg)';
+      setTimeout(function() {
+        icon.style.transition = 'none';
+        icon.style.transform = 'rotate(0deg)';
+        if (assetsRefreshToast) {
+          assetsRefreshToast.classList.add('show');
+          setTimeout(function() { assetsRefreshToast.classList.remove('show'); }, 2500);
+        }
+      }, 1200);
+    });
+  }
+
+  // ── Refresh Button ────────────────────────────────────
+  var refreshBtn = document.getElementById('refreshBtn');
+  var refreshToast = document.getElementById('refreshToast');
+  var refreshToastTimer = null;
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function() {
+      refreshBtn.classList.add('spinning');
+      setTimeout(function() {
+        refreshBtn.classList.remove('spinning');
+        if (refreshToastTimer) clearTimeout(refreshToastTimer);
+        refreshToast.classList.add('active');
+        refreshToastTimer = setTimeout(function() { refreshToast.classList.remove('active'); }, 2500);
+      }, 1200);
+    });
+  }
 
   // ── Profile Modals ──────────────────────────
   function openModal(id) {
@@ -5218,9 +6402,31 @@
     var success = document.getElementById(successId);
     if (form) form.style.display = '';
     if (success) success.classList.remove('active');
+    if (formId === 'changePasswordForm') {
+      var pwNew = document.getElementById('pwNew');
+      var pwConfirm = document.getElementById('pwConfirm');
+      if (pwNew) { pwNew.value = ''; pwNew.classList.remove('input-error', 'input-success'); }
+      if (pwConfirm) { pwConfirm.value = ''; pwConfirm.classList.remove('input-error', 'input-success'); }
+      document.querySelectorAll('.pw-req').forEach(function(el) {
+        el.classList.remove('met', 'unmet');
+        el.querySelector('.pw-req-icon').textContent = '○';
+      });
+      var fill = document.getElementById('pwStrengthFill');
+      var label = document.getElementById('pwStrengthLabel');
+      if (fill) { fill.style.width = '0'; fill.className = 'pw-strength-fill'; }
+      if (label) label.textContent = '';
+      document.querySelectorAll('.pw-error-msg.visible').forEach(function(el) { el.classList.remove('visible'); });
+    }
+    if (formId === 'editProfileForm') {
+      ['epFirstName', 'epLastName', 'epEmail', 'epPhone'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('input-error');
+      });
+      document.querySelectorAll('#editProfileForm .pw-error-msg.visible').forEach(function(el) { el.classList.remove('visible'); });
+    }
   }
 
-  // Edit Profile
+  // Edit Profile — with validation
   var profileActions = document.querySelector('.profile-actions');
   if (profileActions) {
     var btns = profileActions.querySelectorAll('.profile-btn');
@@ -5258,10 +6464,88 @@
     if (el) el.addEventListener('click', function() { closeModal('logoutModal'); });
   });
 
-  // Save handlers (simulate save with success state)
+  // Edit Profile — clear error on input
+  ['epFirstName', 'epLastName', 'epEmail', 'epPhone'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() {
+        this.classList.remove('input-error');
+        var errEl = document.getElementById(this.id + 'Err');
+        if (errEl) errEl.classList.remove('visible');
+      });
+    }
+  });
+
+  // Save handlers (simulate save with validation + success state)
   var editSave = document.getElementById('editProfileSave');
   if (editSave) {
     editSave.addEventListener('click', function() {
+      var firstName = document.getElementById('epFirstName');
+      var lastName = document.getElementById('epLastName');
+      var email = document.getElementById('epEmail');
+      var phone = document.getElementById('epPhone');
+      var valid = true;
+
+      // Clear previous errors
+      document.querySelectorAll('.profile-modal-input.input-error').forEach(function(el) {
+        el.classList.remove('input-error');
+      });
+      document.querySelectorAll('#editProfileForm .pw-error-msg.visible').forEach(function(el) {
+        el.classList.remove('visible');
+      });
+
+      // Validate First Name
+      if (firstName && !firstName.value.trim()) {
+        firstName.classList.add('input-error');
+        var err = document.getElementById('epFirstNameErr');
+        if (err) { err.textContent = 'First name is required'; err.classList.add('visible'); }
+        valid = false;
+      }
+
+      // Validate Last Name
+      if (lastName && !lastName.value.trim()) {
+        lastName.classList.add('input-error');
+        var err = document.getElementById('epLastNameErr');
+        if (err) { err.textContent = 'Last name is required'; err.classList.add('visible'); }
+        valid = false;
+      }
+
+      // Validate Email
+      if (email) {
+        var emailVal = email.value.trim();
+        var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailVal) {
+          email.classList.add('input-error');
+          var err = document.getElementById('epEmailErr');
+          if (err) { err.textContent = 'Email is required'; err.classList.add('visible'); }
+          valid = false;
+        } else if (!emailRe.test(emailVal)) {
+          email.classList.add('input-error');
+          var err = document.getElementById('epEmailErr');
+          if (err) { err.textContent = 'Please enter a valid email address'; err.classList.add('visible'); }
+          valid = false;
+        }
+      }
+
+      // Validate Phone — digits only, min 10
+      if (phone) {
+        var digits = phone.value.replace(/\D/g, '');
+        if (!digits) {
+          phone.classList.add('input-error');
+          var err = document.getElementById('epPhoneErr');
+          if (err) { err.textContent = 'Phone number is required'; err.classList.add('visible'); }
+          valid = false;
+        } else if (digits.length < 10) {
+          phone.classList.add('input-error');
+          var err = document.getElementById('epPhoneErr');
+          if (err) { err.textContent = 'Phone number must be at least 10 digits'; err.classList.add('visible'); }
+          valid = false;
+        }
+      }
+
+      if (!valid) return;
+
+      // All valid — show success
       var form = document.getElementById('editProfileForm');
       var success = document.getElementById('editProfileSuccess');
       if (form) form.style.display = 'none';
@@ -5272,11 +6556,145 @@
   var pwSave = document.getElementById('changePasswordSave');
   if (pwSave) {
     pwSave.addEventListener('click', function() {
+      var pwNew = document.getElementById('pwNew');
+      var pwConfirm = document.getElementById('pwConfirm');
+      var pw = pwNew ? pwNew.value : '';
+      var confirm = pwConfirm ? pwConfirm.value : '';
+      var valid = true;
+
+      // Clear previous states
+      document.querySelectorAll('.profile-modal-input.input-error, .profile-modal-input.input-success').forEach(function(el) {
+        el.classList.remove('input-error', 'input-success');
+      });
+      document.querySelectorAll('.pw-error-msg.visible').forEach(function(el) {
+        el.classList.remove('visible');
+      });
+
+      // Validate new password rules
+      var rules = {
+        length:  pw.length >= 8,
+        lower:   /[a-z]/.test(pw),
+        upper:   /[A-Z]/.test(pw),
+        number:  /[0-9]/.test(pw),
+        special: /[^A-Za-z0-9]/.test(pw)
+      };
+
+      // Update requirement indicators
+      document.querySelectorAll('.pw-req').forEach(function(el) {
+        var rule = el.getAttribute('data-rule');
+        var met = rules[rule];
+        el.classList.toggle('met', met);
+        el.classList.toggle('unmet', !met && pw.length > 0);
+        el.querySelector('.pw-req-icon').textContent = met ? '✓' : '○';
+      });
+
+      // Check if all rules pass
+      var allPassed = Object.values(rules).every(Boolean);
+      var errorMsg = document.getElementById('pwErrorMsg');
+
+      if (!allPassed && pw.length > 0) {
+        if (pwNew) pwNew.classList.add('input-error');
+        if (errorMsg) {
+          errorMsg.textContent = 'Password does not meet all requirements';
+          errorMsg.classList.add('visible');
+        }
+        valid = false;
+      } else if (pw.length === 0) {
+        if (pwNew) pwNew.classList.add('input-error');
+        if (errorMsg) {
+          errorMsg.textContent = 'Password is required';
+          errorMsg.classList.add('visible');
+        }
+        valid = false;
+      }
+
+      // Check confirm matches
+      if (pw !== confirm || confirm.length === 0) {
+        if (pwConfirm) pwConfirm.classList.add('input-error');
+        var confirmErr = document.getElementById('pwConfirmError');
+        if (confirmErr) {
+          confirmErr.textContent = confirm.length === 0 ? 'Please confirm your password' : 'Passwords do not match';
+          confirmErr.classList.add('visible');
+        }
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Success
+      if (pwNew) pwNew.classList.add('input-success');
+      if (pwConfirm) pwConfirm.classList.add('input-success');
       var form = document.getElementById('changePasswordForm');
       var success = document.getElementById('changePasswordSuccess');
       if (form) form.style.display = 'none';
       if (success) success.classList.add('active');
-      setTimeout(function() { closeModal('changePasswordModal'); }, 1500);
+      setTimeout(function() {
+        closeModal('changePasswordModal');
+        // Reset form state after close
+        setTimeout(function() {
+          if (form) form.style.display = '';
+          if (success) success.classList.remove('active');
+          if (pwNew) { pwNew.value = ''; pwNew.classList.remove('input-success'); }
+          if (pwConfirm) { pwConfirm.value = ''; pwConfirm.classList.remove('input-success'); }
+          document.querySelectorAll('.pw-req').forEach(function(el) {
+            el.classList.remove('met', 'unmet');
+            el.querySelector('.pw-req-icon').textContent = '○';
+          });
+          var fill = document.getElementById('pwStrengthFill');
+          var label = document.getElementById('pwStrengthLabel');
+          if (fill) { fill.style.width = '0'; fill.className = 'pw-strength-fill'; }
+          if (label) label.textContent = '';
+        }, 300);
+      }, 1500);
+    });
+  }
+
+  // Live password validation on input
+  var pwNewInput = document.getElementById('pwNew');
+  if (pwNewInput) {
+    pwNewInput.addEventListener('input', function() {
+      var pw = this.value;
+      var rules = {
+        length:  pw.length >= 8,
+        lower:   /[a-z]/.test(pw),
+        upper:   /[A-Z]/.test(pw),
+        number:  /[0-9]/.test(pw),
+        special: /[^A-Za-z0-9]/.test(pw)
+      };
+      document.querySelectorAll('.pw-req').forEach(function(el) {
+        var rule = el.getAttribute('data-rule');
+        var met = rules[rule];
+        el.classList.toggle('met', met);
+        el.classList.toggle('unmet', !met && pw.length > 0);
+        el.querySelector('.pw-req-icon').textContent = met ? '✓' : '○';
+      });
+      // Strength bar
+      var passed = Object.values(rules).filter(Boolean).length;
+      var fill = document.getElementById('pwStrengthFill');
+      var label = document.getElementById('pwStrengthLabel');
+      if (fill) {
+        var pct = (passed / 5) * 100;
+        fill.style.width = pct + '%';
+        fill.className = 'pw-strength-fill';
+        if (passed <= 1) { fill.classList.add('strength-weak'); if (label) { label.textContent = 'Weak'; label.style.color = '#ef4444'; } }
+        else if (passed <= 2) { fill.classList.add('strength-fair'); if (label) { label.textContent = 'Fair'; label.style.color = '#f59e0b'; } }
+        else if (passed <= 4) { fill.classList.add('strength-good'); if (label) { label.textContent = 'Good'; label.style.color = '#22c55e'; } }
+        else { fill.classList.add('strength-strong'); if (label) { label.textContent = 'Strong'; label.style.color = '#22c55e'; } }
+      }
+      // Clear error on input
+      var errorMsg = document.getElementById('pwErrorMsg');
+      if (errorMsg) errorMsg.classList.remove('visible');
+      this.classList.remove('input-error');
+    });
+  }
+
+  // Clear confirm error on input
+  var pwConfirmInput = document.getElementById('pwConfirm');
+  if (pwConfirmInput) {
+    pwConfirmInput.addEventListener('input', function() {
+      var confirmErr = document.getElementById('pwConfirmError');
+      if (confirmErr) confirmErr.classList.remove('visible');
+      this.classList.remove('input-error');
     });
   }
   var logoutConfirm = document.getElementById('logoutConfirm');
@@ -5457,8 +6875,19 @@
   var overlay = document.getElementById('pricingModal');
   if (!overlay) return;
   overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
-  document.querySelectorAll('.sidebar-upgrade-btn, [data-pricing-trigger]').forEach(function(btn){
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){
+      var contactOpen = document.getElementById('contactUsModal');
+      if(!contactOpen || !contactOpen.classList.contains('active')) overlay.classList.remove('active');
+    }
+  });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      overlay.classList.add('active');
+    });
+  });
+  document.querySelectorAll('[data-pricing-trigger]').forEach(function(btn){
     btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
   });
 })();

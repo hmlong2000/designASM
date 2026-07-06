@@ -561,13 +561,25 @@
     .botnet-list-header h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
     .botnet-list-count { font-family: var(--font-mono); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--surface-alt); color: var(--muted); }
 
-    /* ── Search Bar ───────────────────────────────────────── */
-    .botnet-search { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-alt); width: 240px; transition: border-color var(--transition-fast); }
-    .botnet-search:focus-within { border-color: var(--accent); background: var(--surface); }
-    .botnet-search svg { width: 14px; height: 14px; stroke: var(--muted); flex-shrink: 0; }
-    .botnet-search input { border: none; background: transparent; outline: none; font-size: 12px; font-family: var(--font-body); color: var(--fg); width: 100%; }
-    .botnet-search input::placeholder { color: var(--muted); }
-    .botnet-search-clear { display: none; align-items: center; justify-content: center; width: 18px; height: 18px; border: none; background: var(--border); border-radius: 50%; color: var(--muted); font-size: 12px; cursor: pointer; flex-shrink: 0; }
+    /* ── Search Bar (outside table) ───────────────────────── */
+    .bd-search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .bd-search-input { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; transition: border-color var(--transition-fast); }
+    .bd-search-input:focus-within { border-color: var(--accent); }
+    .bd-search-input svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+    .bd-search-input input { border: none; outline: none; background: transparent; font-size: 13px; color: var(--fg); width: 100%; font-family: var(--font-body); }
+    .bd-search-input input::placeholder { color: var(--muted); }
+    .bd-filter-chips { display: flex; align-items: center; gap: 6px; }
+    .bd-filter-chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--fg-secondary); cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; }
+    .bd-filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .bd-filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .bd-filter-chip .chip-count { font-family: var(--font-mono); font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 8px; background: rgba(255,255,255,0.2); }
+    .bd-filter-chip:not(.active) .chip-count { background: var(--surface-alt); color: var(--muted); }
+    .botnet-row.hidden { display: none; }
+    .bd-empty { display: none; padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; }
+    .bd-empty svg { width: 32px; height: 32px; color: var(--border); margin-bottom: 8px; }
+
+    /* ── Legacy search (kept for compatibility) ────────────── */
+    .botnet-search { display: none; }
 
     /* ── Table ────────────────────────────────────────────── */
     .botnet-table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); text-align: center; }
@@ -1017,6 +1029,236 @@
       body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
       body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
       body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon { color: #93c5fd; }
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon { color: #5eead4; }
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon { color: #c4b5fd; }
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #f9a8d4; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+      /* ── Contact Us Modal ─────────────────────────────────── */
+      .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .contact-modal-overlay.active { opacity: 1; pointer-events: auto; }
+      .contact-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-modal-overlay.active .contact-modal { transform: translateY(0) scale(1); }
+      .contact-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-alt);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .contact-modal-close:hover { background: var(--border); }
+      .contact-modal-close svg { width: 16px; height: 16px; color: var(--muted); }
+      .contact-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        margin-bottom: 16px;
+      }
+      .contact-modal-icon.mail { background: var(--accent-soft); color: var(--accent); }
+      .contact-modal-icon svg { width: 24px; height: 24px; }
+      .contact-modal-title {
+        font: 700 22px/1.2 var(--font-display);
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-desc {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .contact-modal-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .contact-modal-plan-label {
+        font: 500 12px/1 var(--font-body);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .contact-modal-plan-tag {
+        font: 600 13px/1 var(--font-display);
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(1,103,255,0.15);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+      .contact-modal-field { margin-bottom: 14px; }
+      .contact-modal-label {
+        display: block;
+        font: 500 12px/1.4 var(--font-body);
+        color: var(--fg-secondary);
+        margin-bottom: 5px;
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-input,
+      .contact-modal-select,
+      .contact-modal-textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font: 400 14px/1.4 var(--font-body);
+        color: var(--fg);
+        background: var(--surface);
+        transition: all var(--transition-fast);
+        outline: none;
+      }
+      .contact-modal-input:focus,
+      .contact-modal-select:focus,
+      .contact-modal-textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .contact-modal-input::placeholder,
+      .contact-modal-textarea::placeholder { color: var(--muted); }
+      .contact-modal-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+      }
+      .contact-modal-textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 160px;
+      }
+      .contact-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .contact-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .contact-modal-btn {
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        font: 500 13px/1 var(--font-body);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .contact-modal-btn-primary:hover { background: var(--accent-hover); }
+      .contact-modal-btn-secondary {
+        background: var(--surface-alt);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .contact-modal-btn-secondary:hover { background: var(--border); }
+      .contact-modal-success {
+        display: none;
+        text-align: center;
+        padding: 20px 0 8px;
+      }
+      .contact-modal-success.active { display: block; }
+      .contact-modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(22,163,74,0.1);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 14px;
+      }
+      .contact-modal-success-icon svg { width: 28px; height: 28px; color: #16a34a; }
+      .contact-modal-success h3 {
+        font: 700 18px/1.3 var(--font-display);
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-success p {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+      }
+      body.dark-mode .contact-modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .contact-modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .contact-modal-input,
+      body.dark-mode .contact-modal-select,
+      body.dark-mode .contact-modal-textarea { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .contact-modal-input:focus,
+      body.dark-mode .contact-modal-select:focus,
+      body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
+      body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+      body.dark-mode .bd-search-input { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .bd-search-input:focus-within { background: var(--bg); }
+      body.dark-mode .bd-search-input input { color: var(--fg); }
+      body.dark-mode .bd-search-input input::placeholder { color: var(--muted); }
+      body.dark-mode .bd-filter-chip { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+      body.dark-mode .bd-filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+      body.dark-mode .bd-filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+      body.dark-mode .bd-empty { color: var(--muted); }
+
   </style>
 </head>
 <body>
@@ -1231,18 +1473,31 @@
       </div>
     </div>
 
+    <!-- Search + Filter -->
+    <div class="bd-search-bar reveal reveal-delay-2">
+      <div class="bd-search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="botnet-search-input" placeholder="Search assets..." data-placeholder-en="Search assets..." data-placeholder-vi="Tìm kiếm tài sản...">
+      </div>
+      <div class="bd-filter-chips">
+        <button class="bd-filter-chip active" onclick="filterBotnet('all')" data-en="All" data-vi="Tất cả">All <span class="chip-count" id="bd-count-all">12</span></button>
+        <button class="bd-filter-chip" onclick="filterBotnet('yes')" data-en="Yes" data-vi="Có">Yes <span class="chip-count" id="bd-count-yes">3</span></button>
+        <button class="bd-filter-chip" onclick="filterBotnet('suspected')" data-en="Suspected" data-vi="Nghi ngờ">Suspected <span class="chip-count" id="bd-count-suspected">3</span></button>
+        <button class="bd-filter-chip" onclick="filterBotnet('no')" data-en="No" data-vi="Không">No <span class="chip-count" id="bd-count-no">6</span></button>
+      </div>
+    </div>
+
     <!-- Botnet Table -->
     <div class="botnet-list-section reveal reveal-delay-2">
       <div class="botnet-list-header">
         <div class="botnet-list-header-left">
           <h3 data-en="Infected Assets" data-vi="Tài sản bị nhiễm">Infected Assets</h3>
-          <span class="botnet-list-count">12 <span data-en="assets" data-vi="tài sản">assets</span></span>
+          <span class="botnet-list-count"><span id="bd-visible-count">12</span> <span data-en="assets" data-vi="tài sản">assets</span></span>
         </div>
-        <div class="botnet-search">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="botnet-search-input" data-placeholder-en="Search assets..." data-placeholder-vi="Tìm kiếm tài sản..." placeholder="Search assets...">
-          <button class="botnet-search-clear" id="botnet-search-clear" style="display:none;" aria-label="Clear search">×</button>
-        </div>
+      </div>
+      <div id="bd-empty" class="bd-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div data-en="No assets match this filter" data-vi="Không có tài sản phù hợp">No assets match this filter</div>
       </div>
       <div class="botnet-table-header">
         <span data-en="Asset" data-vi="Tài sản">Asset</span>
@@ -1251,81 +1506,81 @@
         <span data-en="Scanning" data-vi="Đang quét">Scanning</span>
       </div>
       <div id="botnet-table-body">
-        <div class="botnet-row" data-searchable="185.220.221.208">
+        <div class="botnet-row" data-searchable="185.220.221.208" data-status="no">
           <div class="botnet-asset">185.220.221.208</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">27/11/2024 10:58</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="103.253.73.99">
+        <div class="botnet-row" data-searchable="103.253.73.99" data-status="yes">
           <div class="botnet-asset">103.253.73.99</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span data-en="Yes" data-vi="Có">Yes</span></span></div>
           <div class="botnet-detected">15/12/2024 08:32</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="45.77.123.8">
+        <div class="botnet-row" data-searchable="45.77.123.8" data-status="suspected">
           <div class="botnet-asset">45.77.123.8</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--suspected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span data-en="Suspected" data-vi="Nghi ngờ">Suspected</span></span></div>
           <div class="botnet-detected">03/01/2025 14:21</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="192.168.10.45">
+        <div class="botnet-row" data-searchable="192.168.10.45" data-status="no">
           <div class="botnet-asset">192.168.10.45</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">11/01/2025 09:45</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="203.0.113.22">
+        <div class="botnet-row" data-searchable="203.0.113.22" data-status="yes">
           <div class="botnet-asset">203.0.113.22</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span data-en="Yes" data-vi="Có">Yes</span></span></div>
           <div class="botnet-detected">19/01/2025 16:07</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="198.51.100.14">
+        <div class="botnet-row" data-searchable="198.51.100.14" data-status="no">
           <div class="botnet-asset">198.51.100.14</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">22/01/2025 11:33</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="172.16.0.100">
+        <div class="botnet-row" data-searchable="172.16.0.100" data-status="suspected">
           <div class="botnet-asset">172.16.0.100</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--suspected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span data-en="Suspected" data-vi="Nghi ngờ">Suspected</span></span></div>
           <div class="botnet-detected">28/01/2025 07:19</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="10.0.0.55">
+        <div class="botnet-row" data-searchable="10.0.0.55" data-status="no">
           <div class="botnet-asset">10.0.0.55</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">02/02/2025 13:50</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="89.248.167.131">
+        <div class="botnet-row" data-searchable="89.248.167.131" data-status="yes">
           <div class="botnet-asset">89.248.167.131</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span data-en="Yes" data-vi="Có">Yes</span></span></div>
           <div class="botnet-detected">09/02/2025 18:22</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="154.213.18.77">
+        <div class="botnet-row" data-searchable="154.213.18.77" data-status="no">
           <div class="botnet-asset">154.213.18.77</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">14/02/2025 22:05</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="37.120.189.41">
+        <div class="botnet-row" data-searchable="37.120.189.41" data-status="suspected">
           <div class="botnet-asset">37.120.189.41</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--suspected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span data-en="Suspected" data-vi="Nghi ngờ">Suspected</span></span></div>
           <div class="botnet-detected">20/02/2025 06:41</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox" checked=""><span class="toggle-slider"></span></label></div>
         </div>
-        <div class="botnet-row" data-searchable="192.0.2.33">
+        <div class="botnet-row" data-searchable="192.0.2.33" data-status="no">
           <div class="botnet-asset">192.0.2.33</div>
           <div class="botnet-status"><span class="botnet-badge botnet-badge--no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span data-en="No" data-vi="Không">No</span></span></div>
           <div class="botnet-detected">25/02/2025 15:18</div>
           <div class="botnet-scanning"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
         </div>
       </div>
-      <div class="pagination">
-        <div class="pagination-info">1-12 <span data-en="of" data-vi="trên">of</span> 12</div>
+      <div class="pagination" id="bd-pagination">
+        <div class="pagination-info"><span id="bd-pagination-range">1-12</span> <span data-en="of" data-vi="trên">of</span> <span id="bd-pagination-total">12</span></div>
         <div class="pagination-controls">
           <button class="pagination-btn" disabled="">‹</button>
           <button class="pagination-btn active">1</button>
@@ -1452,26 +1707,45 @@
     })();
 
     var searchInput = document.getElementById('botnet-search-input');
-    var searchClear = document.getElementById('botnet-search-clear');
     var tableBody = document.getElementById('botnet-table-body');
+    var bdCurrentFilter = 'all';
 
-    searchInput.addEventListener('input', function() {
-      var q = this.value.toLowerCase().trim();
-      searchClear.style.display = q ? 'flex' : 'none';
+    function filterBotnet(status) {
+      bdCurrentFilter = status;
+      var q = (searchInput.value || '').toLowerCase().trim();
       var rows = tableBody.querySelectorAll('.botnet-row');
       var visible = 0;
       rows.forEach(function(row) {
+        var rowStatus = row.getAttribute('data-status') || '';
         var text = (row.getAttribute('data-searchable') || '').toLowerCase();
-        var match = !q || text.indexOf(q) > -1;
-        row.style.display = match ? '' : 'none';
-        if (match) visible++;
+        var matchStatus = status === 'all' || rowStatus === status;
+        var matchSearch = !q || text.indexOf(q) > -1;
+        if (matchStatus && matchSearch) {
+          row.classList.remove('hidden');
+          row.style.display = '';
+          visible++;
+        } else {
+          row.classList.add('hidden');
+          row.style.display = 'none';
+        }
       });
-    });
+      document.getElementById('bd-visible-count').textContent = visible;
+      document.getElementById('bd-empty').style.display = visible === 0 ? 'block' : 'none';
+      document.getElementById('bd-pagination-range').textContent = visible > 0 ? '1-' + visible : '0';
+      document.getElementById('bd-pagination-total').textContent = visible;
+      document.querySelectorAll('.bd-filter-chip').forEach(function(chip) {
+        chip.classList.remove('active');
+      });
+      var chipMap = { all: 'all', yes: 'yes', suspected: 'suspected', no: 'no' };
+      document.querySelectorAll('.bd-filter-chip').forEach(function(chip) {
+        var onclick = chip.getAttribute('onclick') || '';
+        if (onclick.indexOf("'" + status + "'") > -1) chip.classList.add('active');
+      });
+    }
+    window.filterBotnet = filterBotnet;
 
-    searchClear.addEventListener('click', function() {
-      searchInput.value = '';
-      searchInput.dispatchEvent(new Event('input'));
-      searchInput.focus();
+    searchInput.addEventListener('input', function() {
+      filterBotnet(bdCurrentFilter);
     });
 
     // Language toggle
@@ -1782,5 +2056,141 @@
   });
 })();
 </script>
+
+  <!-- Contact Us Modal -->
+  <div class="contact-modal-overlay" id="contactUsModal">
+    <div class="contact-modal">
+      <button class="contact-modal-close" id="contactUsClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <!-- Form state -->
+      <div id="contactUsForm">
+        <div class="contact-modal-icon mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        </div>
+        <h3 class="contact-modal-title" data-en="Contact Sales" data-vi="Liên hệ bán hàng">Contact Sales</h3>
+        <p class="contact-modal-desc" data-en="Tell us about your needs and we'll get back to you within 24 hours." data-vi="Cho chúng tôi biết nhu cầu của bạn và chúng tôi sẽ phản hồi trong vòng 24 giờ.">Tell us about your needs and we'll get back to you within 24 hours.</p>
+
+        <div class="contact-modal-plan-row">
+          <span class="contact-modal-plan-label" data-en="Selected plan:" data-vi="Gói đã chọn:">Selected plan:</span>
+          <span class="contact-modal-plan-tag" id="contactPlanTag">Premium</span>
+        </div>
+
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Full Name" data-vi="Họ và tên">Full Name</label>
+            <input class="contact-modal-input" type="text" id="contactName" placeholder="e.g. Brooklyn Nguyen">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Work Email" data-vi="Email công việc">Work Email</label>
+            <input class="contact-modal-input" type="email" id="contactEmail" placeholder="e.g. brooklyn@company.com">
+          </div>
+        </div>
+
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Company" data-vi="Công ty">Company</label>
+            <input class="contact-modal-input" type="text" id="contactCompany" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
+            <input class="contact-modal-input" type="tel" id="contactPhone" placeholder="e.g. +84 901 234 567">
+          </div>
+        </div>
+
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Company Size" data-vi="Quy mô công ty">Company Size</label>
+          <select class="contact-modal-select" id="contactSize">
+            <option value="" data-en="Select company size" data-vi="Chọn quy mô công ty">Select company size</option>
+            <option value="1-50">1–50 employees</option>
+            <option value="51-200">51–200 employees</option>
+            <option value="201-1000">201–1,000 employees</option>
+            <option value="1000+">1,000+ employees</option>
+          </select>
+        </div>
+
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Message" data-vi="Tin nhắn">Message</label>
+          <textarea class="contact-modal-textarea" id="contactMessage" rows="3" placeholder="Tell us about your security monitoring needs..."></textarea>
+        </div>
+
+        <div class="contact-modal-actions">
+          <button class="contact-modal-btn contact-modal-btn-secondary" id="contactUsCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+          <button class="contact-modal-btn contact-modal-btn-primary" id="contactUsSubmit" data-en="Send Message" data-vi="Gửi tin nhắn">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Success state -->
+      <div class="contact-modal-success" id="contactUsSuccess">
+        <div class="contact-modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 data-en="Message Sent!" data-vi="Đã gửi tin nhắn!">Message Sent!</h3>
+        <p data-en="Our sales team will contact you within 24 hours." data-vi="Đội ngũ bán hàng sẽ liên hệ bạn trong vòng 24 giờ.">Our sales team will contact you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var contactOverlay = document.getElementById('contactUsModal');
+  var contactForm = document.getElementById('contactUsForm');
+  var contactSuccess = document.getElementById('contactUsSuccess');
+  var planTag = document.getElementById('contactPlanTag');
+  if (!contactOverlay) return;
+
+  function closeContact() {
+    contactOverlay.classList.remove('active');
+    setTimeout(function(){
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactCompany').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactSize').value = '';
+      document.getElementById('contactMessage').value = '';
+    }, 300);
+  }
+
+  contactOverlay.addEventListener('click', function(e){ if(e.target===contactOverlay) closeContact(); });
+  document.getElementById('contactUsClose').addEventListener('click', closeContact);
+  document.getElementById('contactUsCancel').addEventListener('click', closeContact);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && contactOverlay.classList.contains('active')) closeContact();
+  });
+
+  var pricingOverlay = document.getElementById('pricingModal');
+  document.querySelectorAll('.pricing-btn').forEach(function(btn){
+    if (btn.textContent.trim() !== 'Contact us') return;
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.pricing-card');
+      var badge = card ? card.querySelector('.pricing-badge') : null;
+      var planName = badge ? badge.textContent.trim() : 'Custom';
+      planTag.textContent = planName;
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      if (pricingOverlay) pricingOverlay.classList.remove('active');
+      contactOverlay.classList.add('active');
+    });
+  });
+
+  document.getElementById('contactUsSubmit').addEventListener('click', function(){
+    var name = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) {
+      if (!name) document.getElementById('contactName').focus();
+      else document.getElementById('contactEmail').focus();
+      return;
+    }
+    contactForm.style.display = 'none';
+    contactSuccess.classList.add('active');
+    setTimeout(closeContact, 2500);
+  });
+})();
+</script>
+
 
 </body></html>

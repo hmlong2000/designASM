@@ -659,6 +659,21 @@
   .breach-table-header > *:nth-child(4), .breach-row > *:nth-child(4) { display: none; }
 }
 
+    /* ── Data Breach Search Bar + Filter Chips ─────────────── */
+    .dbm-search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .dbm-search-input { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; transition: border-color var(--transition-fast); }
+    .dbm-search-input:focus-within { border-color: var(--accent); }
+    .dbm-search-input svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+    .dbm-search-input input { border: none; outline: none; background: transparent; font-size: 13px; color: var(--fg); width: 100%; font-family: var(--font-body); }
+    .dbm-search-input input::placeholder { color: var(--muted); }
+    .dbm-filter-chip { padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; }
+    .dbm-filter-chip:hover { border-color: var(--accent); color: var(--fg); }
+    .dbm-filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .dbm-filter-chip .chip-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; font-size: 10px; font-weight: 600; margin-left: 4px; background: rgba(0,0,0,0.08); }
+    .dbm-filter-chip.active .chip-count { background: rgba(255,255,255,0.25); }
+    .breach-row.hidden { display: none; }
+    .dbm-empty { display: none; padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; }
+
     /* ── Pricing Modal ──────────────────────────────────────── */
     .pricing-overlay {
       position: fixed; inset: 0; z-index: 9999;
@@ -934,6 +949,234 @@
       body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
       body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
       body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon { color: #93c5fd; }
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon { color: #5eead4; }
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon { color: #c4b5fd; }
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #f9a8d4; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+      body.dark-mode .dbm-search-input { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .dbm-search-input:focus-within { border-color: var(--accent); }
+      body.dark-mode .dbm-filter-chip { background: var(--surface-alt); border-color: var(--border); color: var(--muted); }
+      body.dark-mode .dbm-filter-chip:hover { border-color: var(--accent); color: var(--fg); }
+      body.dark-mode .dbm-filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+      body.dark-mode .dbm-filter-chip .chip-count { background: rgba(255,255,255,0.08); }
+      body.dark-mode .dbm-filter-chip.active .chip-count { background: rgba(255,255,255,0.25); }
+      /* ── Contact Us Modal ─────────────────────────────────── */
+      .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .contact-modal-overlay.active { opacity: 1; pointer-events: auto; }
+      .contact-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-modal-overlay.active .contact-modal { transform: translateY(0) scale(1); }
+      .contact-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-alt);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .contact-modal-close:hover { background: var(--border); }
+      .contact-modal-close svg { width: 16px; height: 16px; color: var(--muted); }
+      .contact-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        margin-bottom: 16px;
+      }
+      .contact-modal-icon.mail { background: var(--accent-soft); color: var(--accent); }
+      .contact-modal-icon svg { width: 24px; height: 24px; }
+      .contact-modal-title {
+        font: 700 22px/1.2 var(--font-display);
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-desc {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .contact-modal-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .contact-modal-plan-label {
+        font: 500 12px/1 var(--font-body);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .contact-modal-plan-tag {
+        font: 600 13px/1 var(--font-display);
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(1,103,255,0.15);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+      .contact-modal-field { margin-bottom: 14px; }
+      .contact-modal-label {
+        display: block;
+        font: 500 12px/1.4 var(--font-body);
+        color: var(--fg-secondary);
+        margin-bottom: 5px;
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-input,
+      .contact-modal-select,
+      .contact-modal-textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font: 400 14px/1.4 var(--font-body);
+        color: var(--fg);
+        background: var(--surface);
+        transition: all var(--transition-fast);
+        outline: none;
+      }
+      .contact-modal-input:focus,
+      .contact-modal-select:focus,
+      .contact-modal-textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .contact-modal-input::placeholder,
+      .contact-modal-textarea::placeholder { color: var(--muted); }
+      .contact-modal-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+      }
+      .contact-modal-textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 160px;
+      }
+      .contact-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .contact-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .contact-modal-btn {
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        font: 500 13px/1 var(--font-body);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .contact-modal-btn-primary:hover { background: var(--accent-hover); }
+      .contact-modal-btn-secondary {
+        background: var(--surface-alt);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .contact-modal-btn-secondary:hover { background: var(--border); }
+      .contact-modal-success {
+        display: none;
+        text-align: center;
+        padding: 20px 0 8px;
+      }
+      .contact-modal-success.active { display: block; }
+      .contact-modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(22,163,74,0.1);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 14px;
+      }
+      .contact-modal-success-icon svg { width: 28px; height: 28px; color: #16a34a; }
+      .contact-modal-success h3 {
+        font: 700 18px/1.3 var(--font-display);
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-success p {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+      }
+      body.dark-mode .contact-modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .contact-modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .contact-modal-input,
+      body.dark-mode .contact-modal-select,
+      body.dark-mode .contact-modal-textarea { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .contact-modal-input:focus,
+      body.dark-mode .contact-modal-select:focus,
+      body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
+      body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
   </style>
 </head>
 <body>
@@ -1125,19 +1368,22 @@
 </div>
 </div>
 </div>
+<!-- BREACH SEARCH BAR -->
+<div class="dbm-search-bar reveal reveal-delay-2">
+  <div class="dbm-search-input">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="breachSearchInput" placeholder="Search assets..." data-en-placeholder="Search assets..." data-vi-placeholder="Tìm tài sản...">
+  </div>
+  <button class="dbm-filter-chip active" onclick="filterBreach('all')"><span data-en="All" data-vi="Tất cả">All</span><span class="chip-count" id="dbm-count-all">12</span></button>
+  <button class="dbm-filter-chip" onclick="filterBreach('monitored')"><span data-en="Monitored" data-vi="Đang giám sát">Monitored</span><span class="chip-count" id="dbm-count-monitored">9</span></button>
+  <button class="dbm-filter-chip" onclick="filterBreach('unmonitored')"><span data-en="Not Monitored" data-vi="Chưa giám sát">Not Monitored</span><span class="chip-count" id="dbm-count-unmonitored">3</span></button>
+</div>
 <!-- BREACH TABLE -->
-<div class="breach-list-section reveal reveal-delay-2">
+<div class="breach-list-section reveal reveal-delay-3">
 <div class="breach-list-header">
 <div class="product-list-header-left">
 <h3 data-en="Monitored Assets" data-vi="Tài sản đang giám sát">Monitored Assets</h3>
-<span class="breach-list-count">12 <span data-en="assets" data-vi="tài sản">assets</span></span>
-</div>
-<div class="breach-search">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" id="breachSearchInput" placeholder="Search assets..." data-en-placeholder="Search assets..." data-vi-placeholder="Tìm tài sản...">
-<button class="breach-search-clear" id="breachSearchClear" style="display:none;">
-<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-</button>
+<span class="breach-list-count"><span id="breachVisibleCount">12</span> <span data-en="assets" data-vi="tài sản">assets</span></span>
 </div>
 </div>
 <div class="breach-table-header">
@@ -1146,79 +1392,82 @@
 <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
 <span data-en="Breach Monitoring" data-vi="Giám sát rò rỉ">Breach Monitoring</span>
 </div>
-<div class="breach-row" data-searchable="hawaiianairlines.com">
+<div id="dbm-rows">
+<div class="breach-row" data-searchable="hawaiianairlines.com" data-monitoring="monitored">
 <div class="breach-asset">hawaiianairlines.com</div>
 <div class="breach-count">246</div>
 <div class="breach-updated">27/07/2025, 22:40:34</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="gskywatch.io">
+<div class="breach-row" data-searchable="gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">gskywatch.io</div>
 <div class="breach-count">1,034</div>
 <div class="breach-updated">28/07/2025, 14:22:10</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="api.gskywatch.io">
+<div class="breach-row" data-searchable="api.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">api.gskywatch.io</div>
 <div class="breach-count">78</div>
 <div class="breach-updated">28/07/2025, 09:15:42</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="auth.gskywatch.io">
+<div class="breach-row" data-searchable="auth.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">auth.gskywatch.io</div>
 <div class="breach-count">12</div>
 <div class="breach-updated">27/07/2025, 18:03:55</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="dashboard.gskywatch.io">
+<div class="breach-row" data-searchable="dashboard.gskywatch.io" data-monitoring="unmonitored">
 <div class="breach-asset">dashboard.gskywatch.io</div>
 <div class="breach-count">56</div>
 <div class="breach-updated">28/07/2025, 11:48:29</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="ws.gskywatch.io">
+<div class="breach-row" data-searchable="ws.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">ws.gskywatch.io</div>
 <div class="breach-count">3</div>
 <div class="breach-updated">26/07/2025, 20:12:08</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="cdn.gskywatch.io">
+<div class="breach-row" data-searchable="cdn.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">cdn.gskywatch.io</div>
 <div class="breach-count">89</div>
 <div class="breach-updated">28/07/2025, 06:33:17</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="mail.gskywatch.io">
+<div class="breach-row" data-searchable="mail.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">mail.gskywatch.io</div>
 <div class="breach-count">127</div>
 <div class="breach-updated">27/07/2025, 15:59:44</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="vpn.gskywatch.io">
+<div class="breach-row" data-searchable="vpn.gskywatch.io" data-monitoring="unmonitored">
 <div class="breach-asset">vpn.gskywatch.io</div>
 <div class="breach-count">8</div>
 <div class="breach-updated">26/07/2025, 09:41:30</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="legacy.gskywatch.io">
+<div class="breach-row" data-searchable="legacy.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">legacy.gskywatch.io</div>
 <div class="breach-count">312</div>
 <div class="breach-updated">28/07/2025, 03:17:56</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="staging.gskywatch.io">
+<div class="breach-row" data-searchable="staging.gskywatch.io" data-monitoring="unmonitored">
 <div class="breach-asset">staging.gskywatch.io</div>
 <div class="breach-count">5</div>
 <div class="breach-updated">25/07/2025, 14:28:11</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
 </div>
-<div class="breach-row" data-searchable="docs.gskywatch.io">
+<div class="breach-row" data-searchable="docs.gskywatch.io" data-monitoring="monitored">
 <div class="breach-asset">docs.gskywatch.io</div>
 <div class="breach-count">21</div>
 <div class="breach-updated">27/07/2025, 08:55:03</div>
 <div class="breach-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
 </div>
-<div class="pagination">
+</div>
+<div class="dbm-empty" id="dbm-empty" data-en="No assets match this filter" data-vi="Không có tài sản nào khớp bộ lọc">No assets match this filter</div>
+<div class="pagination" id="dbm-pagination">
 <span class="pagination-info">Rows per page: <strong>10</strong></span>
 <div class="pagination-controls">
 <button class="pagination-btn" disabled>&#8249;</button>
@@ -1322,26 +1571,48 @@
     });
     try { var saved = localStorage.getItem('gs-lang'); if (saved === 'vi') setLang('vi'); } catch(e) {}
   }
-  // Breach Search
+  // Breach Search + Filter
+  var dbmCurrentFilter = 'all';
   var searchInput = document.getElementById('breachSearchInput');
-  var searchClear = document.getElementById('breachSearchClear');
   if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      var query = this.value.toLowerCase().trim();
-      searchClear.style.display = query ? 'flex' : 'none';
-      document.querySelectorAll('.breach-row').forEach(function(row) {
-        var text = (row.getAttribute('data-searchable') || '') + ' ' + row.textContent.toLowerCase();
-        row.style.display = (!query || text.indexOf(query) !== -1) ? '' : 'none';
-      });
-    });
-    if (searchClear) {
-      searchClear.addEventListener('click', function() {
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('input'));
-        searchInput.focus();
-      });
-    }
+    searchInput.addEventListener('input', function() { filterBreach(dbmCurrentFilter); });
   }
+  window.filterBreach = function(filter) {
+    dbmCurrentFilter = filter;
+    var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    var rows = document.querySelectorAll('#dbm-rows .breach-row');
+    var visible = 0;
+    rows.forEach(function(row) {
+      var monitoring = row.getAttribute('data-monitoring') || '';
+      var text = (row.getAttribute('data-searchable') || '') + ' ' + row.textContent.toLowerCase();
+      var matchFilter = (filter === 'all') || (monitoring === filter);
+      var matchSearch = !query || text.indexOf(query) !== -1;
+      if (matchFilter && matchSearch) {
+        row.classList.remove('hidden');
+        visible++;
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+    document.querySelectorAll('.dbm-filter-chip').forEach(function(c) { c.classList.toggle('active', c.getAttribute('onclick').indexOf(filter) !== -1); });
+    var cntAll = document.getElementById('dbm-count-all');
+    var cntMon = document.getElementById('dbm-count-monitored');
+    var cntUnmon = document.getElementById('dbm-count-unmonitored');
+    if (cntAll) cntAll.textContent = rows.length;
+    var monCount = 0, unmonCount = 0;
+    rows.forEach(function(r) {
+      if (r.getAttribute('data-monitoring') === 'monitored') monCount++;
+      else unmonCount++;
+    });
+    if (cntMon) cntMon.textContent = monCount;
+    if (cntUnmon) cntUnmon.textContent = unmonCount;
+    var vc = document.getElementById('breachVisibleCount');
+    if (vc) vc.textContent = visible;
+    var empty = document.getElementById('dbm-empty');
+    var pag = document.getElementById('dbm-pagination');
+    if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+    if (pag) pag.style.display = visible === 0 ? 'none' : 'flex';
+  };
   // Toggle switches
   document.querySelectorAll('.toggle-switch').forEach(function(sw) {
     sw.addEventListener('click', function(e) { e.stopPropagation(); });
@@ -1716,6 +1987,142 @@ document.querySelectorAll('.breach-row').forEach(function(row) {
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') hideAcctDetail(); });
 })();
 </script>
+
+  <!-- Contact Us Modal -->
+  <div class="contact-modal-overlay" id="contactUsModal">
+    <div class="contact-modal">
+      <button class="contact-modal-close" id="contactUsClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <!-- Form state -->
+      <div id="contactUsForm">
+        <div class="contact-modal-icon mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        </div>
+        <h3 class="contact-modal-title" data-en="Contact Sales" data-vi="Liên hệ bán hàng">Contact Sales</h3>
+        <p class="contact-modal-desc" data-en="Tell us about your needs and we'll get back to you within 24 hours." data-vi="Cho chúng tôi biết nhu cầu của bạn và chúng tôi sẽ phản hồi trong vòng 24 giờ.">Tell us about your needs and we'll get back to you within 24 hours.</p>
+
+        <div class="contact-modal-plan-row">
+          <span class="contact-modal-plan-label" data-en="Selected plan:" data-vi="Gói đã chọn:">Selected plan:</span>
+          <span class="contact-modal-plan-tag" id="contactPlanTag">Premium</span>
+        </div>
+
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Full Name" data-vi="Họ và tên">Full Name</label>
+            <input class="contact-modal-input" type="text" id="contactName" placeholder="e.g. Brooklyn Nguyen">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Work Email" data-vi="Email công việc">Work Email</label>
+            <input class="contact-modal-input" type="email" id="contactEmail" placeholder="e.g. brooklyn@company.com">
+          </div>
+        </div>
+
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Company" data-vi="Công ty">Company</label>
+            <input class="contact-modal-input" type="text" id="contactCompany" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
+            <input class="contact-modal-input" type="tel" id="contactPhone" placeholder="e.g. +84 901 234 567">
+          </div>
+        </div>
+
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Company Size" data-vi="Quy mô công ty">Company Size</label>
+          <select class="contact-modal-select" id="contactSize">
+            <option value="" data-en="Select company size" data-vi="Chọn quy mô công ty">Select company size</option>
+            <option value="1-50">1–50 employees</option>
+            <option value="51-200">51–200 employees</option>
+            <option value="201-1000">201–1,000 employees</option>
+            <option value="1000+">1,000+ employees</option>
+          </select>
+        </div>
+
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Message" data-vi="Tin nhắn">Message</label>
+          <textarea class="contact-modal-textarea" id="contactMessage" rows="3" placeholder="Tell us about your security monitoring needs..."></textarea>
+        </div>
+
+        <div class="contact-modal-actions">
+          <button class="contact-modal-btn contact-modal-btn-secondary" id="contactUsCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+          <button class="contact-modal-btn contact-modal-btn-primary" id="contactUsSubmit" data-en="Send Message" data-vi="Gửi tin nhắn">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Success state -->
+      <div class="contact-modal-success" id="contactUsSuccess">
+        <div class="contact-modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 data-en="Message Sent!" data-vi="Đã gửi tin nhắn!">Message Sent!</h3>
+        <p data-en="Our sales team will contact you within 24 hours." data-vi="Đội ngũ bán hàng sẽ liên hệ bạn trong vòng 24 giờ.">Our sales team will contact you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var contactOverlay = document.getElementById('contactUsModal');
+  var contactForm = document.getElementById('contactUsForm');
+  var contactSuccess = document.getElementById('contactUsSuccess');
+  var planTag = document.getElementById('contactPlanTag');
+  if (!contactOverlay) return;
+
+  function closeContact() {
+    contactOverlay.classList.remove('active');
+    setTimeout(function(){
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactCompany').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactSize').value = '';
+      document.getElementById('contactMessage').value = '';
+    }, 300);
+  }
+
+  contactOverlay.addEventListener('click', function(e){ if(e.target===contactOverlay) closeContact(); });
+  document.getElementById('contactUsClose').addEventListener('click', closeContact);
+  document.getElementById('contactUsCancel').addEventListener('click', closeContact);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && contactOverlay.classList.contains('active')) closeContact();
+  });
+
+  var pricingOverlay = document.getElementById('pricingModal');
+  document.querySelectorAll('.pricing-btn').forEach(function(btn){
+    if (btn.textContent.trim() !== 'Contact us') return;
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.pricing-card');
+      var badge = card ? card.querySelector('.pricing-badge') : null;
+      var planName = badge ? badge.textContent.trim() : 'Custom';
+      planTag.textContent = planName;
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      if (pricingOverlay) pricingOverlay.classList.remove('active');
+      contactOverlay.classList.add('active');
+    });
+  });
+
+  document.getElementById('contactUsSubmit').addEventListener('click', function(){
+    var name = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) {
+      if (!name) document.getElementById('contactName').focus();
+      else document.getElementById('contactEmail').focus();
+      return;
+    }
+    contactForm.style.display = 'none';
+    contactSuccess.classList.add('active');
+    setTimeout(closeContact, 2500);
+  });
+})();
+</script>
+
 
 </body>
 </html>
