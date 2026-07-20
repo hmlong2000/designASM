@@ -1,0 +1,3894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G-SKYWATCH — Product Weakness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f2f7;
+      --surface: #ffffff;
+      --surface-alt: #f6f8fc;
+      --fg: #0f1629;
+      --fg-secondary: #4a5068;
+      --muted: #7c829a;
+      --border: #dfe2ec;
+      --border-subtle: #eceef5;
+      --accent: #0167FF;
+      --accent-soft: #e4edff;
+      --accent-hover: #0052cc;
+      --critical: #c53030;
+      --critical-soft: #fde8e8;
+      --high: #c05621;
+      --high-soft: #fef0e4;
+      --amber: #D4870E;
+      --amber-soft: #fdf4e4;
+      --low: #276749;
+      --low-soft: #e6f7ef;
+      --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(15,22,41,0.04), 0 1px 2px rgba(15,22,41,0.03);
+      --shadow-md: 0 4px 12px rgba(15,22,41,0.06), 0 1px 3px rgba(15,22,41,0.04);
+      --shadow-lg: 0 8px 24px rgba(15,22,41,0.08), 0 2px 6px rgba(15,22,41,0.04);
+      --transition-fast: 120ms ease;
+      --transition-base: 200ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--fg); line-height: 1.5; }
+
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; animation: fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .reveal-delay-1 { animation-delay: 0.06s; }
+    .reveal-delay-2 { animation-delay: 0.12s; }
+    .reveal-delay-3 { animation-delay: 0.18s; }
+    /* ── Single-Column Vertical Sidebar ────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border-subtle);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 16px 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sidebar-brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    .sidebar-brand-text span { color: var(--accent); }
+
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-toggle-btn:hover { background: var(--surface-alt); color: var(--fg); border-color: var(--accent); }
+    .sidebar.collapsed .sidebar-toggle-btn { right: 8px; }
+    .sidebar.collapsed .sidebar-toggle-btn svg { transform: rotate(180deg); }
+
+    /* Quick Search */
+    .sidebar-search {
+      padding: 4px 12px;
+      flex-shrink: 0;
+    }
+    .sidebar-search-input {
+      width: 100%;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+    .sidebar-search-input:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .sidebar-search-input::placeholder { color: var(--muted); }
+    .sidebar-search-wrap {
+      position: relative;
+    }
+    .sidebar-search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .sidebar.collapsed .sidebar-search {
+      padding: 0;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-icon {
+      margin: 0;
+    }
+    .sidebar.collapsed .sidebar-search-text,
+    .sidebar.collapsed .sidebar-search-input {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-search-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-wrap svg {
+      position: static;
+      transform: none;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+    }
+    .sidebar.collapsed .sidebar-search { cursor: pointer; }
+
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 0 8px;
+      flex: 1;
+    }
+
+    .sidebar-tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      text-align: left;
+      width: 100%;
+    }
+    .sidebar-tab svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+    .sidebar-tab:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-tab:hover svg { opacity: 0.85; }
+    .sidebar-tab.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+    .sidebar-tab.active svg { opacity: 1; color: var(--accent); }
+
+    .sidebar-tab .sidebar-badge {
+      margin-left: auto;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--critical-soft);
+      color: var(--critical);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .sidebar-nav > .sidebar-divider {
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .sidebar-divider--full {
+      margin: 4px 0;
+    }
+
+    .nav-section-label {
+      padding: 12px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    .sidebar.collapsed .nav-section-label { display: none; }
+
+    .sidebar-spacer { flex: 1; }
+    .sidebar-upgrade {
+      margin: 8px 12px 4px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .sidebar-upgrade-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-icon svg { width: 16px; height: 16px; color: #fff; }
+    .sidebar-upgrade-label {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .sidebar-upgrade-label strong {
+      display: block;
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .sidebar-upgrade-desc {
+      font-size: 11px;
+      color: var(--fg-secondary);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .sidebar-upgrade-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .sidebar-upgrade-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .sidebar-upgrade-btn svg { width: 14px; height: 14px; }
+    .sidebar.collapsed .sidebar-upgrade { padding: 8px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .sidebar.collapsed .sidebar-upgrade-header { justify-content: center; }
+    .sidebar.collapsed .sidebar-upgrade-icon { margin: 0; width: 40px; height: 40px; background: var(--accent); border: 2.5px solid #dbeafe; border-radius: 50%; }
+    .sidebar.collapsed .sidebar-upgrade-icon svg { color: #fff; width: 18px; height: 18px; }
+    .sidebar.collapsed .sidebar-upgrade-label,
+    .sidebar.collapsed .sidebar-upgrade-desc,
+    .sidebar.collapsed .sidebar-upgrade-btn { display: none; }
+
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 34px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: var(--font-body);
+      font-weight: 450;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+      text-decoration: none;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .sidebar-bottom-item svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+    .sidebar-bottom-item:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-bottom-item:hover svg { opacity: 0.8; }
+    .sidebar-bottom-right .bottom-right { margin-left: auto; }
+    .sidebar-bottom-item .bottom-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-lang {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      overflow: hidden;
+      margin: 6px 8px 8px;
+    }
+    .sidebar-lang .lang-btn {
+      flex: 1;
+      padding: 5px 0;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-display);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .sidebar-lang .lang-btn.active { background: var(--accent); color: #fff; }
+    .sidebar-lang .lang-btn:hover:not(.active) { color: var(--fg); }
+
+    /* ── Scan Modal ─────────────────────────────────────── */
+    .scan-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .scan-overlay.active { display: flex; opacity: 1; }
+    .scan-modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 480px; max-width: 92vw;
+      box-shadow: 0 24px 64px rgba(15,22,41,0.18);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .scan-overlay.active .scan-modal { transform: translateY(0) scale(1); }
+    .scan-header {
+      padding: 24px 28px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .scan-header h3 {
+      font-family: var(--font-display); font-size: 16px; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--fg);
+    }
+    .scan-close {
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      background: var(--surface-alt); cursor: pointer;
+      display: grid; place-items: center; color: var(--muted);
+      transition: all var(--transition-fast);
+    }
+    .scan-close:hover { background: var(--border); color: var(--fg); }
+    .scan-body { padding: 24px 28px 28px; }
+
+    /* Spinner */
+    .scan-spinner-wrap {
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .scan-spinner {
+      width: 72px; height: 72px; position: relative;
+    }
+    .scan-spinner-ring {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      animation: scanSpin 1s linear infinite;
+    }
+    @keyframes scanSpin { to { transform: rotate(360deg); } }
+    .scan-spinner-icon {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      color: var(--accent);
+    }
+    .scan-spinner-icon svg { width: 28px; height: 28px; }
+
+    /* Complete state */
+    .scan-spinner.complete .scan-spinner-ring {
+      border-color: #22c55e; border-top-color: #22c55e;
+      animation: none;
+    }
+    .scan-spinner.complete .scan-spinner-icon { color: #22c55e; }
+
+    /* Progress bar */
+    .scan-progress-wrap { margin-bottom: 20px; }
+    .scan-progress-bar {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: var(--border); overflow: hidden;
+    }
+    .scan-progress-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), #38bdf8);
+      width: 0%; transition: width 0.4s ease;
+    }
+    .scan-progress-fill.complete {
+      background: #22c55e;
+    }
+    .scan-progress-text {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 12px; color: var(--muted);
+    }
+    .scan-progress-pct {
+      font-family: var(--font-mono); font-weight: 600; color: var(--accent);
+    }
+    .scan-progress-pct.complete { color: #22c55e; }
+
+    /* Phase steps */
+    .scan-phases { display: flex; flex-direction: column; gap: 0; }
+    .scan-phase {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; font-size: 13px; color: var(--muted);
+      border-left: 2px solid var(--border);
+      padding-left: 14px; margin-left: 6px;
+      transition: color var(--transition-base);
+    }
+    .scan-phase.active { color: var(--fg); font-weight: 500; }
+    .scan-phase.done { color: #22c55e; }
+    .scan-phase-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+      margin-left: -19px; position: relative;
+      transition: background var(--transition-base);
+    }
+    .scan-phase.active .scan-phase-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.15);
+    }
+    .scan-phase.done .scan-phase-dot { background: #22c55e; }
+    .scan-phase-check {
+      width: 8px; height: 8px; margin-left: -19px;
+      display: none; color: #22c55e; flex-shrink: 0;
+    }
+    .scan-phase.done .scan-phase-check { display: block; }
+    .scan-phase.done .scan-phase-dot { display: none; }
+
+    /* Results */
+    .scan-results { display: none; margin-top: 20px; }
+    .scan-results.show { display: block; }
+    .scan-result-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-radius: var(--radius-sm);
+      background: var(--surface-alt); margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .scan-result-label { color: var(--fg-secondary); }
+    .scan-result-value {
+      font-family: var(--font-mono); font-weight: 600; color: var(--fg);
+    }
+    .scan-result-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    }
+    .scan-result-badge.critical { background: #fde8e8; color: #c53030; }
+    .scan-result-badge.high { background: #fef0e4; color: #c05621; }
+    .scan-result-badge.medium { background: #fdf4e4; color: #D4870E; }
+    .scan-result-badge.low { background: #e6f7ef; color: #276749; }
+
+    .scan-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle);
+    }
+    .scan-footer-btn {
+      padding: 8px 16px; border-radius: var(--radius-xs);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      border: none; transition: all var(--transition-fast);
+    }
+    .scan-footer-btn.secondary {
+      background: var(--surface-alt); color: var(--fg-secondary);
+      border: 1px solid var(--border);
+    }
+    .scan-footer-btn.secondary:hover { background: var(--border); }
+    .scan-footer-btn.primary {
+      background: var(--accent); color: #fff;
+    }
+    .scan-footer-btn.primary:hover { background: var(--accent-hover); }
+
+    /* Button loading state */
+    .header-btn-primary.scanning {
+      pointer-events: none; opacity: 0.7;
+    }
+    .header-btn-primary.scanning::after {
+      content: ''; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: scanSpin 0.7s linear infinite;
+      margin-left: 4px;
+    }
+
+    /* Language switching */
+    .lang-vi { display: none; }
+    body.lang-vi-active .lang-vi { display: block; }
+    body.lang-vi-active .category-name-vi { display: block; }
+    body:not(.lang-vi-active) .category-name-vi { display: none; }
+
+    /* ── Page Header ──────────────────────────────────────── */
+    .page-header { display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+    .page-header-left { flex: 1; min-width: 0; }
+    .page-header h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+    .page-header p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .page-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .header-btn { padding: 7px 14px; font-size: 12px; font-weight: 500; font-family: var(--font-body); border-radius: var(--radius-xs); cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; border: none; display: inline-flex; align-items: center; gap: 6px; }
+    .header-btn:hover { background: var(--surface-alt); }
+    .header-btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .header-btn-primary:hover { background: var(--accent-hover); }
+
+    /* ── Total Card ───────────────────────────────────────── */
+    .vuln-summary { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+    .vuln-summary-card { background: linear-gradient(135deg, var(--accent) 0%, #0a4fd4 100%); border-radius: var(--radius-lg); padding: 24px 28px; display: flex; align-items: center; gap: 20px; position: relative; overflow: hidden; }
+    .vuln-summary-card::after { content: ''; position: absolute; right: -30px; top: -30px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+    .vuln-summary-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); display: grid; place-items: center; flex-shrink: 0; color: #fff; }
+    .vuln-summary-value { font-family: var(--font-mono); font-size: 36px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: #fff; }
+    .vuln-summary-label { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; font-weight: 500; }
+    .vuln-summary-meta { margin-left: auto; text-align: right; color: rgba(255,255,255,0.8); }
+    .vuln-summary-meta-value { font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: #fff; }
+    .vuln-summary-meta-label { font-size: 11px; margin-top: 2px; }
+
+    /* ── Severity Cards (white bg + colored top border) ──── */
+    .severity-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .severity-card {
+      border-radius: var(--radius-md);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(1, 103, 255, 0.2);
+      transition: box-shadow var(--transition-base), transform var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    .severity-card::after {
+      content: '';
+      position: absolute;
+      top: -16px; right: -16px;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+    .severity-card:hover {
+      box-shadow: 0 8px 28px rgba(1, 103, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    .sev-critical-card {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+    }
+    .sev-critical-card:hover { box-shadow: 0 8px 28px rgba(220, 38, 38, 0.3); }
+    .sev-high-card {
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
+      box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2);
+    }
+    .sev-high-card:hover { box-shadow: 0 8px 28px rgba(234, 88, 12, 0.3); }
+    .sev-medium-card {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.2);
+    }
+    .sev-medium-card:hover { box-shadow: 0 8px 28px rgba(217, 119, 6, 0.3); }
+    .sev-low-card {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
+    }
+    .sev-low-card:hover { box-shadow: 0 8px 28px rgba(5, 150, 105, 0.3); }
+    .severity-card-top { display: flex; align-items: center; justify-content: space-between; }
+    .severity-card-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.18); display: grid; place-items: center; flex-shrink: 0; color: #fff; }
+    .severity-card-icon svg { width: 16px; height: 16px; }
+    .severity-card-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: #fff; }
+    .severity-card-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .severity-card-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
+    .severity-card-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); background: #fff; width: 0; }
+    .severity-card.animated .severity-card-bar-fill { width: 11.5%; }
+    .sev-critical-card.animated .severity-card-bar-fill { width: 11.5%; }
+    .sev-high-card.animated .severity-card-bar-fill { width: 36.5%; }
+    .sev-medium-card.animated .severity-card-bar-fill { width: 32.3%; }
+    .sev-low-card.animated .severity-card-bar-fill { width: 19.8%; }
+    .severity-card-pct { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.6); text-align: right; }
+
+    /* ── Product Table ────────────────────────────────────── */
+    .product-list-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .product-list-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border-subtle); }
+    .product-list-header-left { display: flex; align-items: center; gap: 12px; }
+    .product-list-header h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+    .product-list-count { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .product-search { display: flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-alt); min-width: 240px; }
+    .product-search svg { color: var(--muted); flex-shrink: 0; }
+    .product-search input { border: none; background: transparent; font-size: 13px; color: var(--fg); font-family: var(--font-body); outline: none; width: 100%; }
+    .product-search input::placeholder { color: var(--muted); }
+    .product-search-clear { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--border); color: var(--fg-secondary); cursor: pointer; flex-shrink: 0; }
+    .product-table-header { display: grid; grid-template-columns: 1.5fr 1fr 80px 80px 120px 80px; padding: 12px 24px; border-bottom: 1px solid var(--border-subtle); }
+    .product-table-header > span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .product-row { display: grid; grid-template-columns: 1.5fr 1fr 80px 80px 120px 80px; padding: 14px 24px; align-items: center; border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
+    .product-row:last-of-type { border-bottom: none; }
+    .product-row:hover { background: var(--surface-alt); }
+    .product-name { display: flex; align-items: center; gap: 0; }
+    .product-text { font-size: 13px; font-weight: 600; color: var(--fg); }
+    .product-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .product-vendor { font-size: 13px; color: var(--fg-secondary); }
+    .product-cve-count { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-description { font-size: 12px; color: var(--fg-secondary); line-height: 1.4; }
+    .product-solution { font-size: 12px; color: var(--fg-secondary); }
+    .product-exploitability { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-updated { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .product-client-usage { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: center; }
+    .product-monitoring { display: flex; align-items: center; justify-content: center; }
+
+    /* Toggle Switch */
+    .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 22px; transition: background var(--transition-fast); }
+    .toggle-slider::before { content: ''; position: absolute; left: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform var(--transition-fast); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    /* ── Search Bar (outside card) ──────────────────────────── */
+    .pw-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+    .pw-search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      flex: 1;
+      transition: all var(--transition-fast);
+    }
+    .pw-search-input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1,103,255,0.08);
+    }
+    .pw-search-input-wrap svg { color: var(--muted); flex-shrink: 0; }
+    .pw-search-input-wrap input {
+      border: none; background: transparent; font-size: 13px;
+      color: var(--fg); font-family: var(--font-body); outline: none; width: 100%;
+    }
+    .pw-search-input-wrap input::placeholder { color: var(--muted); }
+    .pw-search-clear {
+      display: flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%; border: none;
+      background: var(--border); color: var(--fg-secondary); cursor: pointer;
+      flex-shrink: 0;
+    }
+    .pw-filter-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); font-size: 13px; font-weight: 500;
+      color: var(--fg-secondary); cursor: pointer; transition: all var(--transition-fast);
+      font-family: var(--font-body); white-space: nowrap;
+    }
+    .pw-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pw-filter-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .pw-filter-btn svg { width: 14px; height: 14px; }
+    .pw-filter-badge {
+      display: none; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+      align-items: center; justify-content: center; line-height: 1;
+    }
+    .pw-filter-badge.show { display: inline-flex; }
+    .pw-manage-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border: 1px solid var(--accent); border-radius: var(--radius-sm);
+      background: var(--accent-soft); font-size: 13px; font-weight: 500;
+      color: var(--accent); cursor: pointer; transition: all var(--transition-fast);
+      font-family: var(--font-body); white-space: nowrap;
+    }
+    .pw-manage-btn:hover { background: var(--accent); color: #fff; }
+    .pw-manage-btn svg { width: 14px; height: 14px; }
+
+    /* ── Manage Product Panel ────────────────────────────── */
+    .mp-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .mp-overlay.active { opacity: 1; pointer-events: auto; }
+    .mp-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+      cursor: pointer;
+    }
+    .mp-panel {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 900px; max-width: 90vw;
+      background: var(--bg); display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+    }
+    .mp-overlay.active .mp-panel { transform: translateX(0); }
+    .mp-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; justify-content: space-between;
+    }
+    .mp-header h2 { font-size: 18px; font-weight: 700; color: var(--fg); margin: 0 0 4px; font-family: var(--font-display); }
+    .mp-header p { font-size: 12px; color: var(--muted); margin: 0; }
+    .mp-close {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface);
+      display: grid; place-items: center; cursor: pointer; color: var(--fg-secondary);
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .mp-close:hover { background: var(--surface-alt); color: var(--fg); }
+    .mp-close svg { width: 14px; height: 14px; }
+    .mp-body { flex: 1; display: flex; overflow: hidden; }
+    .mp-vendors, .mp-products { display: flex; flex-direction: column; overflow: hidden; }
+    .mp-vendors { width: 45%; border-right: 1px solid var(--border); }
+    .mp-products { flex: 1; }
+    .mp-th {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; font-size: 11px; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      background: var(--surface-alt); border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .mp-rows { flex: 1; overflow-y: auto; }
+    .mp-row {
+      display: flex; align-items: center; padding: 10px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer; transition: background 0.12s;
+      font-size: 13px; color: var(--fg);
+    }
+    .mp-row:hover { background: var(--surface-alt); }
+    .mp-row.active { background: var(--accent-soft); color: var(--accent); }
+    .mp-row .vname { flex: 1; font-weight: 500; }
+    .mp-row .vcount { color: var(--muted); }
+    .mp-cb {
+      width: 16px; height: 16px; border: 1.5px solid var(--border);
+      border-radius: 3px; margin-right: 12px; flex-shrink: 0;
+      display: grid; place-items: center; cursor: pointer; transition: all 0.12s;
+      background: var(--surface);
+    }
+    .mp-cb.on { background: var(--accent); border-color: var(--accent); }
+    .mp-cb.on::after {
+      content: ''; width: 8px; height: 5px;
+      border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .mp-pinfo { display: flex; flex-direction: column; gap: 1px; }
+    .mp-pver { font-size: 11px; color: var(--muted); }
+    .mp-pname { font-size: 13px; color: var(--fg); }
+    .mp-footer {
+      padding: 12px 24px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+      background: var(--surface);
+    }
+    .mp-fbtn {
+      padding: 7px 16px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      font-family: var(--font-body); transition: all 0.12s; border: none;
+    }
+    .mp-fbtn.cancel { background: var(--surface); border: 1px solid var(--border); color: var(--fg); }
+    .mp-fbtn.cancel:hover { background: var(--surface-alt); }
+    .mp-fbtn.preview { background: var(--fg); color: var(--bg); display: flex; align-items: center; gap: 6px; }
+    .mp-fbtn.preview:hover { opacity: 0.85; }
+    .mp-fbtn.preview svg { width: 13px; height: 13px; }
+
+    /* ── Filter Popup ──────────────────────────────────────── */
+    .pw-filter-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,22,41,0.45);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: none; align-items: flex-start; justify-content: flex-end;
+      opacity: 0; transition: opacity 0.2s ease;
+    }
+    .pw-filter-popup-overlay.active { display: flex; opacity: 1; }
+    .pw-filter-popup {
+      position: absolute; top: 0; right: 0;
+      width: 380px; max-width: 92vw; height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 32px rgba(15,22,41,0.12);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .pw-filter-popup-overlay.active .pw-filter-popup { transform: translateX(0); }
+    .pw-filter-popup-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border-subtle);
+    }
+    .pw-filter-popup-title {
+      font: 700 18px/1.2 var(--font-display); color: var(--fg); letter-spacing: -0.02em;
+    }
+    .pw-filter-popup-close {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface-alt);
+      display: grid; place-items: center; cursor: pointer;
+      color: var(--muted); transition: all var(--transition-fast);
+    }
+    .pw-filter-popup-close:hover { background: var(--border); color: var(--fg); }
+    .pw-filter-popup-close svg { width: 16px; height: 16px; }
+    .pw-filter-popup-body {
+      flex: 1; overflow-y: auto; padding: 20px 24px;
+    }
+    .pw-filter-field { margin-bottom: 24px; }
+    .pw-filter-field:last-child { margin-bottom: 0; }
+    .pw-filter-label {
+      font: 600 13px/1.3 var(--font-body); color: var(--fg);
+      margin-bottom: 8px; display: block;
+    }
+    .pw-filter-select {
+      width: 100%; padding: 9px 36px 9px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font: 400 13px/1.4 var(--font-body); color: var(--fg);
+      background: var(--surface);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      cursor: pointer; outline: none; transition: all var(--transition-fast);
+    }
+    .pw-filter-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(1,103,255,0.08); }
+
+    /* Date Picker */
+    .pw-date-input {
+      width: 100%; padding: 9px 36px 9px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font: 400 13px/1.4 var(--font-body); color: var(--fg);
+      background: var(--surface); outline: none; cursor: pointer;
+      transition: all var(--transition-fast);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    .pw-date-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(1,103,255,0.08); }
+    .pw-date-input::placeholder { color: var(--muted); }
+    .pw-calendar-dropdown {
+      display: none; margin-top: 6px; padding: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+    }
+    .pw-calendar-dropdown.open { display: block; }
+    .pw-calendar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .pw-calendar-title {
+      font: 600 13px/1 var(--font-display); color: var(--fg);
+    }
+    .pw-calendar-nav {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); display: grid; place-items: center;
+      cursor: pointer; color: var(--muted); transition: all var(--transition-fast);
+    }
+    .pw-calendar-nav:hover { background: var(--surface-alt); color: var(--fg); }
+    .pw-calendar-nav svg { width: 14px; height: 14px; }
+    .pw-calendar-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 4px;
+    }
+    .pw-calendar-weekdays span {
+      text-align: center; font: 600 11px/1 var(--font-body);
+      color: var(--muted); padding: 4px 0; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .pw-calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .pw-calendar-day {
+      text-align: center; padding: 6px 0; font: 400 13px/1 var(--font-body);
+      color: var(--fg); border-radius: 6px; cursor: pointer;
+      transition: all var(--transition-fast); border: none; background: transparent;
+    }
+    .pw-calendar-day:hover { background: var(--surface-alt); }
+    .pw-calendar-day.today { font-weight: 600; color: var(--accent); }
+    .pw-calendar-day.selected { background: var(--accent); color: #fff; }
+    .pw-calendar-day.other-month { color: var(--muted); opacity: 0.4; }
+    .pw-calendar-day.disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+    .pw-date-range-display {
+      font: 400 13px/1 var(--font-body); color: var(--fg);
+      padding: 8px 12px; background: var(--surface-alt);
+      border-radius: var(--radius-sm); margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+    .pw-date-range-display.empty { color: var(--muted); }
+    .pw-date-quick-options {
+      display: flex; gap: 6px; margin-top: 10px;
+    }
+    .pw-date-quick-btn {
+      padding: 6px 12px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--surface);
+      font: 500 12px/1 var(--font-body); color: var(--fg-secondary);
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .pw-date-quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pw-date-quick-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+    .pw-filter-popup-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      padding: 16px 24px; border-top: 1px solid var(--border-subtle);
+    }
+    .pw-filter-popup-btn {
+      padding: 9px 18px; border-radius: var(--radius-sm);
+      font: 500 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all var(--transition-fast);
+    }
+    .pw-filter-popup-btn.secondary {
+      background: var(--surface-alt); color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .pw-filter-popup-btn.secondary:hover { background: var(--border); }
+    .pw-filter-popup-btn.primary {
+      background: var(--accent); color: #fff;
+    }
+    .pw-filter-popup-btn.primary:hover { background: var(--accent-hover); }
+
+    .pw-filter-empty {
+      display: none; text-align: center; padding: 48px 24px;
+      color: var(--muted); font-size: 13px;
+    }
+    .pw-filter-empty.show { display: block; }
+    .pw-calendar-day.in-range { background: rgba(1,103,255,0.1); color: var(--fg); }
+
+    /* ── Pagination ────────────────────────────────────────── */
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-top: 1px solid var(--border-subtle); }
+    .pagination-info { font-size: 12px; color: var(--muted); }
+    .pagination-info strong { font-weight: 600; color: var(--fg-secondary); }
+    .pagination-controls { display: flex; align-items: center; gap: 4px; }
+    .pagination-btn { width: 32px; height: 32px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--fg-secondary); font-size: 13px; font-weight: 500; cursor: pointer; display: grid; place-items: center; transition: all var(--transition-fast); }
+    .pagination-btn:hover:not([disabled]) { background: var(--surface-alt); border-color: var(--accent); color: var(--accent); }
+    .pagination-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .pagination-btn[disabled] { opacity: 0.4; cursor: default; }
+
+    
+    /* Theme toggle */
+    .sidebar-theme-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+    }
+    .sidebar-theme-toggle.active { background: var(--accent); }
+    .sidebar-theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .sidebar-theme-toggle.active::after { transform: translateX(16px); }
+
+    /* Language pills */
+    .sidebar-lang-pills {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .sidebar-lang-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sidebar-lang-pill.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Avatar */
+    .sidebar-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .sidebar-avatar-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .sidebar-avatar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-avatar-role {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    /* ── Main Container ────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      width: calc(100% - 240px);
+      padding: 20px 40px 40px;
+      transition: margin-left 0.22s cubic-bezier(0.16, 1, 0.3, 1), width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Sidebar collapsed — only 60px visible */
+    .sidebar.collapsed {
+      width: 60px;
+    }
+    .sidebar.collapsed ~ .main {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .sidebar-tab span:not(.sidebar-badge),
+    .sidebar.collapsed .sidebar-tab span[data-en],
+    .sidebar.collapsed .sidebar-tab span[data-vi],
+    .sidebar.collapsed .sidebar-bottom-item span,
+    .sidebar.collapsed .sidebar-bottom-item .bottom-right,
+    .sidebar.collapsed .sidebar-avatar-info,
+    .sidebar.collapsed .sidebar-lang,
+        .sidebar.collapsed .sidebar-spacer,
+    .sidebar.collapsed .sidebar-search {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-tab {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-bottom-item {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding: 16px 0 14px;
+    }
+    @media (max-width: 1200px) {
+      .main { margin-left: 240px; width: calc(100% - 240px); padding: 16px 20px 32px; }
+      .severity-cards { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .severity-card { padding: 12px 12px 10px; gap: 6px; }
+      .severity-card-value { font-size: 20px; }
+      .severity-card-icon { width: 28px; height: 28px; border-radius: 6px; }
+      .severity-card-icon svg { width: 14px; height: 14px; }
+      .severity-card-label { font-size: 10px; }
+      .product-table-header, .product-row { grid-template-columns: 1.5fr 1fr 80px 1.2fr 1fr 100px 120px; }
+    }
+                @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+      }
+      .sidebar .sidebar-brand-text,
+      .sidebar .sidebar-tab span:not(.sidebar-badge),
+      .sidebar .sidebar-tab span[data-en],
+      .sidebar .sidebar-tab span[data-vi],
+      .sidebar .sidebar-bottom-item span,
+      .sidebar .sidebar-bottom-item .bottom-right,
+      .sidebar .sidebar-lang,
+      
+      .sidebar .sidebar-spacer {
+        display: none;
+      }
+      .sidebar .sidebar-tab {
+        justify-content: center;
+        padding: 0;
+      }
+      .sidebar .sidebar-bottom-item {
+        justify-content: center;
+        padding: 0;
+      }
+      .sidebar .sidebar-brand {
+        justify-content: center;
+        padding: 16px 0 14px;
+      }
+
+      .sidebar .sidebar-toggle-btn { display: none; }
+      .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }
+      .severity-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .severity-card { padding: 12px 10px; gap: 6px; }
+      .severity-card-value { font-size: 18px; }
+      .severity-card-icon { width: 26px; height: 26px; }
+    }
+
+    @media (max-width: 480px) {
+      .main { padding: 12px 12px 32px; }
+      .vuln-summary-card { padding: 18px 16px; gap: 14px; }
+      .vuln-summary-value { font-size: 28px; }
+      .vuln-summary-meta { display: none; }
+      .severity-cards { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .severity-card { padding: 10px 10px; gap: 5px; }
+      .product-table-header, .product-row { grid-template-columns: 1fr 60px; }
+      .product-table-header > *:nth-child(3), .product-row > *:nth-child(3) { display: none; }
+      .product-table-header > *:nth-child(5), .product-row > *:nth-child(5) { display: none; }
+    }
+  
+    /* ── PW Detail Screen ──────────────────────────────────── */
+    #pw-detail-screen { display: none; }
+    #pw-detail-screen.active { display: block; }
+    #pw-grid-screen.hidden { display: none; }
+
+    .pw-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .pw-detail-back {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--fg-secondary);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .pw-detail-back:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .pw-detail-back svg { width: 16px; height: 16px; }
+
+    .pw-detail-title-wrap { flex: 1; }
+    .pw-detail-product-name {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--fg);
+      margin: 0;
+    }
+    .pw-detail-product-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pw-detail-product-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .pw-detail-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .pw-detail-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pw-detail-stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pw-detail-stat-icon svg { width: 18px; height: 18px; }
+    .pw-detail-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--fg);
+      line-height: 1.1;
+    }
+    .pw-detail-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .pw-detail-table-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .pw-detail-table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .pw-detail-table-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .pw-detail-table-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pw-detail-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pw-detail-table thead th {
+      text-align: left;
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+      white-space: nowrap;
+    }
+    .pw-detail-table tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background var(--transition-fast);
+    }
+    .pw-detail-table tbody tr:last-child { border-bottom: none; }
+    .pw-detail-table tbody tr:hover { background: var(--surface-alt); }
+    .pw-detail-table tbody td {
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--fg);
+      vertical-align: middle;
+    }
+
+    .pw-sev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pw-sev-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .pw-sev-badge.high { background: var(--high-soft); color: var(--high); }
+    .pw-sev-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .pw-sev-badge.low { background: var(--low-soft); color: var(--low); }
+
+    .pw-sev-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .pw-sev-badge.critical .pw-sev-dot { background: var(--critical); }
+    .pw-sev-badge.high .pw-sev-dot { background: var(--high); }
+    .pw-sev-badge.medium .pw-sev-dot { background: var(--amber); }
+    .pw-sev-badge.low .pw-sev-dot { background: var(--low); }
+
+    .pw-cvss-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .pw-cvss-badge.critical { background: var(--critical-soft); color: var(--critical); }
+    .pw-cvss-badge.high { background: var(--high-soft); color: var(--high); }
+    .pw-cvss-badge.medium { background: var(--amber-soft); color: var(--amber); }
+    .pw-cvss-badge.low { background: var(--low-soft); color: var(--low); }
+
+    .pw-cve-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .pw-cve-link:hover { text-decoration: underline; }
+
+    .pw-cwe-tag {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: var(--surface-alt);
+      color: var(--fg-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* ── CVE Detail Popup ─────────────────────────────────── */
+    .pw-vuln-modal-overlay {
+      display: block; position: fixed; inset: 0; z-index: 9998;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .pw-vuln-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .pw-vuln-modal-backdrop {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,22,41,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      cursor: pointer;
+    }
+    .pw-vuln-modal {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 580px; z-index: 10000;
+      background: var(--bg); border-left: 1px solid var(--border);
+      box-shadow: -8px 0 32px rgba(15,22,41,0.12);
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+      display: flex; flex-direction: column; overflow: hidden;
+      border-radius: 0; max-height: none;
+    }
+    .pw-vuln-modal-overlay.active .pw-vuln-modal { transform: translateX(0); }
+    .pw-vuln-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+    }
+    .pw-vuln-modal-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .pw-vuln-modal-cve {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+    .pw-vuln-modal-cwe {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pw-vuln-modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    .pw-vuln-modal-close:hover {
+      background: var(--surface-alt);
+      color: var(--fg);
+    }
+    .pw-vuln-modal-close svg { width: 14px; height: 14px; }
+    .pw-vuln-modal-body {
+      padding: 0 24px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .pw-vuln-modal-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .pw-vuln-modal-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pw-vuln-modal-chip.severity {
+      background: var(--critical-soft);
+      color: var(--critical);
+    }
+    .pw-vuln-modal-chip.severity.high {
+      background: var(--high-soft);
+      color: var(--high);
+    }
+    .pw-vuln-modal-chip.severity.medium {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+    .pw-vuln-modal-chip.severity.low {
+      background: var(--low-soft);
+      color: var(--low);
+    }
+    .pw-vuln-modal-chip.cvss {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+    .pw-vuln-modal-chip.updated {
+      background: var(--surface-alt);
+      color: var(--fg-secondary);
+    }
+    .pw-vuln-modal-section {
+      margin-bottom: 16px;
+    }
+    .pw-vuln-modal-section:last-child { margin-bottom: 0; }
+    .pw-vuln-modal-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .pw-vuln-modal-section-content {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--fg-secondary);
+    }
+    .pw-vuln-modal-section-content ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .pw-vuln-modal-section-content li {
+      margin-bottom: 4px;
+    }
+    .pw-vuln-modal-section-content a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .pw-vuln-modal-section-content a:hover { text-decoration: underline; }
+
+    @media (max-width: 1200px) {
+      .pw-detail-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .pw-detail-summary { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .pw-detail-table thead th,
+      .pw-detail-table tbody td { padding: 8px 12px; font-size: 12px; }
+      .pw-detail-product-name { font-size: 16px; }
+      .pw-vuln-modal { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .pw-detail-summary { grid-template-columns: 1fr; }
+    }
+
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+        .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 95%; max-width: 1200px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: #e0f2fe; color: #0369a1; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(4) .pricing-badge { background: #fef3c7; color: #92400e; }
+    .pricing-card:nth-child(5) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 32px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
+      /* Dark mode */
+      body.dark-mode {
+        --bg: #0d1117;
+        --bg-wash: #0a0d14;
+        --surface: #161b22;
+        --surface-raised: #1c2129;
+        --surface-alt: #12161e;
+        --fg: #e6edf3;
+        --fg-secondary: #8b949e;
+        --muted: #484f58;
+        --border: #30363d;
+        --border-subtle: #21262d;
+        --accent-soft: rgba(1,103,255,0.15);
+        --accent-hover: #388bfd;
+        --teal: #39d2c0;
+        --teal-soft: rgba(57,210,192,0.15);
+        --amber: #f0883e;
+        --amber-soft: rgba(240,136,62,0.15);
+        --critical: #f85149;
+        --critical-soft: rgba(248,81,73,0.15);
+        --high: #f0883e;
+        --high-soft: rgba(240,136,62,0.15);
+        --medium: #d29922;
+        --medium-soft: rgba(210,153,34,0.15);
+        --low: #3fb950;
+        --low-soft: rgba(63,185,80,0.15);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        color-scheme: dark;
+      }
+      body.dark-mode .sidebar {
+        background: #0d1117;
+        border-right-color: #21262d;
+      }
+      body.dark-mode .sidebar-bottom-item:hover,
+      body.dark-mode .sidebar-tab:hover,
+      body.dark-mode .sidebar-tab.active {
+        background: rgba(255,255,255,0.06);
+      }
+      body.dark-mode .sidebar-nav-label { color: #484f58; }
+      body.dark-mode .card, body.dark-mode .bento-card, body.dark-mode .metric-card {
+        background: var(--surface);
+        border-color: var(--border);
+      }
+      body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-value, body.dark-mode .bento-title, body.dark-mode .card-title {
+        color: var(--fg);
+      }
+      body.dark-mode table { background: var(--surface); }
+      body.dark-mode th { background: var(--surface-alt); color: var(--fg-secondary); border-color: var(--border); }
+      body.dark-mode td { border-color: var(--border-subtle); color: var(--fg); }
+      body.dark-mode tr:hover td { background: rgba(255,255,255,0.03); }
+      body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .subpage, body.dark-mode .popup { background: var(--bg); }
+      body.dark-mode .chat-container, body.dark-mode .search-container { background: var(--surface); }
+      body.dark-mode .toggle-slider { background: var(--surface-alt); }
+      body.dark-mode .toggle-slider::before { background: #e6edf3; }
+      body.dark-mode .hero-card { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon { color: #93c5fd; }
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon { color: #5eead4; }
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon { color: #c4b5fd; }
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #f9a8d4; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+      /* ── Contact Us Modal ─────────────────────────────────── */
+      .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .contact-modal-overlay.active { opacity: 1; pointer-events: auto; }
+      .contact-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-modal-overlay.active .contact-modal { transform: translateY(0) scale(1); }
+      .contact-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-alt);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .contact-modal-close:hover { background: var(--border); }
+      .contact-modal-close svg { width: 16px; height: 16px; color: var(--muted); }
+      .contact-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        margin-bottom: 16px;
+      }
+      .contact-modal-icon.mail { background: var(--accent-soft); color: var(--accent); }
+      .contact-modal-icon svg { width: 24px; height: 24px; }
+      .contact-modal-title {
+        font: 700 22px/1.2 var(--font-display);
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-desc {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .contact-modal-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .contact-modal-plan-label {
+        font: 500 12px/1 var(--font-body);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .contact-modal-plan-tag {
+        font: 600 13px/1 var(--font-display);
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(1,103,255,0.15);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+      .contact-modal-field { margin-bottom: 14px; }
+      .contact-modal-label {
+        display: block;
+        font: 500 12px/1.4 var(--font-body);
+        color: var(--fg-secondary);
+        margin-bottom: 5px;
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-input,
+      .contact-modal-select,
+      .contact-modal-textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font: 400 14px/1.4 var(--font-body);
+        color: var(--fg);
+        background: var(--surface);
+        transition: all var(--transition-fast);
+        outline: none;
+      }
+      .contact-modal-input:focus,
+      .contact-modal-select:focus,
+      .contact-modal-textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .contact-modal-input::placeholder,
+      .contact-modal-textarea::placeholder { color: var(--muted); }
+      .contact-modal-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+      }
+      .contact-modal-textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 160px;
+      }
+      .contact-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .contact-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .contact-modal-btn {
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        font: 500 13px/1 var(--font-body);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .contact-modal-btn-primary:hover { background: var(--accent-hover); }
+      .contact-modal-btn-secondary {
+        background: var(--surface-alt);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .contact-modal-btn-secondary:hover { background: var(--border); }
+      .contact-modal-success {
+        display: none;
+        text-align: center;
+        padding: 20px 0 8px;
+      }
+      .contact-modal-success.active { display: block; }
+      .contact-modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(22,163,74,0.1);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 14px;
+      }
+      .contact-modal-success-icon svg { width: 28px; height: 28px; color: #16a34a; }
+      .contact-modal-success h3 {
+        font: 700 18px/1.3 var(--font-display);
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-success p {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+      }
+      body.dark-mode .contact-modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .contact-modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .contact-modal-input,
+      body.dark-mode .contact-modal-select,
+      body.dark-mode .contact-modal-textarea { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .contact-modal-input:focus,
+      body.dark-mode .contact-modal-select:focus,
+      body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
+      body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+      /* ── Filter Popup Dark Mode ──────────────────────────── */
+      body.dark-mode .pw-search-input-wrap { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-search-input-wrap:focus-within { background: var(--bg); }
+      body.dark-mode .pw-filter-btn { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+      body.dark-mode .pw-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+      body.dark-mode .pw-filter-popup { background: var(--surface); border-left-color: var(--border); }
+      body.dark-mode .pw-filter-popup-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-filter-select { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-filter-select:focus { background: var(--bg); }
+      body.dark-mode .pw-date-input { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-date-input:focus { background: var(--bg); }
+      body.dark-mode .pw-calendar-dropdown { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .pw-calendar-nav { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .pw-calendar-day:hover { background: rgba(255,255,255,0.06); }
+      body.dark-mode .pw-date-range-display { background: var(--surface-alt); border-color: var(--border-subtle); color: var(--fg); }
+      body.dark-mode .pw-date-quick-btn { background: var(--surface-alt); border-color: var(--border); color: var(--fg-secondary); }
+      body.dark-mode .pw-filter-popup-btn.secondary { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .pw-filter-popup-overlay { background: rgba(0,0,0,0.6); }
+      body.dark-mode .pw-filter-empty { color: var(--muted); }
+      body.dark-mode .pw-vuln-modal-overlay { background: none; }
+      body.dark-mode .pw-vuln-modal-backdrop { background: rgba(0,0,0,0.6); }
+      body.dark-mode .pw-calendar-day.in-range { background: rgba(1,103,255,0.2); }
+      /* ── Manage Product Dark Mode ─────────────────────── */
+      body.dark-mode .mp-panel { background: var(--surface); }
+      body.dark-mode .mp-panel { background: var(--surface); }
+      body.dark-mode .mp-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .mp-footer { background: var(--surface); }
+      body.dark-mode .mp-fbtn.cancel { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+
+  </style>
+</head>
+<body>
+<script>if(localStorage.getItem("gs-theme")==="dark"){document.body.classList.add("dark-mode");document.addEventListener("DOMContentLoaded",function(){var t=document.getElementById("themeToggle");if(t)t.classList.add("active")})}</script>
+<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.addEventListener("DOMContentLoaded",function(){var s=document.getElementById("sidebar");if(s)s.classList.add("collapsed")})}</script>
+
+  <!-- TOP NAV -->
+  <nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">GS</div>
+    <div class="sidebar-brand-text">G-SKY<span>WATCH</span></div>
+    <button class="sidebar-toggle-btn" onclick="var sb=document.getElementById('sidebar'); sb.classList.toggle('collapsed'); localStorage.setItem('gs-sidebar-v2', sb.classList.contains('collapsed') ? '1' : '0');" title="Toggle sidebar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+
+  <!-- Quick Search -->
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-search">
+    <div class="sidebar-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="sidebar-search-input" placeholder="Quick search" data-vi-placeholder="Tìm kiếm nhanh">
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-nav">
+    <a href="index-v2.html" class="sidebar-tab" data-en="Overview" data-vi="Tổng quan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span data-en="Overview" data-vi="Tổng quan">Overview <span class="sidebar-badge">23</span></span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Assets" data-vi="Tài sản">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span data-en="Assets" data-vi="Tài sản">Assets</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Sky Assistant" data-vi="Trợ lý Sky">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span data-en="Sky Assistant" data-vi="Trợ lý Sky">Sky Assistant</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Report" data-vi="Báo cáo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span data-en="Report" data-vi="Báo cáo">Report</span>
+    </a>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="nav-section-label" data-en="Features" data-vi="Tính năng">Features</div>
+
+    <a href="#" class="sidebar-tab" data-en="Threat Map" data-vi="Bản đồ đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span data-en="Threat Map" data-vi="Bản đồ đe dọa">Threat Map</span>
+    </a>
+    <a href="feature-uptime-monitoring.html" class="sidebar-tab" data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">Uptime Monitoring</span>
+    </a>
+    <a href="feature-brand-protection.html" class="sidebar-tab" data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</span>
+    </a>
+    <a href="feature-vulnerability-management.html" class="sidebar-tab" data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">Vulnerability Management</span>
+    </a>
+    <a href="feature-product-weakness.html" class="sidebar-tab active" data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</span>
+    </a>
+    <a href="feature-threat-investigation.html" class="sidebar-tab" data-en="Threat Investigation" data-vi="Điều tra đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span data-en="Threat Investigation" data-vi="Điều tra đe dọa">Threat Investigation</span>
+    </a>
+    <a href="feature-data-breach-monitoring.html" class="sidebar-tab" data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">Data Breach Monitoring</span>
+    </a>
+    <a href="feature-botnet-detection.html" class="sidebar-tab" data-en="Botnet Detection" data-vi="Phát hiện Botnet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span data-en="Botnet Detection" data-vi="Phát hiện Botnet">Botnet Detection</span>
+    </a>
+    <a href="feature-threat-intel-feeds.html" class="sidebar-tab" data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+      <span data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">Threat Intel Feeds</span>
+    </a>
+    <a href="feature-threat-actor-intelligence.html" class="sidebar-tab" data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">Threat Actor Intelligence</span>
+    </a>
+    <a href="feature-malware-intelligence.html" class="sidebar-tab" data-en="Malware Intelligence" data-vi="Tình báo mã độc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Malware Intelligence" data-vi="Tình báo mã độc">Malware Intelligence</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <!-- Upgrade Card -->
+  <div class="sidebar-upgrade">
+    <div class="sidebar-upgrade-header">
+      <div class="sidebar-upgrade-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </div>
+      <div class="sidebar-upgrade-label">
+        <span data-en="Current plan:" data-vi="Gói hiện tại:">Current plan:</span>
+        <strong data-en="Pro trial" data-vi="Dùng thử Pro">Pro trial</strong>
+      </div>
+    </div>
+    <div class="sidebar-upgrade-desc" data-en="Upgrade to Pro to get the latest and exclusive features" data-vi="Nâng cấp Pro để nhận các tính năng mới nhất và độc quyền">Upgrade to Pro to get the latest and exclusive features</div>
+    <a href="#" class="sidebar-upgrade-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span data-en="Upgrade to Pro" data-vi="Nâng cấp Pro">Upgrade to Pro</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <div class="sidebar-bottom">
+    <a href="settings.html" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span data-en="Settings" data-vi="Cài đặt">Settings</span>
+    </a>
+    <a href="https://skywatch.gcsc.vn/" target="_blank" rel="noopener" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span data-en="Help" data-vi="Trợ giúp">Help</span>
+    </a>
+    <div class="sidebar-bottom-item" style="cursor:default;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span data-en="Theme" data-vi="Giao diện">Theme</span>
+      <div class="bottom-right sidebar-bottom-right">
+        <button class="sidebar-theme-toggle" id="themeToggle" aria-label="Toggle theme" onclick="this.classList.toggle('active');document.body.classList.toggle('dark-mode');localStorage.setItem('gs-theme',document.body.classList.contains('dark-mode')?'dark':'light')"></button>
+      </div>
+    </div>
+    <div class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      <span data-en="Language" data-vi="Ngôn ngữ">Language</span>
+      <div class="bottom-right sidebar-bottom-right">
+        <div class="sidebar-lang-pills">
+          <button class="sidebar-lang-pill active" data-lang="en">EN</button>
+          <button class="sidebar-lang-pill" data-lang="vi">VI</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-divider sidebar-divider--full"></div>
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
+      <div class="sidebar-avatar">B</div>
+      <div class="sidebar-avatar-info">
+        <div class="sidebar-avatar-name">Brooklyn</div>
+        <div class="sidebar-avatar-role">Admin</div>
+      </div>
+    </a>
+  </div>
+</nav>
+
+  <main class="main">
+  <div id="pw-grid-screen">
+    <div class="page-header reveal">
+      <div class="page-header-left">
+        <h1 data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</h1>
+        <p data-en="Monitor and track known vulnerabilities across your product dependencies and third-party components" data-vi="Giám sát và theo dõi các lỗ hổng đã biết qua phụ thuộc sản phẩm và thành phần bên thứ ba">Monitor and track known vulnerabilities across your product dependencies and third-party components</p>
+      </div>
+
+    </div>
+
+    <!-- TOTAL CARD -->
+    <div class="vuln-summary reveal reveal-delay-1">
+      <div class="vuln-summary-card">
+        <div class="vuln-summary-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div>
+          <div class="vuln-summary-value">96</div>
+          <div class="vuln-summary-label" data-en="Total Product Weaknesses" data-vi="Tổng điểm yếu sản phẩm">Total Product Weaknesses</div>
+        </div>
+        <div class="vuln-summary-meta">
+          <div class="vuln-summary-meta-value">+12</div>
+          <div class="vuln-summary-meta-label" data-en="from last scan" data-vi="so với lần quét trước">from last scan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEVERITY CARDS -->
+    <div class="severity-cards reveal reveal-delay-2">
+      <div class="severity-card sev-critical-card">
+        <div class="severity-card-top">
+          <div class="severity-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="severity-card-value">11</div>
+        </div>
+        <div class="severity-card-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+        <div class="severity-card-bar"><div class="severity-card-bar-fill"></div></div>
+        <div class="severity-card-pct">11.5%</div>
+      </div>
+      <div class="severity-card sev-high-card">
+        <div class="severity-card-top">
+          <div class="severity-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="severity-card-value">35</div>
+        </div>
+        <div class="severity-card-label" data-en="High" data-vi="Cao">High</div>
+        <div class="severity-card-bar"><div class="severity-card-bar-fill"></div></div>
+        <div class="severity-card-pct">36.5%</div>
+      </div>
+      <div class="severity-card sev-medium-card">
+        <div class="severity-card-top">
+          <div class="severity-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+          <div class="severity-card-value">31</div>
+        </div>
+        <div class="severity-card-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+        <div class="severity-card-bar"><div class="severity-card-bar-fill"></div></div>
+        <div class="severity-card-pct">32.3%</div>
+      </div>
+      <div class="severity-card sev-low-card">
+        <div class="severity-card-top">
+          <div class="severity-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="severity-card-value">19</div>
+        </div>
+        <div class="severity-card-label" data-en="Low" data-vi="Thấp">Low</div>
+        <div class="severity-card-bar"><div class="severity-card-bar-fill"></div></div>
+        <div class="severity-card-pct">19.8%</div>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="pw-search-bar reveal reveal-delay-3">
+      <div class="pw-search-input-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="productSearchInput" placeholder="Search products..." data-en-placeholder="Search products..." data-vi-placeholder="Tìm sản phẩm...">
+        <button class="pw-search-clear" id="productSearchClear" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="pw-filter-btn" id="pwFilterBtn" onclick="document.getElementById('pwFilterOverlay').classList.add('active')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+        <span data-en="Filter" data-vi="Lọc">Filter</span>
+        <span class="pw-filter-badge" id="pwFilterBadge">0</span>
+      </button>
+      <button class="pw-manage-btn" id="pwManageBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span data-en="Manage product" data-vi="Quản lý sản phẩm">Manage product</span>
+      </button>
+    </div>
+
+    <!-- PRODUCT TABLE -->
+    <div class="product-list-section reveal reveal-delay-3">
+      <div class="product-list-header">
+        <div class="product-list-header-left">
+          <h3 data-en="Product Weaknesses" data-vi="Điểm yếu sản phẩm">Product Weaknesses</h3>
+          <span class="product-list-count" id="pwProductCount">96 <span data-en="products" data-vi="sản phẩm">products</span></span>
+        </div>
+      </div>
+      <div class="product-table-header">
+        <span data-en="Product" data-vi="Sản phẩm">Product</span>
+        <span data-en="Vendor" data-vi="Nhà cung cấp">Vendor</span>
+        <span data-en="No. of CVE" data-vi="Số CVE">No. of CVE</span>
+        <span data-en="Client usage count" data-vi="Số lần sử dụng">Client usage count</span>
+        <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
+        <span data-en="Monitoring" data-vi="Giám sát">Monitoring</span>
+      </div>
+
+      <div id="pw-product-rows">
+      <div class="product-row" data-searchable="205_firmware qualcomm" data-vendor="qualcomm" data-date="2026-06-12">
+        <div class="product-name"><div class="product-text">205_firmware</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">12/06/2026 10:29:55</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="205 qualcomm" data-vendor="qualcomm" data-date="2026-06-12">
+        <div class="product-name"><div class="product-text">205</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--high);">2</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">12/06/2026 10:29:55</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="canon" data-vendor="canon" data-date="2026-06-09">
+        <div class="product-name"><div class="product-text">canon</div></div>
+        <div class="product-vendor">canon</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">09/06/2026 14:08:45</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="qualcomm" data-vendor="qualcomm" data-date="2026-06-08">
+        <div class="product-name"><div class="product-text">qualcomm</div></div>
+        <div class="product-vendor">qualcomm</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">08/06/2026 16:14:22</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="intel" data-vendor="intel" data-date="2026-06-08">
+        <div class="product-name"><div class="product-text">*</div></div>
+        <div class="product-vendor">intel</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">08/06/2026 14:01:11</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_desktop vmware" data-vendor="vmware" data-date="2025-09-16">
+        <div class="product-name"><div class="product-text">zimbra_desktop</div></div>
+        <div class="product-vendor">vmware</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synacor" data-vendor="synacor" data-date="2025-09-16">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">synacor</div>
+        <div class="product-cve-count" style="color:var(--critical);">8</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_suite zimbra" data-vendor="zimbra" data-date="2025-09-16">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">zimbra</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_suite synocor" data-vendor="synocor" data-date="2025-09-16">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_suite</div></div>
+        <div class="product-vendor">synocor</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="product-row" data-searchable="zimbra_collaboration_server synacor" data-vendor="synacor" data-date="2025-09-16">
+        <div class="product-name"><div class="product-text">zimbra_collaboration_server</div></div>
+        <div class="product-vendor">synacor</div>
+        <div class="product-cve-count" style="color:var(--fg-muted);">0</div>
+        <div class="product-client-usage" style="color:var(--fg-muted);">0</div>
+        <div class="product-updated">16/09/2025 23:27:53</div>
+        <div class="product-monitoring"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      </div>
+
+      <div class="pw-filter-empty" id="pwFilterEmpty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        <p data-en="No products match this filter" data-vi="Không sản phẩm nào khớp bộ lọc">No products match this filter</p>
+      </div>
+
+      <div class="pagination">
+        <span class="pagination-info">Rows per page: <strong>10</strong></span>
+        <div class="pagination-controls">
+          <button class="pagination-btn" disabled>&#8249;</button>
+          <button class="pagination-btn active">1</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">3</button>
+          <button class="pagination-btn">&#8250;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pw-detail-screen">
+    <div class="pw-detail-header">
+      <button class="pw-detail-back" onclick="closePWDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="pw-detail-title-wrap">
+        <h2 class="pw-detail-product-name" id="pwDetailProductName"></h2>
+        <div class="pw-detail-product-meta">
+          <span><strong data-en="Vendor:" data-vi="Nhà cung cấp:">Vendor:</strong> <span id="pwDetailVendor"></span></span>
+          <span><strong data-en="Last update:" data-vi="Cập nhật:">Last update:</strong> <span id="pwDetailLastUpdate"></span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pw-detail-summary" id="pwDetailSummary">
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--critical-soft);color:var(--critical);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailCritical">0</div>
+          <div class="pw-detail-stat-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--high-soft);color:var(--high);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailHigh">0</div>
+          <div class="pw-detail-stat-label" data-en="High" data-vi="Cao">High</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--amber-soft);color:var(--amber);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailMedium">0</div>
+          <div class="pw-detail-stat-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+        </div>
+      </div>
+      <div class="pw-detail-stat">
+        <div class="pw-detail-stat-icon" style="background:var(--low-soft);color:var(--low);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <div class="pw-detail-stat-value" id="pwDetailLow">0</div>
+          <div class="pw-detail-stat-label" data-en="Low" data-vi="Thấp">Low</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pw-detail-table-section">
+      <div class="pw-detail-table-header">
+        <div class="pw-detail-table-title" data-en="Vulnerability Details" data-vi="Chi tiết lỗ hổng">Vulnerability Details</div>
+        <div class="pw-detail-table-count" id="pwDetailTableCount">0 <span data-en="vulnerabilities" data-vi="lỗ hổng">vulnerabilities</span></div>
+      </div>
+      <table class="pw-detail-table">
+        <thead>
+          <tr>
+            <th data-en="Severity" data-vi="Mức độ">Severity</th>
+            <th data-en="CVSS (V3)" data-vi="CVSS (V3)">CVSS (V3)</th>
+            <th data-en="CVE" data-vi="CVE">CVE</th>
+            <th data-en="CWE" data-vi="CWE">CWE</th>
+            <th data-en="Last update" data-vi="Cập nhật lần cuối">Last update</th>
+          </tr>
+        </thead>
+        <tbody id="pwDetailTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  </main>
+
+  <script>
+  (function() {
+    /* CVE Detail Popup */
+    var pwVulnDetailData = {
+      'CVE-2025-48948': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-502',
+        desc: 'Deserialization of untrusted data in Oracle WebLogic Server allows remote attackers to execute arbitrary code via crafted serialized Java objects. This vulnerability exists within the T3/IIOP protocol handler and can be exploited without authentication.',
+        solution: 'Apply the vendor-supplied security patch immediately. Restrict network access to the WebLogic Administration Console and disable T3/IIOP protocols if not required.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48948', 'https://www.oracle.com/security-alerts/'],
+        scanDetail: 'Ports: 7001, 7002\nHosts: weblogic-01.internal\nProtocol: T3/IIOP'
+      },
+      'CVE-2025-48947': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-79',
+        desc: 'Stored cross-site scripting (XSS) vulnerability in Zimbra Collaboration Suite allows remote attackers to inject arbitrary HTML or JavaScript via the email body or calendar invite fields, potentially leading to session hijacking.',
+        solution: 'Upgrade to Zimbra Collaboration Suite 10.1.3 or later. Enable the built-in XSS protection filter in the admin console.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48947'],
+        scanDetail: 'Ports: 443, 8443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48946': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-89',
+        desc: 'SQL injection vulnerability in Zimbra Collaboration Suite allows unauthenticated remote attackers to execute arbitrary SQL commands through the SOAP interface, potentially leading to full database compromise.',
+        solution: 'Apply vendor patches immediately. Implement input validation and parameterized queries in custom integrations.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48946'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48945': {
+        severity: 'Critical', cvss: '9.1', cwe: 'CWE-22',
+        desc: 'Path traversal vulnerability in Zimbra Collaboration Suite allows authenticated attackers to read arbitrary files on the server via crafted URL parameters in the web client interface.',
+        solution: 'Update to the latest version. Restrict file system permissions for the Zimbra service account.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48945'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48944': {
+        severity: 'High', cvss: '8.8', cwe: 'CWE-287',
+        desc: 'Improper authentication in Zimbra Collaboration Suite allows remote attackers to bypass authentication checks and access administrative functions via a specially crafted request to the admin endpoint.',
+        solution: 'Apply the security update. Enable multi-factor authentication for admin accounts.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48944'],
+        scanDetail: 'Ports: 443, 7071\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48943': {
+        severity: 'High', cvss: '8.1', cwe: 'CWE-200',
+        desc: 'Information exposure vulnerability in Zimbra Collaboration Suite leaks internal server details including software versions and configuration paths to unauthenticated remote attackers via error pages.',
+        solution: 'Disable verbose error messages in production. Apply vendor patches to suppress sensitive information in error responses.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48943'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48940': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-532',
+        desc: 'Insertion of sensitive information into log files in Zimbra Collaboration Suite records user credentials and session tokens in plaintext within application log files, accessible to administrators.',
+        solution: 'Configure log filtering to redact sensitive fields. Restrict log file access permissions.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48940'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48939': {
+        severity: 'Medium', cvss: '6.1', cwe: 'CWE-352',
+        desc: 'Cross-site request forgery vulnerability in Zimbra Collaboration Suite allows attackers to perform unauthorized actions on behalf of authenticated users via crafted web requests.',
+        solution: 'Implement anti-CSRF tokens in all state-changing operations. Update to the patched version.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48939'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48938': {
+        severity: 'Low', cvss: '3.7', cwe: 'CWE-200',
+        desc: 'Minor information disclosure vulnerability in Zimbra Collaboration Suite exposes internal hostnames through HTTP response headers to authenticated users.',
+        solution: 'Update to the latest version. Remove or modify custom HTTP headers that expose internal information.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48938'],
+        scanDetail: 'Ports: 443\nHosts: mail-01.internal\nProtocol: HTTPS'
+      },
+      'CVE-2025-48942': {
+        severity: 'High', cvss: '7.5', cwe: 'CWE-306',
+        desc: 'Missing authentication for critical function in Qualcomm firmware allows local attackers to access restricted debugging interfaces without proper credentials, potentially enabling arbitrary code execution on the device.',
+        solution: 'Update device firmware to the latest version provided by the device manufacturer. Disable debug interfaces in production environments.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48942'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-48941': {
+        severity: 'High', cvss: '7.2', cwe: 'CWE-284',
+        desc: 'Improper access control in Qualcomm firmware allows local applications to access protected memory regions, potentially enabling privilege escalation from user space to kernel level.',
+        solution: 'Apply firmware update from the device vendor. Enable SELinux mandatory access control policies.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-48941'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-22458': {
+        severity: 'Critical', cvss: '10.0', cwe: 'CWE-89',
+        desc: 'Critical SQL injection vulnerability in Qualcomm firmware management interface allows unauthenticated remote attackers to execute arbitrary SQL commands through the device management API, potentially leading to complete device takeover.',
+        solution: 'Immediately update firmware to the patched version. Disable remote management interfaces if not required.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-22458'],
+        scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+      },
+      'CVE-2025-24970': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-20',
+        desc: 'Improper input validation in Qualcomm firmware allows remote attackers to send malformed packets that trigger buffer overflow conditions, enabling arbitrary code execution with root privileges.',
+        solution: 'Apply the vendor security patch. Implement network-level access controls to limit exposure.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24970'],
+        scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-50425': {
+        severity: 'Critical', cvss: '9.8', cwe: 'CWE-918',
+        desc: 'Server-side request forgery (SSRF) in Qualcomm firmware cloud sync module allows remote attackers to make arbitrary HTTP requests from the device to internal network resources, potentially accessing sensitive internal services.',
+        solution: 'Update firmware to the latest version. Restrict outbound network connections to known trusted endpoints only.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50425'],
+        scanDetail: 'Ports: 443, 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-50426': {
+        severity: 'High', cvss: '7.7', cwe: 'CWE-22',
+        desc: 'Path traversal vulnerability in Qualcomm firmware file management allows attackers to read and write files outside the intended directory using crafted file paths in the firmware update mechanism.',
+        solution: 'Apply firmware update. Implement strict path validation in the file management module.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-50426'],
+        scanDetail: 'Ports: 8443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-25195': {
+        severity: 'Medium', cvss: '5.4', cwe: 'CWE-287',
+        desc: 'Improper authentication in Qualcomm firmware management portal allows users to bypass multi-factor authentication requirements under specific race conditions during the login flow.',
+        solution: 'Update firmware to the patched version. Enforce sequential authentication step validation.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-25195'],
+        scanDetail: 'Ports: 443\nHosts: qualcomm-205-device\nProtocol: HTTPS'
+      },
+      'CVE-2025-52487': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-79',
+        desc: 'Reflected cross-site scripting (XSS) vulnerability in Qualcomm firmware web interface allows attackers to inject arbitrary JavaScript via the search parameter, which is reflected without proper sanitization.',
+        solution: 'Apply firmware update. Implement Content Security Policy (CSP) headers and input encoding.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52487'],
+        scanDetail: 'Ports: 8080\nHosts: qualcomm-205-device\nProtocol: HTTP'
+      },
+      'CVE-2025-24971': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-400',
+        desc: 'Uncontrolled resource consumption in Qualcomm firmware DNS resolution module allows remote attackers to cause denial of service by sending high volumes of DNS queries that trigger excessive memory allocation.',
+        solution: 'Update firmware to the patched version. Implement rate limiting on DNS resolution requests.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-24971'],
+        scanDetail: 'Ports: 53\nHosts: qualcomm-205-device\nProtocol: DNS'
+      },
+      'CVE-2025-36145': {
+        severity: 'Medium', cvss: '6.5', cwe: 'CWE-502',
+        desc: 'Deserialization of untrusted data in Qualcomm firmware configuration import feature allows local attackers to execute arbitrary code by importing a specially crafted configuration file.',
+        solution: 'Apply firmware update. Validate configuration file integrity before importing.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-36145'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      },
+      'CVE-2025-52198': {
+        severity: 'Low', cvss: '3.7', cwe: 'CWE-532',
+        desc: 'Insertion of sensitive information into log files in Qualcomm firmware debug module records device encryption keys in plaintext within system log files during debug mode operation.',
+        solution: 'Update firmware. Disable debug logging in production environments.',
+        refs: ['https://nvd.nist.gov/vuln/detail/CVE-2025-52198'],
+        scanDetail: 'Ports: N/A\nHosts: qualcomm-205-device\nProtocol: Local'
+      }
+    };
+
+    window.openPWVulnModal = function(cveId) {
+      var data = pwVulnDetailData[cveId];
+      if (!data) return;
+      var overlay = document.getElementById('pwVulnModal');
+      if (!overlay) return;
+      document.getElementById('pwVulnCveId').textContent = cveId;
+      document.getElementById('pwVulnCwe').textContent = data.cwe;
+      var sevClass = data.severity.toLowerCase();
+      var metaHtml = '<span class="pw-vuln-modal-chip severity ' + sevClass + '">' + data.severity + '</span>';
+      metaHtml += '<span class="pw-vuln-modal-chip cvss">CVSS: ' + data.cvss + '</span>';
+      metaHtml += '<span class="pw-vuln-modal-chip updated">' + cveId.split('-').slice(0,3).join('-') + '</span>';
+      document.getElementById('pwVulnMeta').innerHTML = metaHtml;
+      document.getElementById('pwVulnDesc').textContent = data.desc;
+      document.getElementById('pwVulnSolution').textContent = data.solution;
+      var refsHtml = '<ul>';
+      data.refs.forEach(function(r) { refsHtml += '<li><a href="' + r + '" target="_blank">' + r + '</a></li>'; });
+      refsHtml += '</ul>';
+      document.getElementById('pwVulnRefs').innerHTML = refsHtml;
+      var scanLines = data.scanDetail.split('\n');
+      var scanHtml = '';
+      scanLines.forEach(function(line) {
+        var parts = line.split(':');
+        if (parts.length >= 2) {
+          scanHtml += '<div style="display:flex;gap:8px;margin-bottom:4px;"><span style="font-weight:600;color:var(--fg);min-width:70px;">' + parts[0].trim() + ':</span><span>' + parts.slice(1).join(':').trim() + '</span></div>';
+        }
+      });
+      document.getElementById('pwVulnScanDetail').innerHTML = scanHtml;
+      overlay.classList.add('active');
+
+      // Bind close handlers here (elements exist now)
+      var closeBtn = document.getElementById('pwVulnClose');
+      if (closeBtn) {
+        closeBtn.onclick = function() { closePWVulnModal(); };
+      }
+      var backdrop = document.getElementById('pwVulnBackdrop');
+      if (backdrop) {
+        backdrop.onclick = function() { closePWVulnModal(); };
+      }
+    };
+
+    window.closePWVulnModal = function() {
+      var overlay = document.getElementById('pwVulnModal');
+      if (overlay) overlay.classList.remove('active');
+    };
+
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePWVulnModal(); });
+
+    /* Product Weakness Detail */
+    var pwCVEData = {
+      '205': [
+        { severity:'High', cvss:'7.5', cve:'CVE-2025-48942', cwe:'CWE-306', updated:'12/06/2026' },
+        { severity:'High', cvss:'7.2', cve:'CVE-2025-48941', cwe:'CWE-284', updated:'12/06/2026' }
+      ],
+      'zimbra_collaboration_suite_synacor': [
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48947', cwe:'CWE-79', updated:'16/09/2025' },
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48946', cwe:'CWE-89', updated:'16/09/2025' },
+        { severity:'Critical', cvss:'9.1', cve:'CVE-2025-48945', cwe:'CWE-22', updated:'16/09/2025' },
+        { severity:'High', cvss:'8.8', cve:'CVE-2025-48944', cwe:'CWE-287', updated:'16/09/2025' },
+        { severity:'High', cvss:'8.1', cve:'CVE-2025-48943', cwe:'CWE-200', updated:'16/09/2025' },
+        { severity:'Medium', cvss:'6.5', cve:'CVE-2025-48940', cwe:'CWE-532', updated:'16/09/2025' },
+        { severity:'Medium', cvss:'6.1', cve:'CVE-2025-48939', cwe:'CWE-352', updated:'16/09/2025' },
+        { severity:'Low', cvss:'3.7', cve:'CVE-2025-48938', cwe:'CWE-200', updated:'16/09/2025' }
+      ],
+      'weblogic': [
+        { severity:'Critical', cvss:'9.8', cve:'CVE-2025-48948', cwe:'CWE-502', updated:'09/06/2026' }
+      ]
+    };
+
+    window.openPWDetail = function(productName, vendor, lastUpdate, cveCount, rowKey) {
+      var grid = document.getElementById('pw-grid-screen');
+      var detail = document.getElementById('pw-detail-screen');
+      var pageHeader = document.querySelector('#pw-grid-screen .page-header');
+      if (grid) grid.classList.add('hidden');
+      if (detail) detail.classList.add('active');
+      if (pageHeader) pageHeader.style.display = 'none';
+      document.getElementById('pwDetailProductName').textContent = productName;
+      document.getElementById('pwDetailVendor').textContent = vendor;
+      document.getElementById('pwDetailLastUpdate').textContent = lastUpdate;
+      var cves = pwCVEData[rowKey] || [];
+      var crit = 0, high = 0, med = 0, low = 0;
+      cves.forEach(function(c) {
+        if (c.severity === 'Critical') crit++;
+        else if (c.severity === 'High') high++;
+        else if (c.severity === 'Medium') med++;
+        else low++;
+      });
+      document.getElementById('pwDetailCritical').textContent = crit;
+      document.getElementById('pwDetailHigh').textContent = high;
+      document.getElementById('pwDetailMedium').textContent = med;
+      document.getElementById('pwDetailLow').textContent = low;
+      document.getElementById('pwDetailTableCount').innerHTML = cves.length + ' <span data-en="vulnerabilities" data-vi="l\u1ed9 h\u1ecfng">vulnerabilities</span>';
+      var tbody = document.getElementById('pwDetailTableBody');
+      tbody.innerHTML = '';
+      cves.forEach(function(c) {
+        var sevClass = c.severity.toLowerCase();
+        var tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.setAttribute('data-cve', c.cve);
+        tr.innerHTML =
+          '<td><span class="pw-sev-badge ' + sevClass + '"><span class="pw-sev-dot"></span>' + c.severity + '</span></td>' +
+          '<td><span class="pw-cvss-badge ' + sevClass + '">' + c.cvss + '</span></td>' +
+          '<td><span class="pw-cve-link">' + c.cve + '</span></td>' +
+          '<td><span class="pw-cwe-tag">' + c.cwe + '</span></td>' +
+          '<td>' + c.updated + '</td>';
+        tr.addEventListener('click', function() { openPWVulnModal(c.cve); });
+        tbody.appendChild(tr);
+      });
+      window.scrollTo(0, 0);
+    };
+
+    window.closePWDetail = function() {
+      var grid = document.getElementById('pw-grid-screen');
+      var detail = document.getElementById('pw-detail-screen');
+      var pageHeader = document.querySelector('#pw-grid-screen .page-header');
+      if (grid) grid.classList.remove('hidden');
+      if (detail) detail.classList.remove('active');
+      if (pageHeader) pageHeader.style.display = '';
+    };
+
+    // Product row click handlers
+    document.querySelectorAll('.product-row').forEach(function(row) {
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', function(e) {
+        if (e.target.closest('.toggle-switch') || e.target.closest('.toggle-slider')) return;
+        var nameEl = row.querySelector('.product-text');
+        var vendorEl = row.querySelector('.product-vendor');
+        var updatedEl = row.querySelector('.product-updated');
+        var cveEl = row.querySelector('.product-cve-count');
+        if (!nameEl) return;
+        var name = nameEl.textContent;
+        var vendor = vendorEl ? vendorEl.textContent : '';
+        var updated = updatedEl ? updatedEl.textContent : '';
+        var cveCount = cveEl ? (parseInt(cveEl.textContent) || 0) : 0;
+        var rowKey;
+        if (name === '205') rowKey = '205';
+        else if (name === 'zimbra_collaboration_suite' && vendor === 'synacor') rowKey = 'zimbra_collaboration_suite_synacor';
+        else if (name === 'weblogic') rowKey = 'weblogic';
+        else rowKey = name;
+        openPWDetail(name, vendor, updated, cveCount, rowKey);
+      });
+    });
+  })();
+  </script>
+
+  <script>
+  (function() {
+    // Language Toggle
+    var toggle = document.querySelector('.lang-toggle');
+    if (toggle) {
+      var btns = toggle.querySelectorAll('.lang-btn');
+      function setLang(lang) {
+        var isVI = lang === 'vi';
+        document.body.classList.toggle('lang-vi-active', isVI);
+        btns.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
+        document.querySelectorAll('[data-en][data-vi]').forEach(function(el) {
+          el.textContent = isVI ? el.getAttribute('data-vi') : el.getAttribute('data-en');
+        });
+        document.querySelectorAll('[data-en-placeholder][data-vi-placeholder]').forEach(function(el) {
+          el.placeholder = isVI ? el.getAttribute('data-vi-placeholder') : el.getAttribute('data-en-placeholder');
+        });
+        try { localStorage.setItem('gs-lang', lang); } catch(e) {}
+      }
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() { setLang(btn.getAttribute('data-lang')); });
+      });
+      try { var saved = localStorage.getItem('gs-lang'); if (saved === 'vi') setLang('vi'); } catch(e) {}
+    }
+
+    // Features Dropdown
+    var dropdown = document.querySelector('.nav-dropdown');
+    var trigger = document.querySelector('.nav-dropdown-trigger');
+    var menu = document.querySelector('.nav-dropdown-menu');
+    if (trigger && menu) {
+      trigger.addEventListener('click', function(e) { e.stopPropagation(); var isOpen = dropdown.classList.toggle('open'); trigger.setAttribute('aria-expanded', isOpen); });
+      document.addEventListener('click', function(e) { if (!dropdown.contains(e.target)) { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); } });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && dropdown.classList.contains('open')) { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); trigger.focus(); } });
+    }
+
+    // Toggle switches
+    document.querySelectorAll('.toggle-switch').forEach(function(sw) {
+      sw.addEventListener('click', function(e) { e.stopPropagation(); });
+    });
+
+    // Product Search + Filter
+    var searchInput = document.getElementById('productSearchInput');
+    var searchClear = document.getElementById('productSearchClear');
+    var filterOverlay = document.getElementById('pwFilterOverlay');
+    var filterBadge = document.getElementById('pwFilterBadge');
+    var filterBtn = document.getElementById('pwFilterBtn');
+    var vendorSelect = document.getElementById('pwFilterVendor');
+    var dateInput = document.getElementById('pwFilterDateInput');
+    var calendarDropdown = document.getElementById('pwCalendarDropdown');
+    var dateRangeDisplay = document.getElementById('pwDateRangeDisplay');
+    var calDays = document.getElementById('pwCalDays');
+    var calTitle = document.getElementById('pwCalTitle');
+    var productCount = document.getElementById('pwProductCount');
+
+    var activeVendor = '';
+    var dateStart = null;
+    var dateEnd = null;
+    var calYear = 2026, calMonth = 6; // July 2026 (0-indexed)
+
+    function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+    function applyFilters() {
+      var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      var rows = document.querySelectorAll('#pw-product-rows .product-row');
+      var visibleCount = 0;
+      rows.forEach(function(row) {
+        var text = (row.getAttribute('data-searchable') || '') + ' ' + row.textContent.toLowerCase();
+        var matchSearch = !query || text.indexOf(query) !== -1;
+        var matchVendor = !activeVendor || row.getAttribute('data-vendor') === activeVendor;
+        var matchDate = true;
+        if (dateStart || dateEnd) {
+          var rowDate = row.getAttribute('data-date');
+          if (rowDate) {
+            var d = new Date(rowDate);
+            if (dateStart && d < dateStart) matchDate = false;
+            if (dateEnd && d > dateEnd) matchDate = false;
+          }
+        }
+        var show = matchSearch && matchVendor && matchDate;
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+      if (productCount) {
+        productCount.innerHTML = visibleCount + ' <span data-en="products" data-vi="s\u1ea3n ph\u1ea9m">' + (isVI() ? 'sản phẩm' : 'products') + '</span>';
+      }
+      // Update filter badge
+      var filterCount = 0;
+      if (activeVendor) filterCount++;
+      if (dateStart || dateEnd) filterCount++;
+      if (filterBadge) {
+        filterBadge.textContent = filterCount;
+        filterBadge.classList.toggle('show', filterCount > 0);
+      }
+      if (filterBtn) filterBtn.classList.toggle('active', filterCount > 0);
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        if (searchClear) searchClear.style.display = this.value ? 'flex' : 'none';
+        applyFilters();
+      });
+      if (searchClear) {
+        searchClear.addEventListener('click', function() {
+          searchInput.value = '';
+          searchClear.style.display = 'none';
+          applyFilters();
+          searchInput.focus();
+        });
+      }
+    }
+
+    // Filter popup close
+    document.getElementById('pwFilterClose').addEventListener('click', function() {
+      filterOverlay.classList.remove('active');
+    });
+    filterOverlay.addEventListener('click', function(e) {
+      if (e.target === filterOverlay) filterOverlay.classList.remove('active');
+    });
+
+    // Calendar rendering
+    function renderCalendar() {
+      var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var monthNamesVI = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+      calTitle.textContent = (isVI() ? monthNamesVI[calMonth] : monthNames[calMonth]) + ' ' + calYear;
+      var firstDay = new Date(calYear, calMonth, 1).getDay();
+      var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+      var today = new Date();
+      var html = '';
+      // Previous month days
+      for (var i = firstDay - 1; i >= 0; i--) {
+        html += '<button class="pw-calendar-day other-month" disabled>' + (daysInPrev - i) + '</button>';
+      }
+      // Current month days
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dateObj = new Date(calYear, calMonth, d);
+        var classes = 'pw-calendar-day';
+        if (dateObj.toDateString() === today.toDateString()) classes += ' today';
+        if (dateStart && dateEnd && dateObj >= dateStart && dateObj <= dateEnd) classes += ' selected';
+        else if (dateStart && !dateEnd && dateObj.toDateString() === dateStart.toDateString()) classes += ' selected';
+        html += '<button class="' + classes + '" data-date="' + calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0') + '">' + d + '</button>';
+      }
+      // Next month days
+      var totalCells = firstDay + daysInMonth;
+      var remaining = (7 - (totalCells % 7)) % 7;
+      for (var n = 1; n <= remaining; n++) {
+        html += '<button class="pw-calendar-day other-month" disabled>' + n + '</button>';
+      }
+      calDays.innerHTML = html;
+      // Bind click handlers
+      calDays.querySelectorAll('.pw-calendar-day:not(.other-month)').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var parts = this.getAttribute('data-date').split('-');
+          var clicked = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          if (!dateStart || (dateStart && dateEnd)) {
+            dateStart = clicked;
+            dateEnd = null;
+          } else if (clicked < dateStart) {
+            dateEnd = dateStart;
+            dateStart = clicked;
+          } else {
+            dateEnd = clicked;
+          }
+          updateDateDisplay();
+          renderCalendar();
+        });
+      });
+    }
+
+    function updateDateDisplay() {
+      if (!dateRangeDisplay) return;
+      if (dateStart && dateEnd) {
+        var opts = { year: 'numeric', month: 'short', day: 'numeric' };
+        dateRangeDisplay.textContent = dateStart.toLocaleDateString('en-US', opts) + ' — ' + dateEnd.toLocaleDateString('en-US', opts);
+        dateRangeDisplay.classList.remove('empty');
+      } else if (dateStart) {
+        var opts = { year: 'numeric', month: 'short', day: 'numeric' };
+        dateRangeDisplay.textContent = dateStart.toLocaleDateString('en-US', opts) + ' —';
+        dateRangeDisplay.classList.remove('empty');
+      } else {
+        dateRangeDisplay.textContent = isVI() ? 'Chưa chọn ngày' : 'No date selected';
+        dateRangeDisplay.classList.add('empty');
+      }
+    }
+
+    if (dateInput) {
+      dateInput.addEventListener('click', function() {
+        calendarDropdown.classList.toggle('open');
+      });
+    }
+
+    document.getElementById('pwCalPrev').addEventListener('click', function() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+    document.getElementById('pwCalNext').addEventListener('click', function() {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+
+    // Quick date options
+    document.querySelectorAll('.pw-date-quick-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var range = this.getAttribute('data-range');
+        var today = new Date();
+        today.setHours(0,0,0,0);
+        if (range === 'today') {
+          dateStart = new Date(today);
+          dateEnd = new Date(today);
+        } else if (range === 'yesterday') {
+          dateStart = new Date(today);
+          dateStart.setDate(dateStart.getDate() - 1);
+          dateEnd = new Date(dateStart);
+        } else if (range === '7days') {
+          dateEnd = new Date(today);
+          dateStart = new Date(today);
+          dateStart.setDate(dateStart.getDate() - 7);
+        }
+        updateDateDisplay();
+        renderCalendar();
+        document.querySelectorAll('.pw-date-quick-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // Apply filter
+    document.getElementById('pwFilterApply').addEventListener('click', function() {
+      activeVendor = vendorSelect.value;
+      applyFilters();
+      filterOverlay.classList.remove('active');
+    });
+
+    // Clear filter
+    document.getElementById('pwFilterClear').addEventListener('click', function() {
+      vendorSelect.value = '';
+      dateStart = null;
+      dateEnd = null;
+      activeVendor = '';
+      updateDateDisplay();
+      renderCalendar();
+      document.querySelectorAll('.pw-date-quick-btn').forEach(function(b) { b.classList.remove('active'); });
+      applyFilters();
+    });
+
+    // Initialize calendar
+    renderCalendar();
+
+    // Animate severity bars
+    setTimeout(function() {
+      document.querySelectorAll('.severity-card').forEach(function(card, i) {
+        setTimeout(function() { card.classList.add('animated'); }, i * 100);
+      });
+    }, 300);
+  })();
+  
+    // ── Sidebar Collapse Toggle ──────────────
+  var sidebar = document.getElementById("sidebar");
+  var panelCollapse = document.getElementById("panelCollapse");
+  if (panelCollapse && sidebar) {
+    panelCollapse.addEventListener("click", function() {
+      sidebar.classList.toggle("collapsed");
+      try { localStorage.setItem("gs-sidebar-v2", sidebar.classList.contains("collapsed") ? "1" : "0"); } catch(e) {}
+    });
+  }
+  // Restore collapsed state
+  try {
+    if (localStorage.getItem("gs-sidebar-v2") === "1" && sidebar) {
+      sidebar.classList.add("collapsed");
+    }
+  } catch(e) {}
+
+  // Quick Search: expand sidebar on click when collapsed
+  var sidebarSearch = document.querySelector('.sidebar-search');
+  if (sidebarSearch) {
+    sidebarSearch.addEventListener('click', function() {
+      var sb = document.getElementById('sidebar');
+      if (sb && sb.classList.contains('collapsed')) {
+        sb.classList.remove('collapsed');
+        localStorage.setItem('gs-sidebar-v2', '0');
+        setTimeout(function() {
+          var input = sidebarSearch.querySelector('.sidebar-search-input');
+          if (input) input.focus();
+        }, 250);
+      }
+    });
+  }
+
+</script>
+<!-- Pricing Modal -->
+<!-- CVE Detail Popup -->
+<div class="pw-vuln-modal-overlay" id="pwVulnModal">
+  <div class="pw-vuln-modal-backdrop" id="pwVulnBackdrop"></div>
+  <div class="pw-vuln-modal">
+    <div class="pw-vuln-modal-header">
+      <div class="pw-vuln-modal-header-left">
+        <div class="pw-vuln-modal-cve" id="pwVulnCveId"></div>
+        <div class="pw-vuln-modal-cwe" id="pwVulnCwe"></div>
+      </div>
+      <button class="pw-vuln-modal-close" id="pwVulnClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="pw-vuln-modal-body">
+      <div class="pw-vuln-modal-meta" id="pwVulnMeta"></div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Description" data-vi="Mô tả">Description</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnDesc"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Solution" data-vi="Giải pháp">Solution</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnSolution"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="References" data-vi="Tham khảo">References</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnRefs"></div>
+      </div>
+      <div class="pw-vuln-modal-section">
+        <div class="pw-vuln-modal-section-title" data-en="Scan detail" data-vi="Chi tiết quét">Scan detail</div>
+        <div class="pw-vuln-modal-section-content" id="pwVulnScanDetail"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scan Modal -->
+<div class="scan-overlay" id="scanModal">
+  <div class="scan-modal">
+    <div class="scan-header">
+      <h3 data-en="Scanning Products" data-vi="Đang quét sản phẩm">Scanning Products</h3>
+      <button class="scan-close" id="scanClose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="scan-body">
+      <div class="scan-spinner-wrap">
+        <div class="scan-spinner" id="scanSpinner">
+          <div class="scan-spinner-ring"></div>
+          <div class="scan-spinner-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="scan-progress-wrap">
+        <div class="scan-progress-bar"><div class="scan-progress-fill" id="scanProgressFill"></div></div>
+        <div class="scan-progress-text">
+          <span id="scanPhaseText" data-en="Initializing..." data-vi="Đang khởi tạo...">Initializing...</span>
+          <span class="scan-progress-pct" id="scanPct">0%</span>
+        </div>
+      </div>
+
+      <div class="scan-phases" id="scanPhases">
+        <div class="scan-phase active" data-step="0">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Initializing scanner" data-vi="Khởi tạo bộ quét">Initializing scanner</span>
+        </div>
+        <div class="scan-phase" data-step="1">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Scanning product dependencies" data-vi="Quét phụ thuộc sản phẩm">Scanning product dependencies</span>
+        </div>
+        <div class="scan-phase" data-step="2">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Checking CVE database" data-vi="Kiểm tra cơ sở dữ liệu CVE">Checking CVE database</span>
+        </div>
+        <div class="scan-phase" data-step="3">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Analyzing severity levels" data-vi="Phân tích mức độ nghiêm trọng">Analyzing severity levels</span>
+        </div>
+        <div class="scan-phase" data-step="4">
+          <div class="scan-phase-dot"></div>
+          <svg class="scan-phase-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-en="Generating report" data-vi="Tạo báo cáo">Generating report</span>
+        </div>
+      </div>
+
+      <div class="scan-results" id="scanResults">
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Products scanned" data-vi="Sản phẩm đã quét">Products scanned</span>
+          <span class="scan-result-value">7</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="New vulnerabilities found" data-vi="Lỗ hổng mới phát hiện">New vulnerabilities found</span>
+          <span class="scan-result-value">+3</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</span>
+          <span class="scan-result-badge critical">2</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="High" data-vi="Cao">High</span>
+          <span class="scan-result-badge high">1</span>
+        </div>
+        <div class="scan-result-row">
+          <span class="scan-result-label" data-en="Scan duration" data-vi="Thời gian quét">Scan duration</span>
+          <span class="scan-result-value">4.2s</span>
+        </div>
+      </div>
+
+      <div class="scan-footer" id="scanFooter" style="display:none;">
+        <button class="scan-footer-btn secondary" id="scanCloseBtn" data-en="Close" data-vi="Đóng">Close</button>
+        <button class="scan-footer-btn primary" id="scanViewBtn" data-en="View Results" data-vi="Xem kết quả">View Results</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Free</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span></div>
+          <div class="pricing-desc">For individuals & trial users</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>1 Domain</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> </li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>3-month trial</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Get started</button>
+        </div>
+      </div>
+      <!-- Basic -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">1,999</span></div>
+          <div class="pricing-desc">For small & medium businesses</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Domains / 5 IPs / 30 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Premium -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Premium</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">3,999</span></div>
+          <div class="pricing-desc">For companies & government agencies</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>10 Domains / 10 IPs / 50 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary">Contact us</button>
+        </div>
+      </div>
+      <!-- Professional -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Professional</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">7,999</span></div>
+          <div class="pricing-desc">For enterprises & conglomerates</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>20 Domains / 20 IPs / 80 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Advanced</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:24px;">Contact us</span></div>
+          <div class="pricing-desc">For specialized systems needing custom config</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Custom scope &amp; duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>IoC intelligence feed</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Product Panel -->
+  <div class="mp-overlay" id="mpOverlay">
+    <div class="mp-backdrop" id="mpBackdrop"></div>
+    <div class="mp-panel">
+      <div class="mp-header">
+        <div>
+          <h2>Manage Product</h2>
+          <p>You can add and/or remove product from your account</p>
+        </div>
+        <button class="mp-close" id="mpClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="mp-body">
+        <div class="mp-vendors">
+          <div class="mp-th"><span>Vendor</span><span>Products ↕</span></div>
+          <div class="mp-rows" id="mpVendorList"></div>
+        </div>
+        <div class="mp-products">
+          <div class="mp-th"><span>Product</span><span id="mpCounter">0 product to add</span></div>
+          <div class="mp-rows" id="mpProductList"></div>
+        </div>
+      </div>
+      <div class="mp-footer">
+        <button class="mp-fbtn cancel" id="mpCancel">Cancel</button>
+        <button class="mp-fbtn preview" id="mpPreview">
+          <span>Preview</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Popup -->
+  <div class="pw-filter-popup-overlay" id="pwFilterOverlay">
+    <div class="pw-filter-popup">
+      <div class="pw-filter-popup-header">
+        <div class="pw-filter-popup-title" data-en="Filter" data-vi="Lọc">Filter</div>
+        <button class="pw-filter-popup-close" id="pwFilterClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pw-filter-popup-body">
+        <div class="pw-filter-field">
+          <label class="pw-filter-label" data-en="Vendor" data-vi="Nhà cung cấp">Vendor</label>
+          <select class="pw-filter-select" id="pwFilterVendor">
+            <option value="" data-en="Select vendor" data-vi="Chọn nhà cung cấp">Select vendor</option>
+            <option value="canon">canon</option>
+            <option value="intel">intel</option>
+            <option value="qualcomm">qualcomm</option>
+            <option value="synacor">synacor</option>
+            <option value="synocor">synocor</option>
+            <option value="vmware">vmware</option>
+            <option value="zimbra">zimbra</option>
+          </select>
+        </div>
+        <div class="pw-filter-field">
+          <label class="pw-filter-label" data-en="Last update" data-vi="Cập nhật lần cuối">Last update</label>
+          <input type="text" class="pw-date-input" id="pwFilterDateInput" placeholder="Pick a date range" readonly data-en-placeholder="Pick a date range" data-vi-placeholder="Chọn khoảng ngày">
+          <div class="pw-calendar-dropdown" id="pwCalendarDropdown">
+            <div class="pw-date-range-display empty" id="pwDateRangeDisplay" data-en="No date selected" data-vi="Chưa chọn ngày">No date selected</div>
+            <div class="pw-calendar-header">
+              <button class="pw-calendar-nav" id="pwCalPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <span class="pw-calendar-title" id="pwCalTitle">July 2026</span>
+              <button class="pw-calendar-nav" id="pwCalNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+            </div>
+            <div class="pw-calendar-weekdays">
+              <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div class="pw-calendar-days" id="pwCalDays"></div>
+            <div class="pw-date-quick-options">
+              <button class="pw-date-quick-btn" data-range="today" data-en="Today" data-vi="Hôm nay">Today</button>
+              <button class="pw-date-quick-btn" data-range="yesterday" data-en="Yesterday" data-vi="Hôm qua">Yesterday</button>
+              <button class="pw-date-quick-btn" data-range="7days" data-en="Last 7 Days" data-vi="7 ngày qua">Last 7 Days</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pw-filter-popup-footer">
+        <button class="pw-filter-popup-btn secondary" id="pwFilterClear" data-en="Clear" data-vi="Xóa">Clear</button>
+        <button class="pw-filter-popup-btn primary" id="pwFilterApply" data-en="Apply" data-vi="Áp dụng">Apply</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var overlay = document.getElementById('scanModal');
+  var btn = null;
+  var closeBtn = document.getElementById('scanClose');
+  var closeFooter = document.getElementById('scanCloseBtn');
+  var viewBtn = document.getElementById('scanViewBtn');
+  var fill = document.getElementById('scanProgressFill');
+  var pct = document.getElementById('scanPct');
+  var phaseText = document.getElementById('scanPhaseText');
+  var phases = document.querySelectorAll('.scan-phase');
+  var spinner = document.getElementById('scanSpinner');
+  var results = document.getElementById('scanResults');
+  var footer = document.getElementById('scanFooter');
+
+  var phaseLabels = [
+    { en: 'Initializing scanner...', vi: 'Khởi tạo bộ quét...' },
+    { en: 'Scanning product dependencies...', vi: 'Quét phụ thuộc sản phẩm...' },
+    { en: 'Checking CVE database...', vi: 'Kiểm tra cơ sở dữ liệu CVE...' },
+    { en: 'Analyzing severity levels...', vi: 'Phân tích mức độ nghiêm trọng...' },
+    { en: 'Generating report...', vi: 'Tạo báo cáo...' }
+  ];
+
+  var phasePcts = [0, 15, 45, 75, 95];
+
+  function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+  function openScan() {
+    overlay.classList.add('active');
+    btn.classList.add('scanning');
+    resetScan();
+    runScan();
+  }
+
+  function resetScan() {
+    fill.style.width = '0%';
+    fill.classList.remove('complete');
+    pct.textContent = '0%';
+    pct.classList.remove('complete');
+    spinner.classList.remove('complete');
+    results.classList.remove('show');
+    footer.style.display = 'none';
+    phases.forEach(function(p) { p.classList.remove('active', 'done'); });
+    phases[0].classList.add('active');
+    phaseText.textContent = isVI() ? phaseLabels[0].vi : phaseLabels[0].en;
+  }
+
+  function runScan() {
+    var current = 0;
+    var totalPhases = phases.length;
+
+    function nextPhase() {
+      if (current >= totalPhases) { finishScan(); return; }
+
+      phases.forEach(function(p) { p.classList.remove('active'); });
+      phases[current].classList.add('active');
+      phaseText.textContent = isVI() ? phaseLabels[current].vi : phaseLabels[current].en;
+
+      var targetPct = phasePcts[current];
+      animatePct(targetPct, 600 + current * 200, function() {
+        phases[current].classList.remove('active');
+        phases[current].classList.add('done');
+        current++;
+        setTimeout(nextPhase, 300);
+      });
+    }
+
+    nextPhase();
+  }
+
+  function animatePct(target, duration, cb) {
+    var startPct = parseInt(pct.textContent) || 0;
+    var startTime = Date.now();
+    function tick() {
+      var elapsed = Date.now() - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var val = Math.round(startPct + (target - startPct) * eased);
+      pct.textContent = val + '%';
+      fill.style.width = val + '%';
+      if (progress < 1) requestAnimationFrame(tick);
+      else if (cb) cb();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function finishScan() {
+    pct.textContent = '100%';
+    pct.classList.add('complete');
+    fill.style.width = '100%';
+    fill.classList.add('complete');
+    spinner.classList.add('complete');
+    phaseText.textContent = isVI() ? 'Quét hoàn tất!' : 'Scan complete!';
+    results.classList.add('show');
+    footer.style.display = 'flex';
+    btn.classList.remove('scanning');
+  }
+
+  function closeScan() {
+    overlay.classList.remove('active');
+    btn.classList.remove('scanning');
+  }
+
+
+  if (closeBtn) closeBtn.addEventListener('click', closeScan);
+  if (closeFooter) closeFooter.addEventListener('click', closeScan);
+  if (viewBtn) viewBtn.addEventListener('click', closeScan);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeScan(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeScan(); });
+})();
+</script>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
+</script>
+
+  <!-- Contact Us Modal -->
+  <div class="contact-modal-overlay" id="contactUsModal">
+    <div class="contact-modal">
+      <button class="contact-modal-close" id="contactUsClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="contactUsForm">
+        <div class="contact-modal-icon mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        </div>
+        <h3 class="contact-modal-title" data-en="Contact Sales" data-vi="Liên hệ bán hàng">Contact Sales</h3>
+        <p class="contact-modal-desc" data-en="Tell us about your needs and we'll get back to you within 24 hours." data-vi="Cho chúng tôi biết nhu cầu của bạn và chúng tôi sẽ phản hồi trong vòng 24 giờ.">Tell us about your needs and we'll get back to you within 24 hours.</p>
+        <div class="contact-modal-plan-row">
+          <span class="contact-modal-plan-label" data-en="Selected plan:" data-vi="Gói đã chọn:">Selected plan:</span>
+          <span class="contact-modal-plan-tag" id="contactPlanTag">Premium</span>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Full Name" data-vi="Họ và tên">Full Name</label>
+            <input class="contact-modal-input" type="text" id="contactName" placeholder="e.g. Brooklyn Nguyen">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Work Email" data-vi="Email công việc">Work Email</label>
+            <input class="contact-modal-input" type="email" id="contactEmail" placeholder="e.g. brooklyn@company.com">
+          </div>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Company" data-vi="Công ty">Company</label>
+            <input class="contact-modal-input" type="text" id="contactCompany" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
+            <input class="contact-modal-input" type="tel" id="contactPhone" placeholder="e.g. +84 901 234 567">
+          </div>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Company Size" data-vi="Quy mô công ty">Company Size</label>
+          <select class="contact-modal-select" id="contactSize">
+            <option value="" data-en="Select company size" data-vi="Chọn quy mô công ty">Select company size</option>
+            <option value="1-50">1–50 employees</option>
+            <option value="51-200">51–200 employees</option>
+            <option value="201-1000">201–1,000 employees</option>
+            <option value="1000+">1,000+ employees</option>
+          </select>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Message" data-vi="Tin nhắn">Message</label>
+          <textarea class="contact-modal-textarea" id="contactMessage" rows="3" placeholder="Tell us about your security monitoring needs..."></textarea>
+        </div>
+        <div class="contact-modal-actions">
+          <button class="contact-modal-btn contact-modal-btn-secondary" id="contactUsCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+          <button class="contact-modal-btn contact-modal-btn-primary" id="contactUsSubmit" data-en="Send Message" data-vi="Gửi tin nhắn">Send Message</button>
+        </div>
+      </div>
+      <div class="contact-modal-success" id="contactUsSuccess">
+        <div class="contact-modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 data-en="Message Sent!" data-vi="Đã gửi tin nhắn!">Message Sent!</h3>
+        <p data-en="Our sales team will contact you within 24 hours." data-vi="Đội ngũ bán hàng sẽ liên hệ bạn trong vòng 24 giờ.">Our sales team will contact you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var contactOverlay = document.getElementById('contactUsModal');
+  var contactForm = document.getElementById('contactUsForm');
+  var contactSuccess = document.getElementById('contactUsSuccess');
+  var planTag = document.getElementById('contactPlanTag');
+  if (!contactOverlay) return;
+  function closeContact() {
+    contactOverlay.classList.remove('active');
+    setTimeout(function(){
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactCompany').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactSize').value = '';
+      document.getElementById('contactMessage').value = '';
+    }, 300);
+  }
+  contactOverlay.addEventListener('click', function(e){ if(e.target===contactOverlay) closeContact(); });
+  document.getElementById('contactUsClose').addEventListener('click', closeContact);
+  document.getElementById('contactUsCancel').addEventListener('click', closeContact);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && contactOverlay.classList.contains('active')) closeContact();
+  });
+  var pricingOverlay = document.getElementById('pricingModal');
+  document.querySelectorAll('.pricing-btn').forEach(function(btn){
+    if (btn.textContent.trim() !== 'Contact us') return;
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.pricing-card');
+      var badge = card ? card.querySelector('.pricing-badge') : null;
+      var planName = badge ? badge.textContent.trim() : 'Custom';
+      planTag.textContent = planName;
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      if (pricingOverlay) pricingOverlay.classList.remove('active');
+      contactOverlay.classList.add('active');
+    });
+  });
+  document.getElementById('contactUsSubmit').addEventListener('click', function(){
+    var name = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) {
+      if (!name) document.getElementById('contactName').focus();
+      else document.getElementById('contactEmail').focus();
+      return;
+    }
+    contactForm.style.display = 'none';
+    contactSuccess.classList.add('active');
+    setTimeout(closeContact, 2500);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var overlay = document.getElementById('pwFilterOverlay');
+  var popup = overlay ? overlay.querySelector('.pw-filter-popup') : null;
+  var closeBtn = document.getElementById('pwFilterClose');
+  var clearBtn = document.getElementById('pwFilterClear');
+  var applyBtn = document.getElementById('pwFilterApply');
+  var vendorSelect = document.getElementById('pwFilterVendor');
+  var dateInput = document.getElementById('pwFilterDateInput');
+  var calendarDropdown = document.getElementById('pwCalendarDropdown');
+  var calDays = document.getElementById('pwCalDays');
+  var calTitle = document.getElementById('pwCalTitle');
+  var calPrev = document.getElementById('pwCalPrev');
+  var calNext = document.getElementById('pwCalNext');
+  var dateRangeDisplay = document.getElementById('pwDateRangeDisplay');
+  var badge = document.getElementById('pwFilterBadge');
+  var filterBtn = document.getElementById('pwFilterBtn');
+  var searchInput = document.getElementById('productSearchInput');
+  var searchClear = document.getElementById('productSearchClear');
+  var productCount = document.getElementById('pwProductCount');
+  var rowsContainer = document.getElementById('pw-product-rows');
+
+  if (!overlay) return;
+
+  var calYear = 2026, calMonth = 6;
+  var dateStart = null, dateEnd = null;
+  var activeFilter = { vendor: '', dateStart: null, dateEnd: null };
+  var quickBtns = document.querySelectorAll('.pw-date-quick-btn');
+
+  function closePopup() {
+    overlay.classList.remove('active');
+    calendarDropdown.classList.remove('open');
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closePopup();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closePopup();
+  });
+
+  dateInput.addEventListener('click', function() {
+    calendarDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!calendarDropdown.contains(e.target) && e.target !== dateInput) {
+      calendarDropdown.classList.remove('open');
+    }
+  });
+
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function renderCalendar() {
+    calTitle.textContent = months[calMonth] + ' ' + calYear;
+    var firstDay = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+    var today = new Date();
+    var html = '';
+
+    for (var i = firstDay - 1; i >= 0; i--) {
+      html += '<button class="pw-calendar-day other-month" disabled>' + (daysInPrev - i) + '</button>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dt = new Date(calYear, calMonth, d);
+      var cls = 'pw-calendar-day';
+      if (dt.toDateString() === today.toDateString()) cls += ' today';
+      if (dateStart && dt.getTime() === dateStart.getTime()) cls += ' selected';
+      if (dateEnd && dt.getTime() === dateEnd.getTime()) cls += ' selected';
+      if (dateStart && dateEnd && dt > dateStart && dt < dateEnd) cls += ' in-range';
+      html += '<button class="' + cls + '" data-day="' + d + '">' + d + '</button>';
+    }
+    var totalCells = firstDay + daysInMonth;
+    var remaining = (7 - (totalCells % 7)) % 7;
+    for (var r = 1; r <= remaining; r++) {
+      html += '<button class="pw-calendar-day other-month" disabled>' + r + '</button>';
+    }
+    calDays.innerHTML = html;
+
+    calDays.querySelectorAll('.pw-calendar-day:not(.other-month):not(.disabled)').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var day = parseInt(btn.dataset.day);
+        var clicked = new Date(calYear, calMonth, day);
+        if (!dateStart || (dateStart && dateEnd)) {
+          dateStart = clicked;
+          dateEnd = null;
+        } else if (clicked < dateStart) {
+          dateEnd = dateStart;
+          dateStart = clicked;
+        } else {
+          dateEnd = clicked;
+        }
+        updateDateDisplay();
+        renderCalendar();
+      });
+    });
+  }
+
+  function updateDateDisplay() {
+    if (dateStart && dateEnd) {
+      dateRangeDisplay.textContent = formatDate(dateStart) + ' — ' + formatDate(dateEnd);
+      dateRangeDisplay.classList.remove('empty');
+      dateInput.value = formatDate(dateStart) + ' — ' + formatDate(dateEnd);
+    } else if (dateStart) {
+      dateRangeDisplay.textContent = formatDate(dateStart);
+      dateRangeDisplay.classList.remove('empty');
+      dateInput.value = formatDate(dateStart);
+    } else {
+      dateRangeDisplay.textContent = isVI() ? 'Chưa chọn ngày' : 'No date selected';
+      dateRangeDisplay.classList.add('empty');
+      dateInput.value = '';
+    }
+  }
+
+  function formatDate(dt) {
+    var d = dt.getDate();
+    var m = dt.getMonth() + 1;
+    var y = dt.getFullYear();
+    return (d < 10 ? '0' : '') + d + '/' + (m < 10 ? '0' : '') + m + '/' + y;
+  }
+
+  calPrev.addEventListener('click', function() {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  calNext.addEventListener('click', function() {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  quickBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var range = btn.dataset.range;
+      var today = new Date();
+      today.setHours(0,0,0,0);
+      quickBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      if (range === 'today') {
+        dateStart = today;
+        dateEnd = today;
+      } else if (range === 'yesterday') {
+        var y = new Date(today);
+        y.setDate(y.getDate() - 1);
+        dateStart = y;
+        dateEnd = y;
+      } else if (range === '7days') {
+        var s = new Date(today);
+        s.setDate(s.getDate() - 6);
+        dateStart = s;
+        dateEnd = today;
+      }
+      updateDateDisplay();
+      renderCalendar();
+    });
+  });
+
+  clearBtn.addEventListener('click', function() {
+    vendorSelect.value = '';
+    dateStart = null;
+    dateEnd = null;
+    dateInput.value = '';
+    updateDateDisplay();
+    renderCalendar();
+    quickBtns.forEach(function(b) { b.classList.remove('active'); });
+  });
+
+  applyBtn.addEventListener('click', function() {
+    activeFilter.vendor = vendorSelect.value;
+    activeFilter.dateStart = dateStart;
+    activeFilter.dateEnd = dateEnd;
+    updateBadge();
+    filterProducts();
+    closePopup();
+  });
+
+  function updateBadge() {
+    var count = 0;
+    if (activeFilter.vendor) count++;
+    if (activeFilter.dateStart) count++;
+    badge.textContent = count;
+    if (count > 0) {
+      badge.classList.add('show');
+      filterBtn.classList.add('active');
+    } else {
+      badge.classList.remove('show');
+      filterBtn.classList.remove('active');
+    }
+  }
+
+  function isVI() { return document.body.classList.contains('lang-vi-active'); }
+
+  function filterProducts() {
+    var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    var rows = rowsContainer ? rowsContainer.querySelectorAll('.product-row') : [];
+    var visibleCount = 0;
+
+    rows.forEach(function(row) {
+      var vendor = row.dataset.vendor || '';
+      var dateStr = row.dataset.date || '';
+      var text = (row.dataset.searchable || '').toLowerCase();
+
+      var matchSearch = !query || text.indexOf(query) !== -1;
+      var matchVendor = !activeFilter.vendor || vendor === activeFilter.vendor;
+      var matchDate = true;
+      if (activeFilter.dateStart && dateStr) {
+        var rowDate = new Date(dateStr);
+        rowDate.setHours(0,0,0,0);
+        matchDate = rowDate >= activeFilter.dateStart;
+        if (activeFilter.dateEnd) {
+          matchDate = rowDate >= activeFilter.dateStart && rowDate <= activeFilter.dateEnd;
+        }
+      }
+
+      if (matchSearch && matchVendor && matchDate) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (productCount) {
+      productCount.innerHTML = visibleCount + ' <span data-en="products" data-vi="sản phẩm">products</span>';
+    }
+
+    var emptyEl = document.getElementById('pwFilterEmpty');
+    if (emptyEl) {
+      emptyEl.classList.toggle('show', visibleCount === 0);
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      searchClear.style.display = searchInput.value ? 'flex' : 'none';
+      filterProducts();
+    });
+  }
+  if (searchClear) {
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      searchClear.style.display = 'none';
+      filterProducts();
+    });
+  }
+
+  renderCalendar();
+  updateDateDisplay();
+})();
+</script>
+
+<script>
+window.addEventListener('load', function() {
+  var overlay = document.getElementById('mpOverlay');
+  var vList = document.getElementById('mpVendorList');
+  var pList = document.getElementById('mpProductList');
+  var counter = document.getElementById('mpCounter');
+  var btn = document.getElementById('pwManageBtn');
+
+  if (!overlay || !btn) return;
+
+  var vendors = [
+    {n:'Hp',c:16204},{n:'Intel',c:9283},{n:'Cisco',c:6257},{n:'Lenovo',c:4500},
+    {n:'Siemens',c:4135},{n:'Dell',c:3483},{n:'Qualcomm',c:3314},{n:'Samsung',c:2850},
+    {n:'Mitsubishielectric',c:1959},{n:'Huawei',c:1952},{n:'Canon',c:1870},{n:'Bosch',c:1654},
+    {n:'Apple',c:1520},{n:'Xerox',c:1340},{n:'Sharp',c:1210},{n:'Panasonic',c:1180},
+    {n:'Brother',c:1095},{n:'Epson',c:980},{n:'Ricoh',c:920},{n:'Toshiba',c:875}
+  ];
+  var products = [
+    {v:'intel',ver:'*',n:'intel'},{v:'amd',ver:'*',n:'amd'},{v:'-',ver:'-',n:'-'},
+    {v:'intel',ver:'-',n:'intel'},{v:'qualcomm',ver:'-',n:'qualcomm'},
+    {v:'azure-iot-cli-extension',ver:'-',n:'azure-iot-cli-extension'},
+    {v:'canon',ver:'-',n:'canon'},{v:'archive',ver:'\\',n:'archive\\'},
+    {v:'moundlabs',ver:'\\',n:'moundlabs'},{v:'email',ver:'\\',n:'email\\'},
+    {v:'hp',ver:'*',n:'hp'},{v:'cisco',ver:'*',n:'cisco'},{v:'dell',ver:'*',n:'dell'},
+    {v:'lenovo',ver:'*',n:'lenovo'},{v:'samsung',ver:'-',n:'samsung'},
+    {v:'siemens',ver:'-',n:'siemens'},{v:'bosch',ver:'-',n:'bosch'},
+    {v:'apple',ver:'*',n:'apple'},{v:'xerox',ver:'-',n:'xerox'},{v:'sharp',ver:'-',n:'sharp'}
+  ];
+  var selV = {}, chkP = {};
+
+  function renderV() {
+    var h = '';
+    vendors.forEach(function(v) {
+      h += '<div class="mp-row' + (selV[v.n] ? ' active' : '') + '" data-v="' + v.n + '"><span class="vname">' + v.n + '</span><span class="vcount">' + v.c.toLocaleString() + '</span></div>';
+    });
+    vList.innerHTML = h;
+    vList.querySelectorAll('.mp-row').forEach(function(r) {
+      r.addEventListener('click', function() {
+        var v = r.getAttribute('data-v');
+        selV[v] = !selV[v];
+        r.classList.toggle('active');
+      });
+    });
+  }
+  function renderP() {
+    var h = '';
+    products.forEach(function(p, i) {
+      h += '<div class="mp-row"><div class="mp-cb' + (chkP[i] ? ' on' : '') + '" data-i="' + i + '"></div><div class="mp-pinfo"><span class="mp-pver">' + p.ver + '</span><span class="mp-pname">' + p.n + '</span></div></div>';
+    });
+    pList.innerHTML = h;
+    pList.querySelectorAll('.mp-cb').forEach(function(cb) {
+      cb.addEventListener('click', function() {
+        var i = parseInt(cb.getAttribute('data-i'));
+        chkP[i] = !chkP[i];
+        cb.classList.toggle('on');
+        var c = 0;
+        Object.keys(chkP).forEach(function(k) { if (chkP[k]) c++; });
+        counter.textContent = c + ' product to add';
+      });
+    });
+  }
+
+  function close() { overlay.classList.remove('active'); }
+
+  btn.addEventListener('click', function() { overlay.classList.add('active'); renderV(); renderP(); });
+  document.getElementById('mpBackdrop').addEventListener('click', close);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && overlay.classList.contains('active')) close(); });
+  document.getElementById('mpClose').addEventListener('click', close);
+  document.getElementById('mpCancel').addEventListener('click', close);
+  document.getElementById('mpPreview').addEventListener('click', close);
+});
+</script>
+
+</body>
+</html>

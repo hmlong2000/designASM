@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "fileName": "settings.html",
+  "entries": [
+    {
+      "id": "5030cde9-b128-4c20-8369-373c5e6df9f8",
+      "fileName": "settings.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1783650910129,
+      "source": "ai",
+      "prompt": "tôi muốn đồng bộ font chữ về DM Sans",
+      "size": 127804,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-5030cde9-b128-4c20-8369-373c5e6df9f8.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "218346f3-5986-40ec-a136-dfbde947aa92",
+      "fileName": "settings.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1784165725455,
+      "source": "ai",
+      "prompt": "prototype swap language ngôn ngữ tiếng việt cho tất cả các trang",
+      "size": 128178,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-218346f3-5986-40ec-a136-dfbde947aa92.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "e8aa7fe1-ffd6-4ddd-81ff-b0a8ca8a33f1",
+      "fileName": "settings.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1784169699375,
+      "source": "ai",
+      "prompt": "cho ô en/vi rộng ra",
+      "size": 128179,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-e8aa7fe1-ffd6-4ddd-81ff-b0a8ca8a33f1.html",
+      "promptSource": "message"
+    }
+  ]
+}

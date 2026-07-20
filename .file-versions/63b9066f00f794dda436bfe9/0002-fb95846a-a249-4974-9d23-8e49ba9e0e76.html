@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G-SKYWATCH — Brand Protection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f2f7;
+      --surface: #ffffff;
+      --surface-alt: #f6f8fc;
+      --fg: #0f1629;
+      --fg-secondary: #4a5068;
+      --muted: #7c829a;
+      --border: #dfe2ec;
+      --border-subtle: #eceef5;
+      --accent: #0167FF;
+      --accent-soft: #e4edff;
+      --accent-hover: #0052cc;
+      --teal: #0a9396;
+      --teal-soft: #e0f5f5;
+      --amber: #D4870E;
+      --amber-soft: #fdf4e4;
+      --critical: #c53030;
+      --critical-soft: #fde8e8;
+      --high: #c05621;
+      --high-soft: #fef0e4;
+      --low: #276749;
+      --low-soft: #e6f7ef;
+      --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(15,22,41,0.04), 0 1px 2px rgba(15,22,41,0.03);
+      --shadow-md: 0 4px 12px rgba(15,22,41,0.06), 0 1px 3px rgba(15,22,41,0.04);
+      --shadow-lg: 0 8px 24px rgba(15,22,41,0.08), 0 2px 6px rgba(15,22,41,0.04);
+      --transition-fast: 120ms ease;
+      --transition-base: 200ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--fg); line-height: 1.5; }
+
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; animation: fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .reveal-delay-1 { animation-delay: 0.06s; }
+    .reveal-delay-2 { animation-delay: 0.12s; }
+    .reveal-delay-3 { animation-delay: 0.18s; }
+    .reveal-delay-4 { animation-delay: 0.24s; }
+
+    /* ── Single-Column Vertical Sidebar ────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border-subtle);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 16px 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sidebar-brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    .sidebar-brand-text span { color: var(--accent); }
+
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-toggle-btn:hover { background: var(--surface-alt); color: var(--fg); border-color: var(--accent); }
+    .sidebar.collapsed .sidebar-toggle-btn { right: 8px; }
+    .sidebar.collapsed .sidebar-toggle-btn svg { transform: rotate(180deg); }
+
+    /* Quick Search */
+    .sidebar-search {
+      padding: 4px 12px;
+      flex-shrink: 0;
+    }
+    .sidebar-search-input {
+      width: 100%;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+    .sidebar-search-input:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .sidebar-search-input::placeholder { color: var(--muted); }
+    .sidebar-search-wrap {
+      position: relative;
+    }
+    .sidebar-search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .sidebar.collapsed .sidebar-search {
+      padding: 0;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-icon {
+      margin: 0;
+    }
+    .sidebar.collapsed .sidebar-search-text,
+    .sidebar.collapsed .sidebar-search-input {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-search-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-search-wrap svg {
+      position: static;
+      transform: none;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+    }
+    .sidebar.collapsed .sidebar-search { cursor: pointer; }
+
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 0 8px;
+      flex: 1;
+    }
+
+    .sidebar-tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      text-align: left;
+      width: 100%;
+    }
+    .sidebar-tab svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+    .sidebar-tab:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-tab:hover svg { opacity: 0.85; }
+    .sidebar-tab.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+    .sidebar-tab.active svg { opacity: 1; color: var(--accent); }
+
+    .sidebar-tab .sidebar-badge {
+      margin-left: auto;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--critical-soft);
+      color: var(--critical);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .sidebar-nav > .sidebar-divider {
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .sidebar-divider--full {
+      margin: 4px 0;
+    }
+
+    .nav-section-label {
+      padding: 12px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    .sidebar.collapsed .nav-section-label { display: none; }
+
+    .sidebar-spacer { flex: 1; }
+    .sidebar-upgrade {
+      margin: 8px 12px 4px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .sidebar-upgrade-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-upgrade-icon svg { width: 16px; height: 16px; color: #fff; }
+    .sidebar-upgrade-label {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .sidebar-upgrade-label strong {
+      display: block;
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .sidebar-upgrade-desc {
+      font-size: 11px;
+      color: var(--fg-secondary);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .sidebar-upgrade-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .sidebar-upgrade-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .sidebar-upgrade-btn svg { width: 14px; height: 14px; }
+    .sidebar.collapsed .sidebar-upgrade { padding: 8px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .sidebar.collapsed .sidebar-upgrade-header { justify-content: center; }
+    .sidebar.collapsed .sidebar-upgrade-icon { margin: 0; width: 40px; height: 40px; background: var(--accent); border: 2.5px solid #dbeafe; border-radius: 50%; }
+    .sidebar.collapsed .sidebar-upgrade-icon svg { color: #fff; width: 18px; height: 18px; }
+    .sidebar.collapsed .sidebar-upgrade-label,
+    .sidebar.collapsed .sidebar-upgrade-desc,
+    .sidebar.collapsed .sidebar-upgrade-btn { display: none; }
+
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 34px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: var(--font-body);
+      font-weight: 450;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+      text-decoration: none;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .sidebar-bottom-item svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+    .sidebar-bottom-item:hover {
+      color: var(--fg);
+      background: var(--surface-alt);
+    }
+    .sidebar-bottom-item:hover svg { opacity: 0.8; }
+    .sidebar-bottom-right .bottom-right { margin-left: auto; }
+    .sidebar-bottom-item .bottom-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-lang {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      overflow: hidden;
+      margin: 6px 8px 8px;
+    }
+    .sidebar-lang .lang-btn {
+      flex: 1;
+      padding: 5px 0;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-display);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .sidebar-lang .lang-btn.active { background: var(--accent); color: #fff; }
+    .sidebar-lang .lang-btn:hover:not(.active) { color: var(--fg); }
+
+    /* Language switching */
+    .lang-vi { display: none; }
+    body.lang-vi-active .lang-vi { display: block; }
+    body.lang-vi-active .category-name-vi { display: block; }
+    body:not(.lang-vi-active) .category-name-vi { display: none; }
+
+    /* Sidebar collapsed — only 60px visible */
+    .sidebar.collapsed {
+      width: 60px;
+    }
+    .sidebar.collapsed ~ .main {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .sidebar-tab span:not(.sidebar-badge),
+    .sidebar.collapsed .sidebar-tab span[data-en],
+    .sidebar.collapsed .sidebar-tab span[data-vi],
+    .sidebar.collapsed .sidebar-bottom-item span,
+    .sidebar.collapsed .sidebar-bottom-item .bottom-right,
+    .sidebar.collapsed .sidebar-avatar-info,
+    .sidebar.collapsed .sidebar-lang,
+        .sidebar.collapsed .sidebar-spacer,
+    .sidebar.collapsed .sidebar-search {
+      display: none;
+    }
+    .sidebar.collapsed .sidebar-tab {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-bottom-item {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding: 16px 0 14px;
+    }
+
+    
+    /* Theme toggle */
+    .sidebar-theme-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+    }
+    .sidebar-theme-toggle.active { background: var(--accent); }
+    .sidebar-theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .sidebar-theme-toggle.active::after { transform: translateX(16px); }
+
+    /* Language pills */
+    .sidebar-lang-pills {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .sidebar-lang-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sidebar-lang-pill.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Avatar */
+    .sidebar-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .sidebar-avatar-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .sidebar-avatar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-avatar-role {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    /* ── Main Container ────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+    .page-header-left { flex: 1; min-width: 0; }
+    .page-header-left h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; }
+    .page-header-left p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .page-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* ── Summary Strip ─────────────────────────────────────── */
+    .brand-summary { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .brand-summary-row { display: grid; gap: 12px; }
+    .brand-summary-row--top { grid-template-columns: 1fr; }
+    .brand-summary-row--bottom { grid-template-columns: repeat(4, 1fr); }
+    .brand-summary-card {
+      border-radius: var(--radius-md);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: box-shadow var(--transition-base), transform var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    .brand-summary-card::after {
+      content: '';
+      position: absolute;
+      top: -16px; right: -16px;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+    .brand-summary-card:hover {
+      transform: translateY(-1px);
+    }
+    .bsc-typo {
+      background: linear-gradient(135deg, var(--accent) 0%, #0a4fd4 100%);
+      box-shadow: 0 4px 16px rgba(1, 103, 255, 0.2);
+    }
+    .bsc-typo:hover { box-shadow: 0 8px 28px rgba(1, 103, 255, 0.3); }
+    .bsc-critical {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+    }
+    .bsc-critical:hover { box-shadow: 0 8px 28px rgba(220, 38, 38, 0.3); }
+    .bsc-high {
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
+      box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2);
+    }
+    .bsc-high:hover { box-shadow: 0 8px 28px rgba(234, 88, 12, 0.3); }
+    .bsc-medium {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.2);
+    }
+    .bsc-medium:hover { box-shadow: 0 8px 28px rgba(217, 119, 6, 0.3); }
+    .bsc-low {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
+    }
+    .bsc-low:hover { box-shadow: 0 8px 28px rgba(5, 150, 105, 0.3); }
+    .brand-summary-top { display: flex; align-items: center; justify-content: space-between; }
+    .brand-summary-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,0.18); color: #fff;
+    }
+    .brand-summary-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .brand-summary-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: #fff; }
+    .brand-summary-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .brand-summary-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
+    .brand-summary-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); background: #fff; width: 0; }
+    .bsc-typo.animated .brand-summary-bar-fill { width: 100%; }
+    .bsc-critical.animated .brand-summary-bar-fill { width: 2.5%; }
+    .bsc-high.animated .brand-summary-bar-fill { width: 0%; }
+    .bsc-medium.animated .brand-summary-bar-fill { width: 0.04%; }
+    .bsc-low.animated .brand-summary-bar-fill { width: 32.1%; }
+    .brand-summary-pct { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.6); text-align: right; }
+
+    /* ── Header Buttons ──────────────────────────────────────── */
+    .header-btn { padding: 7px 14px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font-body); transition: all var(--transition-fast); border: none; display: inline-flex; align-items: center; gap: 6px; }
+    .header-btn-secondary { border: 1px solid var(--border); background: var(--surface); color: var(--fg-secondary); }
+    .header-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .header-btn-primary { border: 1px solid var(--accent); background: var(--accent); color: #fff; font-weight: 600; }
+    .header-btn-primary:hover { background: var(--accent-hover); }
+
+    /* ── Search + Filter Bar ────────────────────────────────── */
+    .bp-search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .bp-search-input { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; transition: border-color var(--transition-fast); }
+    .bp-search-input:focus-within { border-color: var(--accent); }
+    .bp-search-input svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+    .bp-search-input input { border: none; outline: none; background: transparent; font-size: 13px; color: var(--fg); width: 100%; font-family: var(--font-body); }
+    .bp-search-input input::placeholder { color: var(--muted); }
+    .bp-filter-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--fg); cursor: pointer; transition: all var(--transition-fast); flex-shrink: 0; }
+    .bp-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bp-filter-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+    .bp-filter-chip { padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; }
+    .bp-filter-chip:hover { border-color: var(--accent); color: var(--fg); }
+    .bp-filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .bp-filter-chip .chip-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; font-size: 10px; font-weight: 600; margin-left: 4px; background: rgba(0,0,0,0.08); }
+    .bp-filter-chip.active .chip-count { background: rgba(255,255,255,0.25); }
+    .bp-table-row.hidden { display: none; }
+    .bp-empty-state { display: none; padding: 48px 20px; text-align: center; color: var(--muted); font-size: 14px; }
+    .bp-empty-state svg { width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.3; }
+    .bp-empty-state.visible { display: block; }
+
+    /* ── Asset Table ────────────────────────────────────────── */
+    .bp-table-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .bp-table-header { display: grid; grid-template-columns: 2fr 2fr 1.2fr 100px; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
+    .bp-table-row { display: grid; grid-template-columns: 2fr 2fr 1.2fr 100px; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
+    .bp-table-row:last-child { border-bottom: none; }
+    .bp-table-row:hover { background: var(--surface-alt); }
+    .bp-asset-name { font-size: 13px; font-weight: 500; font-family: var(--font-mono); }
+    .bp-similarity { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+    .bp-sev-item { display: flex; align-items: center; gap: 4px; }
+    .bp-sev-icon { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+    .bp-sev-icon svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+    .bp-sev-critical .bp-sev-icon { background: var(--critical-soft); color: var(--critical); }
+    .bp-sev-high .bp-sev-icon { background: var(--high-soft); color: var(--high); }
+    .bp-sev-medium .bp-sev-icon { background: var(--amber-soft); color: var(--amber); }
+    .bp-sev-low .bp-sev-icon { background: var(--low-soft); color: var(--low); }
+    .bp-sev-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+    .bp-last-update { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+    .bp-scanning { display: flex; justify-content: center; }
+
+    /* ── Detail Subpage ────────────────────────────────────── */
+    .bp-detail-screen { display: none; }
+    .bp-detail-screen.active { display: block; }
+    #bp-grid-screen { display: block; }
+    #bp-grid-screen.hidden { display: none; }
+
+    .bp-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+    .bp-detail-header-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .bp-detail-back { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: var(--muted); transition: all 0.15s; }
+    .bp-detail-back:hover { border-color: var(--accent); color: var(--accent); }
+    .bp-detail-back svg { width: 16px; height: 16px; }
+    .bp-detail-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; }
+    .bp-detail-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .bp-detail-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .bp-detail-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .bp-detail-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+    .bp-detail-stat-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+    .bp-detail-stat-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .bp-detail-table-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .bp-detail-table-header { display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.2fr 1fr; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-alt); }
+    .bp-detail-table-row { display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.2fr 1fr; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); align-items: center; transition: background var(--transition-fast); }
+    .bp-detail-table-row:last-child { border-bottom: none; }
+    .bp-detail-table-row:hover { background: var(--surface-alt); }
+    .bp-detail-typo-domain { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+    .bp-detail-similarity { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+    .bp-detail-web-title { font-size: 12px; color: var(--fg-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bp-detail-ip-cell { display: flex; align-items: center; gap: 6px; }
+    .bp-detail-ip { font-family: var(--font-mono); font-size: 12px; color: var(--fg-secondary); }
+    .bp-detail-ip-badge { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 600; color: var(--muted); font-family: var(--font-mono); }
+    .bp-detail-last-update { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+    .bp-detail-typo-domain.clickable { cursor: pointer; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .bp-detail-typo-domain.clickable:hover { color: var(--accent-hover); }
+
+    /* Typo Detail Slide Panel */
+    .bp-typo-overlay { display: block; position: fixed; inset: 0; z-index: 9999; background: rgba(15,22,41,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .bp-typo-overlay.active { opacity: 1; pointer-events: auto; }
+    .bp-typo-modal { position: fixed; top: 0; right: 0; bottom: 0; width: 580px; z-index: 10000; background: var(--bg); border-left: 1px solid var(--border); box-shadow: -8px 0 32px rgba(15,22,41,0.12); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; overflow: hidden; border-radius: 0; max-height: none; }
+    .bp-typo-overlay.active .bp-typo-modal { transform: translateX(0); }
+    .bp-typo-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+    .bp-typo-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+    .bp-typo-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--muted); transition: all 0.15s; flex-shrink: 0; }
+    .bp-typo-close:hover { border-color: var(--critical); color: var(--critical); background: var(--critical-soft); }
+    .bp-typo-close svg { width: 16px; height: 16px; }
+    .bp-typo-body { padding: 20px 24px; flex: 1; overflow-y: auto; }
+    .bp-typo-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-subtle); gap: 20px; }
+    .bp-typo-row:last-child { border-bottom: none; }
+    .bp-typo-row-label { font-size: 14px; color: var(--fg-secondary); font-weight: 400; flex-shrink: 0; min-width: 140px; }
+    .bp-typo-row-value { font-size: 14px; color: var(--fg); font-weight: 600; text-align: right; word-break: break-all; line-height: 1.6; }
+    .bp-typo-row-value.mono { font-family: var(--font-mono); font-size: 13px; }
+    .bp-typo-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    .bp-typo-badge.critical { background: #fee2e2; color: #dc2626; }
+    .bp-typo-badge.high { background: #ffedd5; color: #ea580c; }
+    .bp-typo-badge.medium { background: #fef3c7; color: #d97706; }
+    .bp-typo-badge.low { background: #dcfce7; color: #16a34a; }
+    .bp-typo-badge.safe { background: #dbeafe; color: #2563eb; }
+
+    @media (max-width: 1200px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 2fr 1fr 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(3), .bp-detail-table-row > *:nth-child(3) { display: none; }
+      .bp-detail-summary { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 1.5fr 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(4), .bp-detail-table-row > *:nth-child(4),
+      .bp-detail-table-header > *:nth-child(5), .bp-detail-table-row > *:nth-child(5) { display: none; }
+      .bp-detail-summary { grid-template-columns: 1fr 1fr; }
+      .bp-typo-modal { width: 100%; }
+      .bp-typo-title { font-size: 18px; }
+    }
+    @media (max-width: 480px) {
+      .bp-detail-table-header, .bp-detail-table-row { grid-template-columns: 1fr 1fr; }
+      .bp-detail-table-header > *:nth-child(3), .bp-detail-table-row > *:nth-child(3) { display: none; }
+      .bp-detail-summary { grid-template-columns: 1fr; }
+      .bp-typo-modal { width: 100%; }
+      .bp-typo-header { padding: 16px 16px 0; }
+      .bp-typo-body { padding: 8px 16px 20px; }
+      .bp-typo-title { font-size: 16px; }
+      .bp-typo-row { padding: 12px 0; }
+      .bp-typo-row-label { min-width: 120px; font-size: 13px; }
+      .bp-typo-row-value { font-size: 13px; }
+    }
+
+    /* ── Toggle Switch ──────────────────────────────────────── */
+    .toggle-switch { position: relative; width: 36px; height: 20px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 20px; transition: background var(--transition-fast); }
+    .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: transform var(--transition-fast); }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    /* ── Pagination ─────────────────────────────────────────── */
+    .bp-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--border-subtle); font-size: 12px; color: var(--muted); }
+    .bp-pagination select { padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius-xs); font-size: 12px; color: var(--fg); background: var(--surface); cursor: pointer; }
+    .bp-pagination-btns { display: flex; gap: 4px; }
+    .bp-pagination-btns button { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: var(--radius-xs); background: var(--surface); color: var(--fg-secondary); cursor: pointer; display: grid; place-items: center; font-size: 12px; transition: all var(--transition-fast); }
+    .bp-pagination-btns button:hover { border-color: var(--accent); color: var(--accent); }
+    .bp-pagination-btns button:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Main Container ────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      width: calc(100% - 240px);
+      padding: 20px 40px 40px;
+      transition: margin-left var(--transition-fast), width var(--transition-fast);
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .main { margin-left: 240px; width: calc(100% - 240px); padding: 16px 20px 32px; }
+      .brand-summary-row--bottom { grid-template-columns: repeat(4, 1fr); }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1.5fr 1fr 100px; }
+      .bp-table-header > *:nth-child(4), .bp-table-row > *:nth-child(4) { display: none; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { width: 60px; }
+      .sidebar .sidebar-brand-text,
+      .sidebar .sidebar-tab span:not(.sidebar-badge),
+      .sidebar .sidebar-tab span[data-en],
+      .sidebar .sidebar-tab span[data-vi],
+      .sidebar .sidebar-bottom-item span,
+      .sidebar .sidebar-bottom-item .bottom-right,
+      .sidebar .sidebar-lang,
+      
+      .sidebar .sidebar-spacer { display: none; }
+      .sidebar .sidebar-tab { justify-content: center; padding: 0; }
+      .sidebar .sidebar-bottom-item { justify-content: center; padding: 0; }
+      .sidebar .sidebar-brand {
+        justify-content: center;
+        padding: 16px 0 14px;
+      }
+
+      .sidebar .sidebar-toggle-btn { display: none; }
+      .main { margin-left: 60px; width: calc(100% - 60px); padding: 12px; }
+      .brand-summary-row--bottom { grid-template-columns: repeat(2, 1fr); }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1.5fr 1fr 100px; }
+      .bp-table-header > *:nth-child(2), .bp-table-row > *:nth-child(2) { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .main { padding: 12px 12px 32px; }
+      .brand-summary-row--bottom { grid-template-columns: 1fr 1fr; }
+      .bp-table-header, .bp-table-row { grid-template-columns: 1fr 80px; }
+      .bp-table-header > *:nth-child(3), .bp-table-row > *:nth-child(3),
+      .bp-table-header > *:nth-child(4), .bp-table-row > *:nth-child(4) { display: none; }
+    }
+  
+    /* ── Pricing Modal ──────────────────────────────────────── */
+    .pricing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 22, 41, 0.55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .pricing-overlay.active { opacity: 1; pointer-events: auto; }
+        .pricing-modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 95%; max-width: 1200px;
+      padding: 40px 36px 36px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .pricing-overlay.active .pricing-modal { transform: translateY(0) scale(1); }
+    .pricing-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .pricing-close:hover { background: var(--border); }
+    .pricing-close svg { width: 16px; height: 16px; color: var(--muted); }
+    .pricing-header { text-align: center; margin-bottom: 32px; }
+    .pricing-title { font: 700 28px/1.2 var(--font-display); letter-spacing: -0.03em; color: var(--fg); margin-bottom: 6px; }
+    .pricing-subtitle { font: 400 14px/1.5 var(--font-body); color: var(--muted); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.08); }
+    .pricing-card.featured { border-color: var(--accent); box-shadow: 0 4px 20px rgba(1,103,255,0.1); }
+    .pricing-card-top {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font: 600 11px/1 var(--font-body);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .pricing-card:nth-child(1) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-card:nth-child(2) .pricing-badge { background: #e0f2fe; color: #0369a1; }
+    .pricing-card:nth-child(3) .pricing-badge { background: var(--accent); color: #fff; }
+    .pricing-card:nth-child(4) .pricing-badge { background: #fef3c7; color: #92400e; }
+    .pricing-card:nth-child(5) .pricing-badge { background: var(--surface-alt); color: var(--fg-secondary); }
+    .pricing-amount {
+      display: flex; align-items: baseline; gap: 2px;
+      margin-bottom: 8px;
+    }
+    .pricing-currency { font: 700 20px/1 var(--font-display); color: var(--fg); }
+    .pricing-value { font: 700 32px/1 var(--font-display); letter-spacing: -0.03em; color: var(--fg); }
+    .pricing-period { font: 400 14px/1 var(--font-body); color: var(--muted); margin-left: 2px; }
+    .pricing-desc { font: 400 13px/1.4 var(--font-body); color: var(--muted); }
+    .pricing-card-bottom { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 20px; flex: 1; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font: 400 13px/1.5 var(--font-body); color: var(--fg-secondary);
+      padding: 6px 0;
+    }
+    .pricing-features li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pricing-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-sm);
+      font: 600 13px/1 var(--font-body); cursor: pointer;
+      border: none; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .pricing-btn-primary { background: var(--fg); color: #fff; }
+    .pricing-btn-primary:hover { background: #1e293b; }
+    .pricing-btn-secondary { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+    .pricing-btn-secondary:hover { background: var(--border); }
+    @media (max-width: 768px) {
+      .pricing-modal { padding: 28px 20px 24px; width: 95%; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pricing-title { font-size: 22px; }
+    }
+      /* Dark mode */
+      body.dark-mode {
+        --bg: #0d1117;
+        --bg-wash: #0a0d14;
+        --surface: #161b22;
+        --surface-raised: #1c2129;
+        --surface-alt: #12161e;
+        --fg: #e6edf3;
+        --fg-secondary: #8b949e;
+        --muted: #484f58;
+        --border: #30363d;
+        --border-subtle: #21262d;
+        --accent-soft: rgba(1,103,255,0.15);
+        --accent-hover: #388bfd;
+        --teal: #39d2c0;
+        --teal-soft: rgba(57,210,192,0.15);
+        --amber: #f0883e;
+        --amber-soft: rgba(240,136,62,0.15);
+        --critical: #f85149;
+        --critical-soft: rgba(248,81,73,0.15);
+        --high: #f0883e;
+        --high-soft: rgba(240,136,62,0.15);
+        --medium: #d29922;
+        --medium-soft: rgba(210,153,34,0.15);
+        --low: #3fb950;
+        --low-soft: rgba(63,185,80,0.15);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        color-scheme: dark;
+      }
+      body.dark-mode .sidebar {
+        background: #0d1117;
+        border-right-color: #21262d;
+      }
+      body.dark-mode .sidebar-bottom-item:hover,
+      body.dark-mode .sidebar-tab:hover,
+      body.dark-mode .sidebar-tab.active {
+        background: rgba(255,255,255,0.06);
+      }
+      body.dark-mode .sidebar-nav-label { color: #484f58; }
+      body.dark-mode .card, body.dark-mode .bento-card, body.dark-mode .metric-card {
+        background: var(--surface);
+        border-color: var(--border);
+      }
+      body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-value, body.dark-mode .bento-title, body.dark-mode .card-title {
+        color: var(--fg);
+      }
+      body.dark-mode table { background: var(--surface); }
+      body.dark-mode th { background: var(--surface-alt); color: var(--fg-secondary); border-color: var(--border); }
+      body.dark-mode td { border-color: var(--border-subtle); color: var(--fg); }
+      body.dark-mode tr:hover td { background: rgba(255,255,255,0.03); }
+      body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .subpage, body.dark-mode .popup { background: var(--bg); }
+      body.dark-mode .chat-container, body.dark-mode .search-container { background: var(--surface); }
+      body.dark-mode .toggle-slider { background: var(--surface-alt); }
+      body.dark-mode .toggle-slider::before { background: #e6edf3; }
+      body.dark-mode .hero-card { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .detail-section { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .chart-container { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .info-box, body.dark-mode .warning-box { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .sidebar-upgrade {
+        background: linear-gradient(135deg, rgba(1,103,255,0.08) 0%, rgba(1,103,255,0.04) 100%);
+        border-color: var(--border);
+      }
+      body.dark-mode .sidebar-upgrade-label strong { color: var(--fg); }
+      body.dark-mode .sidebar-upgrade-desc { color: var(--fg-secondary); }
+      body.dark-mode .sidebar-upgrade-btn {
+        background: var(--surface-alt);
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      body.dark-mode .metric-strip-icon { background: rgba(255,255,255,0.25) !important; }
+      body.dark-mode .metric-strip-item:nth-child(1) .metric-strip-icon { color: #93c5fd; }
+      body.dark-mode .metric-strip-item:nth-child(2) .metric-strip-icon { color: #5eead4; }
+      body.dark-mode .metric-strip-item:nth-child(3) .metric-strip-icon { color: #c4b5fd; }
+      body.dark-mode .metric-strip-item:nth-child(4) .metric-strip-icon { color: #f9a8d4; }
+      body.dark-mode .sidebar-upgrade-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      body.dark-mode .sidebar.collapsed .sidebar-upgrade-icon { border-color: rgba(1,103,255,0.3); }
+      /* ── Contact Us Modal ─────────────────────────────────── */
+      .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      .contact-modal-overlay.active { opacity: 1; pointer-events: auto; }
+      .contact-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .contact-modal-overlay.active .contact-modal { transform: translateY(0) scale(1); }
+      .contact-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-alt);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .contact-modal-close:hover { background: var(--border); }
+      .contact-modal-close svg { width: 16px; height: 16px; color: var(--muted); }
+      .contact-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        margin-bottom: 16px;
+      }
+      .contact-modal-icon.mail { background: var(--accent-soft); color: var(--accent); }
+      .contact-modal-icon svg { width: 24px; height: 24px; }
+      .contact-modal-title {
+        font: 700 22px/1.2 var(--font-display);
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-desc {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .contact-modal-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .contact-modal-plan-label {
+        font: 500 12px/1 var(--font-body);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .contact-modal-plan-tag {
+        font: 600 13px/1 var(--font-display);
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(1,103,255,0.15);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+      .contact-modal-field { margin-bottom: 14px; }
+      .contact-modal-label {
+        display: block;
+        font: 500 12px/1.4 var(--font-body);
+        color: var(--fg-secondary);
+        margin-bottom: 5px;
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-input,
+      .contact-modal-select,
+      .contact-modal-textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font: 400 14px/1.4 var(--font-body);
+        color: var(--fg);
+        background: var(--surface);
+        transition: all var(--transition-fast);
+        outline: none;
+      }
+      .contact-modal-input:focus,
+      .contact-modal-select:focus,
+      .contact-modal-textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .contact-modal-input::placeholder,
+      .contact-modal-textarea::placeholder { color: var(--muted); }
+      .contact-modal-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+      }
+      .contact-modal-textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 160px;
+      }
+      .contact-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .contact-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .contact-modal-btn {
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        font: 500 13px/1 var(--font-body);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .contact-modal-btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .contact-modal-btn-primary:hover { background: var(--accent-hover); }
+      .contact-modal-btn-secondary {
+        background: var(--surface-alt);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .contact-modal-btn-secondary:hover { background: var(--border); }
+      .contact-modal-success {
+        display: none;
+        text-align: center;
+        padding: 20px 0 8px;
+      }
+      .contact-modal-success.active { display: block; }
+      .contact-modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(22,163,74,0.1);
+        display: inline-grid;
+        place-items: center;
+        margin-bottom: 14px;
+      }
+      .contact-modal-success-icon svg { width: 28px; height: 28px; color: #16a34a; }
+      .contact-modal-success h3 {
+        font: 700 18px/1.3 var(--font-display);
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .contact-modal-success p {
+        font: 400 13px/1.5 var(--font-body);
+        color: var(--muted);
+      }
+      body.dark-mode .contact-modal-overlay { background: rgba(0,0,0,0.7); }
+      body.dark-mode .contact-modal { background: var(--surface); border-color: var(--border); }
+      body.dark-mode .contact-modal-input,
+      body.dark-mode .contact-modal-select,
+      body.dark-mode .contact-modal-textarea { background: var(--surface-alt); border-color: var(--border); color: var(--fg); }
+      body.dark-mode .contact-modal-input:focus,
+      body.dark-mode .contact-modal-select:focus,
+      body.dark-mode .contact-modal-textarea:focus { background: var(--bg); }
+      body.dark-mode .contact-modal-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .contact-modal-plan-tag { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+      body.dark-mode .bp-typo-overlay { background: rgba(0,0,0,0.6); }
+      body.dark-mode .bp-typo-modal { background: var(--bg); border-left-color: var(--border); box-shadow: -8px 0 32px rgba(0,0,0,0.4); }
+      body.dark-mode .bp-typo-close { background: var(--surface-alt); border-color: var(--border); }
+      body.dark-mode .bp-typo-close:hover { border-color: var(--critical); color: var(--critical); background: rgba(197,48,48,0.15); }
+
+  </style>
+</head>
+<body>
+<script>if(localStorage.getItem("gs-theme")==="dark"){document.body.classList.add("dark-mode");document.addEventListener("DOMContentLoaded",function(){var t=document.getElementById("themeToggle");if(t)t.classList.add("active")})}</script>
+<script>if(localStorage.getItem("gs-sidebar-v2")==="1"){document.addEventListener("DOMContentLoaded",function(){var s=document.getElementById("sidebar");if(s)s.classList.add("collapsed")})}</script>
+  <!-- ═══════════════════ TOP NAVIGATION ═══════════════════ -->
+  <nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">GS</div>
+    <div class="sidebar-brand-text">G-SKY<span>WATCH</span></div>
+    <button class="sidebar-toggle-btn" onclick="var sb=document.getElementById('sidebar'); sb.classList.toggle('collapsed'); localStorage.setItem('gs-sidebar-v2', sb.classList.contains('collapsed') ? '1' : '0');" title="Toggle sidebar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+
+  <!-- Quick Search -->
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-search">
+    <div class="sidebar-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="sidebar-search-input" placeholder="Quick search" data-vi-placeholder="Tìm kiếm nhanh">
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-nav">
+    <a href="index-v2.html" class="sidebar-tab" data-en="Overview" data-vi="Tổng quan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span data-en="Overview" data-vi="Tổng quan">Overview <span class="sidebar-badge">23</span></span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Assets" data-vi="Tài sản">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span data-en="Assets" data-vi="Tài sản">Assets</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Sky Assistant" data-vi="Trợ lý Sky">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span data-en="Sky Assistant" data-vi="Trợ lý Sky">Sky Assistant</span>
+    </a>
+    <a href="index-v2.html" class="sidebar-tab" data-en="Report" data-vi="Báo cáo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span data-en="Report" data-vi="Báo cáo">Report</span>
+    </a>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="nav-section-label" data-en="Features" data-vi="Tính năng">Features</div>
+
+    <a href="#" class="sidebar-tab" data-en="Threat Map" data-vi="Bản đồ đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span data-en="Threat Map" data-vi="Bản đồ đe dọa">Threat Map</span>
+    </a>
+    <a href="feature-uptime-monitoring.html" class="sidebar-tab" data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span data-en="Uptime Monitoring" data-vi="Giám sát thời gian hoạt động">Uptime Monitoring</span>
+    </a>
+    <a href="feature-brand-protection.html" class="sidebar-tab active" data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</span>
+    </a>
+    <a href="feature-vulnerability-management.html" class="sidebar-tab" data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span data-en="Vulnerability Management" data-vi="Quản lý lỗ hổng">Vulnerability Management</span>
+    </a>
+    <a href="feature-product-weakness.html" class="sidebar-tab" data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span data-en="Product Weakness" data-vi="Điểm yếu sản phẩm">Product Weakness</span>
+    </a>
+    <a href="feature-threat-investigation.html" class="sidebar-tab" data-en="Threat Investigation" data-vi="Điều tra đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span data-en="Threat Investigation" data-vi="Điều tra đe dọa">Threat Investigation</span>
+    </a>
+    <a href="feature-data-breach-monitoring.html" class="sidebar-tab" data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span data-en="Data Breach Monitoring" data-vi="Giám sát rò rỉ dữ liệu">Data Breach Monitoring</span>
+    </a>
+    <a href="feature-botnet-detection.html" class="sidebar-tab" data-en="Botnet Detection" data-vi="Phát hiện Botnet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span data-en="Botnet Detection" data-vi="Phát hiện Botnet">Botnet Detection</span>
+    </a>
+    <a href="feature-threat-intel-feeds.html" class="sidebar-tab" data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+      <span data-en="Threat Intel Feeds" data-vi="Luồng tin tức mối đe dọa">Threat Intel Feeds</span>
+    </a>
+    <a href="feature-threat-actor-intelligence.html" class="sidebar-tab" data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span data-en="Threat Actor Intelligence" data-vi="Tình báo tác nhân đe dọa">Threat Actor Intelligence</span>
+    </a>
+    <a href="feature-malware-intelligence.html" class="sidebar-tab" data-en="Malware Intelligence" data-vi="Tình báo mã độc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-en="Malware Intelligence" data-vi="Tình báo mã độc">Malware Intelligence</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <!-- Upgrade Card -->
+  <div class="sidebar-upgrade">
+    <div class="sidebar-upgrade-header">
+      <div class="sidebar-upgrade-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </div>
+      <div class="sidebar-upgrade-label">
+        <span data-en="Current plan:" data-vi="Gói hiện tại:">Current plan:</span>
+        <strong data-en="Pro trial" data-vi="Dùng thử Pro">Pro trial</strong>
+      </div>
+    </div>
+    <div class="sidebar-upgrade-desc" data-en="Upgrade to Pro to get the latest and exclusive features" data-vi="Nâng cấp Pro để nhận các tính năng mới nhất và độc quyền">Upgrade to Pro to get the latest and exclusive features</div>
+    <a href="#" class="sidebar-upgrade-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span data-en="Upgrade to Pro" data-vi="Nâng cấp Pro">Upgrade to Pro</span>
+    </a>
+  </div>
+
+  <div class="sidebar-divider sidebar-divider--full"></div>
+
+  <div class="sidebar-bottom">
+    <a href="settings.html" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span data-en="Settings" data-vi="Cài đặt">Settings</span>
+    </a>
+    <a href="https://skywatch.gcsc.vn/" target="_blank" rel="noopener" class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span data-en="Help" data-vi="Trợ giúp">Help</span>
+    </a>
+    <div class="sidebar-bottom-item" style="cursor:default;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span data-en="Theme" data-vi="Giao diện">Theme</span>
+      <div class="bottom-right sidebar-bottom-right">
+        <button class="sidebar-theme-toggle" id="themeToggle" aria-label="Toggle theme" onclick="this.classList.toggle('active');document.body.classList.toggle('dark-mode');localStorage.setItem('gs-theme',document.body.classList.contains('dark-mode')?'dark':'light')"></button>
+      </div>
+    </div>
+    <div class="sidebar-bottom-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      <span data-en="Language" data-vi="Ngôn ngữ">Language</span>
+      <div class="bottom-right sidebar-bottom-right">
+        <div class="sidebar-lang-pills">
+          <button class="sidebar-lang-pill active" data-lang="en">EN</button>
+          <button class="sidebar-lang-pill" data-lang="vi">VI</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-divider sidebar-divider--full"></div>
+    <a href="index-v2.html#profile" class="sidebar-bottom-item sidebar-avatar-item sidebar-tab" data-en="Profile" data-vi="Hồ sơ">
+      <div class="sidebar-avatar">B</div>
+      <div class="sidebar-avatar-info">
+        <div class="sidebar-avatar-name">Brooklyn</div>
+        <div class="sidebar-avatar-role">Admin</div>
+      </div>
+    </a>
+  </div>
+</nav>
+
+  <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+  <main class="main">
+  <div id="bp-grid-screen">
+    <div class="page-header reveal">
+      <div class="page-header-left">
+        <h1 data-en="Brand Protection" data-vi="Bảo vệ thương hiệu">Brand Protection</h1>
+        <p data-en="Monitor and protect your brand from phishing, impersonation, and domain threats" data-vi="Giám sát và bảo vệ thương hiệu khỏi lừa đảo, giả mạo và mối đe dọa tên miền">Monitor and protect your brand from phishing, impersonation, and domain threats</p>
+      </div>
+      <div class="page-header-right">
+      </div>
+    </div>
+
+        <!-- Summary -->
+    <div class="brand-summary reveal reveal-delay-1">
+      <div class="brand-summary-row brand-summary-row--top">
+        <div class="brand-summary-card bsc-typo">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="brand-summary-value">2,621</div>
+          </div>
+          <div class="brand-summary-label" data-en="Typo registered" data-vi="Nhập sai đã đăng ký">Typo registered</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">100%</div>
+        </div>
+      </div>
+      <div class="brand-summary-row brand-summary-row--bottom">
+        <div class="brand-summary-card bsc-critical">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="brand-summary-value">65</div>
+          </div>
+          <div class="brand-summary-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">2.5%</div>
+        </div>
+        <div class="brand-summary-card bsc-high">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="brand-summary-value">0</div>
+          </div>
+          <div class="brand-summary-label" data-en="High" data-vi="Cao">High</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">0%</div>
+        </div>
+        <div class="brand-summary-card bsc-medium">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <div class="brand-summary-value">1</div>
+          </div>
+          <div class="brand-summary-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">0.04%</div>
+        </div>
+        <div class="brand-summary-card bsc-low">
+          <div class="brand-summary-top">
+            <div class="brand-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="brand-summary-value">841</div>
+          </div>
+          <div class="brand-summary-label" data-en="Low" data-vi="Thấp">Low</div>
+          <div class="brand-summary-bar"><div class="brand-summary-bar-fill"></div></div>
+          <div class="brand-summary-pct">32.1%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search + Filter -->
+    <div class="bp-search-bar reveal reveal-delay-2">
+      <div class="bp-search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search assets..." data-vi-placeholder="Tìm kiếm tài sản...">
+      </div>
+      <div class="bp-filter-bar">
+        <button class="bp-filter-chip active" data-filter="all" onclick="filterBpAssets('all')"><span data-en="All" data-vi="Tất cả">All</span><span class="chip-count" id="bp-count-all">10</span></button>
+        <button class="bp-filter-chip" data-filter="critical" onclick="filterBpAssets('critical')"><span data-en="Critical" data-vi="Nghiêm trọng">Critical</span><span class="chip-count" id="bp-count-critical">6</span></button>
+        <button class="bp-filter-chip" data-filter="high" onclick="filterBpAssets('high')"><span data-en="High" data-vi="Cao">High</span><span class="chip-count" id="bp-count-high">0</span></button>
+        <button class="bp-filter-chip" data-filter="medium" onclick="filterBpAssets('medium')"><span data-en="Medium" data-vi="Trung bình">Medium</span><span class="chip-count" id="bp-count-medium">1</span></button>
+        <button class="bp-filter-chip" data-filter="low" onclick="filterBpAssets('low')"><span data-en="Low" data-vi="Thấp">Low</span><span class="chip-count" id="bp-count-low">3</span></button>
+      </div>
+    </div>
+
+    <!-- Asset Table -->
+    <div class="bp-table-section reveal reveal-delay-3">
+      <div class="bp-table-header">
+        <span data-en="Asset" data-vi="Tài sản">Asset</span>
+        <span data-en="Web Similarity" data-vi="Tương đồng web">Web Similarity</span>
+        <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
+        <span data-en="Scanning" data-vi="Đang quét">Scanning</span>
+      </div>
+      <div id="bp-table-rows">
+            <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">emm.trin.net</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">3</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">12</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">powerapps.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">8</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="medium">
+        <div class="bp-asset-name">pmp.oneweb.net</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">5</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">testwebservices.hawaiianairlines.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">15</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="low">
+        <div class="bp-asset-name">annualmeeting2022.globe.gov</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">3</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">hawaiianairlines.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">18</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">142</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">mdlive.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">5</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">34</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="low">
+        <div class="bp-asset-name">digitalwpc.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">7</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="critical">
+        <div class="bp-asset-name">sessions.digitalwpc.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">1</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">4</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-29</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="bp-table-row" data-severity="low">
+        <div class="bp-asset-name">staging-consulting-covid19.euromonitor.com</div>
+        <div class="bp-similarity">
+          <div class="bp-sev-item bp-sev-critical"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-high"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-medium"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">0</span></div>
+          <div class="bp-sev-item bp-sev-low"><div class="bp-sev-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span class="bp-sev-value">2</span></div>
+        </div>
+        <div class="bp-last-update">2026-06-30</div>
+        <div class="bp-scanning"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>        </div>
+      </div>
+      </div><!-- /bp-table-rows -->
+<div class="bp-pagination">
+        <span>10 rows per page</span>
+        <select><option>10</option><option>25</option><option>50</option></select>
+        <span>1-10 of 10</span>
+        <div class="bp-pagination-btns">
+          <button disabled>&lt;</button>
+          <button disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+    <div class="bp-empty-state" id="bp-empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div data-en="No assets match this filter" data-vi="Không có tài sản nào khớp với bộ lọc này">No assets match this filter</div>
+    </div>
+  </div><!-- /bp-grid-screen -->
+
+  <!-- ═══════════════════ DETAIL SUBPAGE ═══════════════════ -->
+  <div id="bp-detail-screen" class="bp-detail-screen">
+    <div class="bp-detail-header">
+      <div class="bp-detail-header-left">
+        <button class="bp-detail-back" onclick="showBpGrid()" title="Back to list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div>
+          <div class="bp-detail-title" id="bp-detail-asset-name">emm.trin.net</div>
+          <div class="bp-detail-subtitle" data-en="Cloned domains detected for this asset" data-vi="Các tên miền sao chép được phát hiện cho tài sản này">Cloned domains detected for this asset</div>
+        </div>
+      </div>
+      <div class="bp-detail-right">
+        <button class="header-btn header-btn-secondary" onclick="showBpGrid()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span data-en="Refresh" data-vi="Làm mới">Refresh</span>
+        </button>
+        <button class="header-btn header-btn-primary">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-en="Export CSV" data-vi="Xuất CSV">Export CSV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="bp-detail-summary">
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--critical);">3</div>
+        <div class="bp-detail-stat-label" data-en="Critical" data-vi="Nghiêm trọng">Critical</div>
+      </div>
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--amber);">1</div>
+        <div class="bp-detail-stat-label" data-en="Medium" data-vi="Trung bình">Medium</div>
+      </div>
+      <div class="bp-detail-stat-card">
+        <div class="bp-detail-stat-value" style="color:var(--low);">12</div>
+        <div class="bp-detail-stat-label" data-en="Low" data-vi="Thấp">Low</div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="bp-search-bar">
+      <div class="bp-search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search cloned domains..." data-vi-placeholder="Tìm kiếm tên miền sao chép..." id="bp-detail-search">
+      </div>
+    </div>
+
+    <!-- Cloned Domains Table -->
+    <div class="bp-detail-table-section">
+      <div class="bp-detail-table-header">
+        <span data-en="Typo" data-vi="Nhập sai">Typo</span>
+        <span data-en="Web Similarity" data-vi="Tương đồng web">Web Similarity</span>
+        <span data-en="Web Title" data-vi="Tiêu đề web">Web Title</span>
+        <span data-en="IP Address" data-vi="Địa chỉ IP">IP Address</span>
+        <span data-en="Last update" data-vi="Cập nhật lần cuối">Last update</span>
+      </div>
+      <div id="bp-detail-rows"></div>
+      <div class="bp-pagination">
+        <span data-en="10 rows per page" data-vi="10 dòng mỗi trang">10 rows per page</span>
+        <select id="bp-detail-page-size"><option>10</option><option>25</option><option>50</option></select>
+        <span id="bp-detail-pagination-info">1-10 of 10</span>
+        <div class="bp-pagination-btns">
+          <button id="bp-detail-prev" disabled>&lt;</button>
+          <button id="bp-detail-next" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /bp-detail-screen -->
+
+  </main>
+
+  <script>
+  (function() {
+    // Language Toggle
+    var toggle = document.querySelector('.lang-toggle');
+    if (toggle) {
+      var btns = toggle.querySelectorAll('.lang-btn');
+      function setLang(lang) {
+        var isVI = lang === 'vi';
+        document.body.classList.toggle('lang-vi-active', isVI);
+        btns.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
+        document.querySelectorAll('[data-en][data-vi]').forEach(function(el) {
+          el.textContent = isVI ? el.getAttribute('data-vi') : el.getAttribute('data-en');
+        });
+        try { localStorage.setItem('gs-lang', lang); } catch(e) {}
+      }
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() { setLang(btn.getAttribute('data-lang')); });
+      });
+      try { var saved = localStorage.getItem('gs-lang'); if (saved === 'vi') setLang('vi'); } catch(e) {}
+    }
+
+    // Features Dropdown
+    var dropdown = document.querySelector('.nav-dropdown');
+    var trigger = document.querySelector('.nav-dropdown-trigger');
+    var menu = document.querySelector('.nav-dropdown-menu');
+    if (trigger && menu) {
+      trigger.addEventListener('click', function(e) { e.stopPropagation(); var isOpen = dropdown.classList.toggle('open'); trigger.setAttribute('aria-expanded', isOpen); });
+      document.addEventListener('click', function(e) { if (!dropdown.contains(e.target)) { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); } });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && dropdown.classList.contains('open')) { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); trigger.focus(); } });
+    }
+  })();
+  
+    // ── Sidebar Collapse Toggle ──────────────
+  var sidebar = document.getElementById("sidebar");
+  var panelCollapse = document.getElementById("panelCollapse");
+  if (panelCollapse && sidebar) {
+    panelCollapse.addEventListener("click", function() {
+      sidebar.classList.toggle("collapsed");
+      try { localStorage.setItem("gs-sidebar-v2", sidebar.classList.contains("collapsed") ? "1" : "0"); } catch(e) {}
+    });
+  }
+  // Restore collapsed state
+  try {
+    if (localStorage.getItem("gs-sidebar-v2") === "1" && sidebar) {
+      sidebar.classList.add("collapsed");
+    }
+  } catch(e) {}
+
+  // Quick Search: expand sidebar on click when collapsed
+  var sidebarSearch = document.querySelector('.sidebar-search');
+  if (sidebarSearch) {
+    sidebarSearch.addEventListener('click', function() {
+      var sb = document.getElementById('sidebar');
+      if (sb && sb.classList.contains('collapsed')) {
+        sb.classList.remove('collapsed');
+        localStorage.setItem('gs-sidebar-v2', '0');
+        setTimeout(function() {
+          var input = sidebarSearch.querySelector('.sidebar-search-input');
+          if (input) input.focus();
+        }, 250);
+      }
+    });
+  }
+
+</script>
+<!-- Typo Detail Modal -->
+<div class="bp-typo-overlay" id="bpTypoModal">
+  <div class="bp-typo-modal">
+    <div class="bp-typo-header">
+      <div class="bp-typo-title" id="bpTypoTitle">emm.trin.net</div>
+      <button class="bp-typo-close" onclick="hideTypoDetail()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="bp-typo-body" id="bpTypoBody"></div>
+  </div>
+</div>
+
+<!-- Pricing Modal -->
+<div class="pricing-overlay" id="pricingModal">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="document.getElementById('pricingModal').classList.remove('active')" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="pricing-header">
+      <h2 class="pricing-title" data-en="Pricing plans" data-vi="Gói dịch vụ">Pricing plans</h2>
+      <p class="pricing-subtitle" data-en="Choose the right plan for your needs." data-vi="Chọn gói phù hợp với nhu cầu của bạn.">Choose the right plan for your needs.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Free</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">0</span></div>
+          <div class="pricing-desc">For individuals & trial users</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>1 Domain</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> </li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>3-month trial</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Get started</button>
+        </div>
+      </div>
+      <!-- Basic -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Basic</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">1,999</span></div>
+          <div class="pricing-desc">For small & medium businesses</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>5 Domains / 5 IPs / 30 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Premium -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Premium</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">3,999</span></div>
+          <div class="pricing-desc">For companies & government agencies</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>10 Domains / 10 IPs / 50 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-primary">Contact us</button>
+        </div>
+      </div>
+      <!-- Professional -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Professional</span>
+          <div class="pricing-amount"><span class="pricing-currency">$</span><span class="pricing-value">7,999</span></div>
+          <div class="pricing-desc">For enterprises & conglomerates</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>20 Domains / 20 IPs / 80 Apps</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-badge">Advanced</span>
+          <div class="pricing-amount"><span class="pricing-value" style="font-size:24px;">Contact us</span></div>
+          <div class="pricing-desc">For specialized systems needing custom config</div>
+        </div>
+        <div class="pricing-card-bottom">
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Custom scope &amp; duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Per plan duration</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Web uptime monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Brand impersonation alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>External vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>App vulnerability alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Data breach monitoring</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Botnet detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Unmanaged asset alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Malware detection</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>APT attack alerts</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>IoC intelligence feed</span></li>
+          </ul>
+          <button class="pricing-btn pricing-btn-secondary">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+setTimeout(function(){
+  document.querySelectorAll('.brand-summary-card').forEach(function(card){ card.classList.add('animated'); });
+});
+
+// ── Brand Protection Detail Subpage ──
+var bpDetailData = {
+  'emm.trin.net': [
+    { typo: 'emm.trin.net', similarity: '98%', title: 'EMM Trin - Login Portal', ip: '192.168.1.45', count: 2, update: '2026-06-29' },
+    { typo: 'emm.tuin.net', similarity: '96%', title: 'EMM Trin - Auth', ip: '10.0.0.12', count: 1, update: '2026-06-28' },
+    { typo: 'emm.frin.net', similarity: '94%', title: 'EMM Trin Portal', ip: '172.16.0.8', count: 1, update: '2026-06-27' },
+    { typo: 'emm.thin.net', similarity: '92%', title: 'EMM Trin - Sign In', ip: '192.168.2.100', count: 3, update: '2026-06-29' },
+    { typo: 'emm.trrn.net', similarity: '90%', title: 'EMM Trin Login', ip: '10.0.1.55', count: 1, update: '2026-06-26' },
+    { typo: 'emm.srin.net', similarity: '88%', title: 'EMM Trin - Portal', ip: '172.16.1.22', count: 2, update: '2026-06-28' },
+    { typo: 'emm.trid.net', similarity: '86%', title: 'EMM Trin Account', ip: '192.168.3.77', count: 1, update: '2026-06-25' },
+    { typo: 'emm.trie.net', similarity: '84%', title: 'EMM Trin - Access', ip: '10.0.2.33', count: 1, update: '2026-06-27' },
+    { typo: 'emm.grin.net', similarity: '82%', title: 'EMM Trin Dashboard', ip: '172.16.2.11', count: 2, update: '2026-06-26' },
+    { typo: 'emm.trun.net', similarity: '80%', title: 'EMM Trin - Portal', ip: '192.168.4.99', count: 1, update: '2026-06-25' }
+  ],
+  'powerapps.com': [
+    { typo: 'pow3rapps.com', similarity: '97%', title: 'Power Apps - Login', ip: '203.0.113.5', count: 1, update: '2026-06-30' },
+    { typo: 'powerappss.com', similarity: '95%', title: 'Power Apps Portal', ip: '198.51.100.12', count: 2, update: '2026-06-29' },
+    { typo: 'power-apps.com', similarity: '93%', title: 'Power Apps - Sign In', ip: '203.0.113.8', count: 1, update: '2026-06-28' },
+    { typo: 'powerappps.com', similarity: '91%', title: 'Power Apps Login', ip: '198.51.100.20', count: 1, update: '2026-06-30' },
+    { typo: 'powwerapps.com', similarity: '89%', title: 'Power Apps Access', ip: '203.0.113.15', count: 2, update: '2026-06-29' },
+    { typo: 'powerappss.com', similarity: '87%', title: 'Power Apps Auth', ip: '198.51.100.30', count: 1, update: '2026-06-28' },
+    { typo: 'powerappss.com', similarity: '85%', title: 'Power Apps Portal', ip: '203.0.113.22', count: 1, update: '2026-06-27' },
+    { typo: 'powerappps.com', similarity: '83%', title: 'Power Apps - Login', ip: '198.51.100.40', count: 1, update: '2026-06-30' }
+  ],
+  'pmp.oneweb.net': [
+    { typo: 'pmp.oneweb.net', similarity: '96%', title: 'PMP OneWeb - Portal', ip: '192.0.2.10', count: 1, update: '2026-06-29' },
+    { typo: 'pmp.oneweb.net', similarity: '94%', title: 'PMP OneWeb Login', ip: '192.0.2.15', count: 2, update: '2026-06-28' },
+    { typo: 'pmp.oneweb.net', similarity: '91%', title: 'PMP OneWeb - Auth', ip: '192.0.2.20', count: 1, update: '2026-06-27' },
+    { typo: 'pmp.oneweb.net', similarity: '88%', title: 'PMP OneWeb Portal', ip: '192.0.2.25', count: 1, update: '2026-06-26' },
+    { typo: 'pmp.oneweb.net', similarity: '85%', title: 'PMP OneWeb Access', ip: '192.0.2.30', count: 1, update: '2026-06-25' }
+  ],
+  'testwebservices.hawaiianairlines.com': [
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '97%', title: 'Hawaiian Airlines Test', ip: '198.18.0.5', count: 3, update: '2026-06-30' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '95%', title: 'Hawaiian Airlines Portal', ip: '198.18.0.10', count: 2, update: '2026-06-29' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '93%', title: 'Hawaiian Airlines - Login', ip: '198.18.0.15', count: 1, update: '2026-06-28' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '91%', title: 'Hawaiian Airlines Auth', ip: '198.18.0.20', count: 2, update: '2026-06-30' },
+    { typo: 'testwebservices.hawaiianairlines.com', similarity: '89%', title: 'Hawaiian Airlines Test Portal', ip: '198.18.0.25', count: 1, update: '2026-06-29' }
+  ],
+  'annualmeeting2022.globe.gov': [
+    { typo: 'annualmeeting2022.globe.gov', similarity: '95%', title: 'Globe Annual Meeting', ip: '192.0.2.50', count: 1, update: '2026-06-29' },
+    { typo: 'annualmeeting2022.globe.gov', similarity: '92%', title: 'Globe Meeting Portal', ip: '192.0.2.55', count: 1, update: '2026-06-28' },
+    { typo: 'annualmeeting2022.globe.gov', similarity: '89%', title: 'Globe - Meeting 2022', ip: '192.0.2.60', count: 1, update: '2026-06-27' }
+  ],
+  'hawaiianairlines.com': [
+    { typo: 'haawaiianairlines.com', similarity: '98%', title: 'Hawaiian Airlines - Book Now', ip: '198.18.1.5', count: 5, update: '2026-06-30' },
+    { typo: 'hawaiianairlines.com', similarity: '97%', title: 'Hawaiian Airlines Flights', ip: '198.18.1.10', count: 8, update: '2026-06-30' },
+    { typo: 'hawaiian-airlines.com', similarity: '96%', title: 'Hawaiian Airlines Portal', ip: '198.18.1.15', count: 3, update: '2026-06-29' },
+    { typo: 'hawaiianairliness.com', similarity: '95%', title: 'Hawaiian Airlines - Login', ip: '198.18.1.20', count: 4, update: '2026-06-30' },
+    { typo: 'hawaiianairlines.com', similarity: '94%', title: 'Hawaiian Airlines Auth', ip: '198.18.1.25', count: 2, update: '2026-06-29' },
+    { typo: 'hawaiianairlines.com', similarity: '93%', title: 'Hawaiian Airlines Access', ip: '198.18.1.30', count: 6, update: '2026-06-30' }
+  ],
+  'mdlive.com': [
+    { typo: 'mdlive.com', similarity: '97%', title: 'MDLive - Virtual Care', ip: '203.0.113.50', count: 2, update: '2026-06-29' },
+    { typo: 'mdlive.com', similarity: '95%', title: 'MDLive Portal', ip: '203.0.113.55', count: 3, update: '2026-06-28' },
+    { typo: 'mdlive.com', similarity: '93%', title: 'MDLive - Sign In', ip: '203.0.113.60', count: 1, update: '2026-06-27' },
+    { typo: 'mdlive.com', similarity: '91%', title: 'MDLive Login', ip: '203.0.113.65', count: 2, update: '2026-06-29' },
+    { typo: 'mdlive.com', similarity: '89%', title: 'MDLive - Auth Portal', ip: '203.0.113.70', count: 1, update: '2026-06-28' }
+  ],
+  'digitalwpc.com': [
+    { typo: 'digitalwpc.com', similarity: '96%', title: 'Digital WPC Portal', ip: '198.51.100.50', count: 1, update: '2026-06-30' },
+    { typo: 'digitalwpc.com', similarity: '93%', title: 'Digital WPC - Login', ip: '198.51.100.55', count: 2, update: '2026-06-29' },
+    { typo: 'digitalwpc.com', similarity: '90%', title: 'Digital WPC Access', ip: '198.51.100.60', count: 1, update: '2026-06-28' },
+    { typo: 'digitalwpc.com', similarity: '87%', title: 'Digital WPC - Portal', ip: '198.51.100.65', count: 1, update: '2026-06-27' },
+    { typo: 'digitalwpc.com', similarity: '84%', title: 'Digital WPC Auth', ip: '198.51.100.70', count: 2, update: '2026-06-30' }
+  ],
+  'sessions.digitalwpc.com': [
+    { typo: 'sessions.digitalwpc.com', similarity: '97%', title: 'Digital WPC Sessions', ip: '198.51.100.80', count: 1, update: '2026-06-29' },
+    { typo: 'sessions.digitalwpc.com', similarity: '94%', title: 'Sessions - Digital WPC', ip: '198.51.100.85', count: 1, update: '2026-06-28' },
+    { typo: 'sessions.digitalwpc.com', similarity: '91%', title: 'Digital WPC - Sessions', ip: '198.51.100.90', count: 2, update: '2026-06-27' },
+    { typo: 'sessions.digitalwpc.com', similarity: '88%', title: 'Sessions Portal', ip: '198.51.100.95', count: 1, update: '2026-06-26' }
+  ],
+  'staging-consulting-covid19.euromonitor.com': [
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '96%', title: 'Euromonitor Staging', ip: '192.0.2.100', count: 1, update: '2026-06-30' },
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '93%', title: 'Euromonitor - Consulting', ip: '192.0.2.105', count: 1, update: '2026-06-29' },
+    { typo: 'staging-consulting-covid19.euromonitor.com', similarity: '90%', title: 'Euromonitor Portal', ip: '192.0.2.110', count: 1, update: '2026-06-28' }
+  ]
+};
+
+var bpCurrentAsset = '';
+var bpFilteredData = [];
+var bpPage = 1;
+var bpPageSize = 10;
+
+function filterBpAssets(severity) {
+  var rows = document.querySelectorAll('#bp-table-rows .bp-table-row');
+  var emptyState = document.getElementById('bp-empty-state');
+  var visible = 0;
+  rows.forEach(function(row) {
+    if (severity === 'all' || row.dataset.severity === severity) {
+      row.classList.remove('hidden');
+      visible++;
+    } else {
+      row.classList.add('hidden');
+    }
+  });
+  if (emptyState) emptyState.classList.toggle('visible', visible === 0);
+  document.querySelectorAll('.bp-filter-chip').forEach(function(chip) {
+    chip.classList.toggle('active', chip.dataset.filter === severity);
+  });
+  var pagination = document.querySelector('.bp-pagination');
+  if (pagination) pagination.style.display = visible === 0 ? 'none' : '';
+}
+
+function showBpDetail(assetName) {
+  bpCurrentAsset = assetName;
+  bpFilteredData = bpDetailData[assetName] || [];
+  bpPage = 1;
+  document.getElementById('bp-detail-asset-name').textContent = assetName;
+  document.getElementById('bp-grid-screen').classList.add('hidden');
+  document.getElementById('bp-detail-screen').classList.add('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = 'none';
+  renderBpDetailRows();
+}
+
+function showBpGrid() {
+  document.getElementById('bp-grid-screen').classList.remove('hidden');
+  document.getElementById('bp-detail-screen').classList.remove('active');
+  var hdr = document.querySelector('.page-header');
+  if (hdr) hdr.style.display = '';
+}
+
+function renderBpDetailRows() {
+  var container = document.getElementById('bp-detail-rows');
+  var total = bpFilteredData.length;
+  var start = (bpPage - 1) * bpPageSize;
+  var end = Math.min(start + bpPageSize, total);
+  var rows = bpFilteredData.slice(start, end);
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="bp-detail-table-row">' +
+      '<div class="bp-detail-typo-domain clickable" onclick="showTypoDetail(\'' + r.typo.replace(/'/g,"\\'") + '\')">' + r.typo + '</div>' +
+      '<div class="bp-detail-similarity">' + r.similarity + '</div>' +
+      '<div class="bp-detail-web-title" title="' + r.title + '">' + r.title + '</div>' +
+      '<div class="bp-detail-ip-cell"><span class="bp-detail-ip">' + r.ip + '</span><span class="bp-detail-ip-badge">' + r.count + '</span></div>' +
+      '<div class="bp-detail-last-update">' + r.update + '</div>' +
+    '</div>';
+  });
+  container.innerHTML = html;
+  document.getElementById('bp-detail-pagination-info').textContent = (total === 0 ? '0' : (start + 1)) + '-' + end + ' of ' + total;
+  document.getElementById('bp-detail-prev').disabled = bpPage <= 1;
+  document.getElementById('bp-detail-next').disabled = end >= total;
+}
+
+document.getElementById('bp-detail-prev').addEventListener('click', function() {
+  if (bpPage > 1) { bpPage--; renderBpDetailRows(); }
+});
+document.getElementById('bp-detail-next').addEventListener('click', function() {
+  var maxPage = Math.ceil(bpFilteredData.length / bpPageSize);
+  if (bpPage < maxPage) { bpPage++; renderBpDetailRows(); }
+});
+document.getElementById('bp-detail-page-size').addEventListener('change', function() {
+  bpPageSize = parseInt(this.value) || 10;
+  bpPage = 1;
+  renderBpDetailRows();
+});
+document.getElementById('bp-detail-search').addEventListener('input', function() {
+  var q = this.value.toLowerCase();
+  var all = bpDetailData[bpCurrentAsset] || [];
+  bpFilteredData = all.filter(function(r) {
+    return r.typo.toLowerCase().indexOf(q) !== -1 ||
+           r.title.toLowerCase().indexOf(q) !== -1 ||
+           r.ip.toLowerCase().indexOf(q) !== -1;
+  });
+  bpPage = 1;
+  renderBpDetailRows();
+});
+
+// Add onclick to asset rows
+document.querySelectorAll('.bp-table-row').forEach(function(row) {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', function() {
+    var name = this.querySelector('.bp-asset-name');
+    if (name) showBpDetail(name.textContent.trim());
+  });
+});
+// ── Typo Detail Modal ──────────────────────────────────────
+
+var typoDetailData = {
+  'emm.trin.net': { ip:'76.223.54.146\n13.248.169.48', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'9wvgmup5ck.emm.trin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.tuin.net': { ip:'76.223.54.201\n13.248.169.92', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'x8kq2m9p1l.emm.tuin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.frin.net': { ip:'76.223.54.178\n13.248.169.55', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'r5t8n2w6q3.emm.frin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.thin.net': { ip:'76.223.54.133\n13.248.169.71', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'m3j7k1p9x5.emm.thin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trrn.net': { ip:'76.223.54.189\n13.248.169.44', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'q2w6e9r1t4.emm.trrn.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.srin.net': { ip:'76.223.54.167\n13.248.169.83', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'y8u3i5o1p7.emm.srin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trid.net': { ip:'76.223.54.142\n13.248.169.60', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'a4s6d8f2g1.emm.trid.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trie.net': { ip:'76.223.54.155\n13.248.169.77', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'h7j9k2l5m8.emm.trie.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.grin.net': { ip:'76.223.54.198\n13.248.169.39', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'z1x3c5v7b9.emm.grin.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'emm.trun.net': { ip:'76.223.54.171\n13.248.169.66', mail:'0.', nameServer:'ns4.afternic.com.\nns3.afternic.com.', geo:'Unknown', simProb:'0', catchAll:'n4m6b8v0c2.emm.trun.net.', variation:'replacement', webSim:'0', resDiff:'0' },
+  'powerapps.com': { ip:'13.107.246.254\n20.53.203.104', mail:'0.', nameServer:'ns1-05.azure-dns.com.\nns2-05.azure-dns.net.', geo:'United States', simProb:'12', catchAll:'false', variation:'none', webSim:'95', resDiff:'3' },
+  'pmp.oneweb.net': { ip:'198.51.100.42\n203.0.113.18', mail:'mail.pmp.oneweb.net.', nameServer:'ns1.oneweb.net.\nns2.oneweb.net.', geo:'United Kingdom', simProb:'8', catchAll:'false', variation:'subdomain', webSim:'88', resDiff:'12' },
+  'testwebservices.hawaiianairlines.com': { ip:'204.63.217.100\n198.51.100.200', mail:'0.', nameServer:'ns1.hawaiianairlines.com.\nns2.hawaiianairlines.com.', geo:'United States', simProb:'5', catchAll:'false', variation:'subdomain', webSim:'92', resDiff:'7' },
+  'annualmeeting2022.globe.gov': { ip:'198.51.100.10\n203.0.113.50', mail:'0.', nameServer:'ns1.globe.gov.\nns2.globe.gov.', geo:'Philippines', simProb:'3', catchAll:'false', variation:'subdomain', webSim:'85', resDiff:'15' },
+  'hawaiianairlines.com': { ip:'104.18.0.0\n104.18.1.0', mail:'mail.hawaiianairlines.com.', nameServer:'ns1.hawaiianairlines.com.\nns2.hawaiianairlines.com.', geo:'United States', simProb:'0', catchAll:'false', variation:'none', webSim:'100', resDiff:'0' },
+  'mdlive.com': { ip:'104.16.0.0\n104.16.1.0', mail:'0.', nameServer:'ns1.mdlive.com.\nns2.mdlive.com.', geo:'United States', simProb:'2', catchAll:'false', variation:'none', webSim:'97', resDiff:'2' },
+  'digitalwpc.com': { ip:'198.51.100.80\n203.0.113.120', mail:'mail.digitalwpc.com.', nameServer:'ns1.digitalwpc.com.\nns2.digitalwpc.com.', geo:'United States', simProb:'0', catchAll:'false', variation:'none', webSim:'100', resDiff:'0' },
+  'sessions.digitalwpc.com': { ip:'198.51.100.81\n203.0.113.121', mail:'0.', nameServer:'ns1.digitalwpc.com.\nns2.digitalwpc.com.', geo:'United States', simProb:'1', catchAll:'false', variation:'subdomain', webSim:'98', resDiff:'1' },
+  'staging-consulting-covid19.euromonitor.com': { ip:'104.20.0.0\n104.20.1.0', mail:'0.', nameServer:'ns1.euromonitor.com.\nns2.euromonitor.com.', geo:'United Kingdom', simProb:'4', catchAll:'false', variation:'subdomain', webSim:'90', resDiff:'10' }
+};
+function showTypoDetail(domain) {
+  var modal = document.getElementById('bpTypoModal');
+  var title = document.getElementById('bpTypoTitle');
+  var body = document.getElementById('bpTypoBody');
+  title.textContent = domain;
+  var d = typoDetailData[domain] || { ip:'N/A', mail:'N/A', nameServer:'N/A', geo:'Unknown', simProb:'0', catchAll:'N/A', variation:'N/A', webSim:'0', resDiff:'0' };
+  function row(label, value, mono) {
+    var valClass = 'bp-typo-row-value' + (mono ? ' mono' : '');
+    var formatted = (value || 'N/A').replace(/\n/g, '<br>');
+    return '<div class="bp-typo-row"><div class="bp-typo-row-label">' + label + '</div><div class="' + valClass + '">' + formatted + '</div></div>';
+  }
+  body.innerHTML =
+    row('IP Address', d.ip, true) +
+    row('Mail Server', d.mail, true) +
+    row('Name Server', d.nameServer, true) +
+    row('Geo IP', d.geo, false) +
+    row('Similarity Prob (%)', d.simProb, false) +
+    row('Catch All', d.catchAll, true) +
+    row('Variation', d.variation, false) +
+    row('Website Similarity (%)', d.webSim, false) +
+    row('Resource Difference (%)', d.resDiff, false);
+  modal.classList.add('active');
+}
+function hideTypoDetail() {
+  document.getElementById('bpTypoModal').classList.remove('active');
+}
+document.getElementById('bpTypoModal').addEventListener('click', function(e) {
+  if (e.target === this) hideTypoDetail();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('bpTypoModal').classList.contains('active')) hideTypoDetail();
+});
+
+</script>
+<script>
+(function(){
+  var overlay = document.getElementById('pricingModal');
+  if (!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') overlay.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-upgrade-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); overlay.classList.add('active'); });
+  });
+})();
+</script>
+
+  <!-- Contact Us Modal -->
+  <div class="contact-modal-overlay" id="contactUsModal">
+    <div class="contact-modal">
+      <button class="contact-modal-close" id="contactUsClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="contactUsForm">
+        <div class="contact-modal-icon mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        </div>
+        <h3 class="contact-modal-title" data-en="Contact Sales" data-vi="Liên hệ bán hàng">Contact Sales</h3>
+        <p class="contact-modal-desc" data-en="Tell us about your needs and we'll get back to you within 24 hours." data-vi="Cho chúng tôi biết nhu cầu của bạn và chúng tôi sẽ phản hồi trong vòng 24 giờ.">Tell us about your needs and we'll get back to you within 24 hours.</p>
+        <div class="contact-modal-plan-row">
+          <span class="contact-modal-plan-label" data-en="Selected plan:" data-vi="Gói đã chọn:">Selected plan:</span>
+          <span class="contact-modal-plan-tag" id="contactPlanTag">Premium</span>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Full Name" data-vi="Họ và tên">Full Name</label>
+            <input class="contact-modal-input" type="text" id="contactName" placeholder="e.g. Brooklyn Nguyen">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Work Email" data-vi="Email công việc">Work Email</label>
+            <input class="contact-modal-input" type="email" id="contactEmail" placeholder="e.g. brooklyn@company.com">
+          </div>
+        </div>
+        <div class="contact-modal-row">
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Company" data-vi="Công ty">Company</label>
+            <input class="contact-modal-input" type="text" id="contactCompany" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="contact-modal-field">
+            <label class="contact-modal-label" data-en="Phone" data-vi="Điện thoại">Phone</label>
+            <input class="contact-modal-input" type="tel" id="contactPhone" placeholder="e.g. +84 901 234 567">
+          </div>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Company Size" data-vi="Quy mô công ty">Company Size</label>
+          <select class="contact-modal-select" id="contactSize">
+            <option value="" data-en="Select company size" data-vi="Chọn quy mô công ty">Select company size</option>
+            <option value="1-50">1–50 employees</option>
+            <option value="51-200">51–200 employees</option>
+            <option value="201-1000">201–1,000 employees</option>
+            <option value="1000+">1,000+ employees</option>
+          </select>
+        </div>
+        <div class="contact-modal-field">
+          <label class="contact-modal-label" data-en="Message" data-vi="Tin nhắn">Message</label>
+          <textarea class="contact-modal-textarea" id="contactMessage" rows="3" placeholder="Tell us about your security monitoring needs..."></textarea>
+        </div>
+        <div class="contact-modal-actions">
+          <button class="contact-modal-btn contact-modal-btn-secondary" id="contactUsCancel" data-en="Cancel" data-vi="Hủy">Cancel</button>
+          <button class="contact-modal-btn contact-modal-btn-primary" id="contactUsSubmit" data-en="Send Message" data-vi="Gửi tin nhắn">Send Message</button>
+        </div>
+      </div>
+      <div class="contact-modal-success" id="contactUsSuccess">
+        <div class="contact-modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 data-en="Message Sent!" data-vi="Đã gửi tin nhắn!">Message Sent!</h3>
+        <p data-en="Our sales team will contact you within 24 hours." data-vi="Đội ngũ bán hàng sẽ liên hệ bạn trong vòng 24 giờ.">Our sales team will contact you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var contactOverlay = document.getElementById('contactUsModal');
+  var contactForm = document.getElementById('contactUsForm');
+  var contactSuccess = document.getElementById('contactUsSuccess');
+  var planTag = document.getElementById('contactPlanTag');
+  if (!contactOverlay) return;
+  function closeContact() {
+    contactOverlay.classList.remove('active');
+    setTimeout(function(){
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactCompany').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactSize').value = '';
+      document.getElementById('contactMessage').value = '';
+    }, 300);
+  }
+  contactOverlay.addEventListener('click', function(e){ if(e.target===contactOverlay) closeContact(); });
+  document.getElementById('contactUsClose').addEventListener('click', closeContact);
+  document.getElementById('contactUsCancel').addEventListener('click', closeContact);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && contactOverlay.classList.contains('active')) closeContact();
+  });
+  var pricingOverlay = document.getElementById('pricingModal');
+  document.querySelectorAll('.pricing-btn').forEach(function(btn){
+    if (btn.textContent.trim() !== 'Contact us') return;
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.pricing-card');
+      var badge = card ? card.querySelector('.pricing-badge') : null;
+      var planName = badge ? badge.textContent.trim() : 'Custom';
+      planTag.textContent = planName;
+      contactForm.style.display = '';
+      contactSuccess.classList.remove('active');
+      if (pricingOverlay) pricingOverlay.classList.remove('active');
+      contactOverlay.classList.add('active');
+    });
+  });
+  document.getElementById('contactUsSubmit').addEventListener('click', function(){
+    var name = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) {
+      if (!name) document.getElementById('contactName').focus();
+      else document.getElementById('contactEmail').focus();
+      return;
+    }
+    contactForm.style.display = 'none';
+    contactSuccess.classList.add('active');
+    setTimeout(closeContact, 2500);
+  });
+})();
+</script>
+
+</body>
+</html>

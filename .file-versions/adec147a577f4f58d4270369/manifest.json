@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "fileName": "feature-botnet-detection.html",
+  "entries": [
+    {
+      "id": "5fdd79ac-969e-4ad3-bf89-832e2c38c690",
+      "fileName": "feature-botnet-detection.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1783650910126,
+      "source": "ai",
+      "prompt": "tôi muốn đồng bộ font chữ về DM Sans",
+      "size": 121436,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-5fdd79ac-969e-4ad3-bf89-832e2c38c690.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "52368b69-623c-4c4d-adf2-487d43b65928",
+      "fileName": "feature-botnet-detection.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1783671752793,
+      "source": "ai",
+      "prompt": "ở màn botnet detection loại bỏ các chip filter, sửa thành button filter, kết quả sau khi click filter sẽ như ảnh tôi gửi",
+      "size": 128048,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-52368b69-623c-4c4d-adf2-487d43b65928.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "4aa0920b-a99a-4c61-a592-05118a3fea59",
+      "fileName": "feature-botnet-detection.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1784165725451,
+      "source": "ai",
+      "prompt": "prototype swap language ngôn ngữ tiếng việt cho tất cả các trang",
+      "size": 128354,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-4aa0920b-a99a-4c61-a592-05118a3fea59.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "a23a9e61-9bc7-4a24-b1b1-4771c094ea77",
+      "fileName": "feature-botnet-detection.html",
+      "version": 4,
+      "label": "Version 4",
+      "createdAt": 1784169699376,
+      "source": "ai",
+      "prompt": "cho ô en/vi rộng ra",
+      "size": 128356,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0004-a23a9e61-9bc7-4a24-b1b1-4771c094ea77.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "fb97fc7e-dcfd-4552-ac90-8ac9738fa33a",
+      "fileName": "feature-botnet-detection.html",
+      "version": 5,
+      "label": "Version 5",
+      "createdAt": 1784170446877,
+      "source": "ai",
+      "prompt": "đồng bộ ở các trang feature nữa",
+      "size": 128359,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0005-fb97fc7e-dcfd-4552-ac90-8ac9738fa33a.html",
+      "promptSource": "message"
+    }
+  ]
+}

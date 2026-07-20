@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "fileName": "feature-threat-intel-feeds.html",
+  "entries": [
+    {
+      "id": "7ce1658c-ee9a-4334-911e-84b9b7c68ae4",
+      "fileName": "feature-threat-intel-feeds.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1783650910128,
+      "source": "ai",
+      "prompt": "tôi muốn đồng bộ font chữ về DM Sans",
+      "size": 110430,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-7ce1658c-ee9a-4334-911e-84b9b7c68ae4.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "04277c28-e964-403a-90ad-b617135cec8f",
+      "fileName": "feature-threat-intel-feeds.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1783672947633,
+      "source": "ai",
+      "prompt": "xoá các chip filter ở màn threat intel feeds, chuyển thành button filter, prototype sau khi click filter sẽ như ảnh",
+      "size": 118739,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-04277c28-e964-403a-90ad-b617135cec8f.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "a7bf72a9-7bcd-41a1-8caf-4c5e6f27ccbd",
+      "fileName": "feature-threat-intel-feeds.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1784165725452,
+      "source": "ai",
+      "prompt": "prototype swap language ngôn ngữ tiếng việt cho tất cả các trang",
+      "size": 118799,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-a7bf72a9-7bcd-41a1-8caf-4c5e6f27ccbd.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "e9acacf1-4b09-46fc-912c-99c1a6c1c58b",
+      "fileName": "feature-threat-intel-feeds.html",
+      "version": 4,
+      "label": "Version 4",
+      "createdAt": 1784169699373,
+      "source": "ai",
+      "prompt": "cho ô en/vi rộng ra",
+      "size": 118801,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0004-e9acacf1-4b09-46fc-912c-99c1a6c1c58b.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "55491151-3f7d-4ba9-a27c-4fb86b7dfcb8",
+      "fileName": "feature-threat-intel-feeds.html",
+      "version": 5,
+      "label": "Version 5",
+      "createdAt": 1784170446880,
+      "source": "ai",
+      "prompt": "đồng bộ ở các trang feature nữa",
+      "size": 118804,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0005-55491151-3f7d-4ba9-a27c-4fb86b7dfcb8.html",
+      "promptSource": "message"
+    }
+  ]
+}

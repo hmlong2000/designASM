@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "fileName": "feature-threat-actor-intelligence.html",
+  "entries": [
+    {
+      "id": "d072cec6-4443-41b2-baea-6b92f5d0b998",
+      "fileName": "feature-threat-actor-intelligence.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1783650910127,
+      "source": "ai",
+      "prompt": "tôi muốn đồng bộ font chữ về DM Sans",
+      "size": 179777,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-d072cec6-4443-41b2-baea-6b92f5d0b998.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "0496770b-4900-43f5-8e43-f474489bfadc",
+      "fileName": "feature-threat-actor-intelligence.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1784165725453,
+      "source": "ai",
+      "prompt": "prototype swap language ngôn ngữ tiếng việt cho tất cả các trang",
+      "size": 179640,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-0496770b-4900-43f5-8e43-f474489bfadc.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "f9016e07-aec6-45b5-b562-a76ed9554308",
+      "fileName": "feature-threat-actor-intelligence.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1784169699374,
+      "source": "ai",
+      "prompt": "cho ô en/vi rộng ra",
+      "size": 179644,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-f9016e07-aec6-45b5-b562-a76ed9554308.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "486823a9-560d-457f-8176-c1b2f012a187",
+      "fileName": "feature-threat-actor-intelligence.html",
+      "version": 4,
+      "label": "Version 4",
+      "createdAt": 1784170446879,
+      "source": "ai",
+      "prompt": "đồng bộ ở các trang feature nữa",
+      "size": 179647,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0004-486823a9-560d-457f-8176-c1b2f012a187.html",
+      "promptSource": "message"
+    }
+  ]
+}

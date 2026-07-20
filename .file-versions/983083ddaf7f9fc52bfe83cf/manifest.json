@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "fileName": "feature-threat-investigation.html",
+  "entries": [
+    {
+      "id": "d844368d-f115-4efa-98ee-4390728c88ad",
+      "fileName": "feature-threat-investigation.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1783650910128,
+      "source": "ai",
+      "prompt": "tôi muốn đồng bộ font chữ về DM Sans",
+      "size": 103059,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-d844368d-f115-4efa-98ee-4390728c88ad.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "73f0d556-f493-4958-a220-cff97abd9580",
+      "fileName": "feature-threat-investigation.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1784165725452,
+      "source": "ai",
+      "prompt": "prototype swap language ngôn ngữ tiếng việt cho tất cả các trang",
+      "size": 103324,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-73f0d556-f493-4958-a220-cff97abd9580.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "ff3b56bd-fa1e-4e85-95aa-f9bfed835ab0",
+      "fileName": "feature-threat-investigation.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1784169699376,
+      "source": "ai",
+      "prompt": "cho ô en/vi rộng ra",
+      "size": 103327,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-ff3b56bd-fa1e-4e85-95aa-f9bfed835ab0.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "f9c43998-d167-4fce-ac32-ef1e510261ef",
+      "fileName": "feature-threat-investigation.html",
+      "version": 4,
+      "label": "Version 4",
+      "createdAt": 1784170446879,
+      "source": "ai",
+      "prompt": "đồng bộ ở các trang feature nữa",
+      "size": 103330,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0004-f9c43998-d167-4fce-ac32-ef1e510261ef.html",
+      "promptSource": "message"
+    }
+  ]
+}
